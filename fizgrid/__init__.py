@@ -1,1 +1,1 @@
-from .core import Grid
+from .grid import Grid
