@@ -1,0 +1,32 @@
+[tool.black]
+line-length = 80
+target-version = ['py39']
+exclude = '/.*(__pycache__).*/'
+
+[tool.setuptools]
+py-modules = ["fizgrid"]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fizgrid"
+version = "0.0.1"
+description = "Simulate grid based environments."
+authors = [
+    {name="Connor Makowski", email="conmak@mit.edu"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    'License :: OSI Approved :: MIT License',
+    "Operating System :: OS Independent",
+]
+dependencies = ["type_enforced>=1.10.2",]
+
+[project.urls]
+"Homepage" = "https://github.com/connor-makowski/fizgrid"
+"Bug Tracker" = "https://github.com/connor-makowski/fizgrid/issues"
+"Documentation" = "https://connor-makowski.github.io/fizgrid/fizgrid/enforcer.html"
