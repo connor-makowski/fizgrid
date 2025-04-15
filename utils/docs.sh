@@ -2,10 +2,10 @@
 cd /app/
 
 # Make a temp init.py that only has the content below the __README_CONTENT_IS_COPIED_ABOVE__ line
-cp README.md type_enforced/__init__.py
-sed -i '1s/^/\"\"\"\n/' type_enforced/__init__.py
-echo "\"\"\"" >> type_enforced/__init__.py
-echo "from .core import Grid" >> type_enforced/__init__.py
+cp README.md fizgrid/__init__.py
+sed -i '1s/^/\"\"\"\n/' fizgrid/__init__.py
+echo "\"\"\"" >> fizgrid/__init__.py
+echo "from .core import Grid" >> fizgrid/__init__.py
 
 
 # Specify versions for documentation purposes
@@ -18,10 +18,10 @@ function generate_docs() {
     INPUT_VERSION=$1
     if [ $INPUT_VERSION != "./" ]; then
         if [ $INPUT_VERSION != $VERSION ]; then
-            pip install "./dist/type_enforced-$INPUT_VERSION.tar.gz"
+            pip install "./dist/fizgrid-$INPUT_VERSION.tar.gz"
         fi
     fi
-    pdoc -o ./docs/$INPUT_VERSION -t ./doc_template type_enforced
+    pdoc -o ./docs/$INPUT_VERSION -t ./doc_template fizgrid
 }
 
 # Generate the docs for the current version
