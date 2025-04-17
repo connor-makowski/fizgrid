@@ -1,5 +1,11 @@
-import math, type_enforced, heapq
+import math, type_enforced, uuid
 
+
+def unique_id():
+    """
+    Generates a unique identifier.
+    """
+    return str(uuid.uuid4())
 
 @type_enforced.Enforcer
 class Shape:
@@ -19,36 +25,3 @@ class Shape:
                 [round(-x_len/2, round_to), round(y_len/2, round_to)],
                 [round(-x_len/2, round_to), round(-y_len/2, round_to)],
                 [round(x_len/2, round_to), round(-y_len/2, round_to)]]
-
-@type_enforced.Enforcer
-class TimeQueue:
-    def __init__(self):
-        self.heap = []
-        self.data = {}
-        self.time = 0
-        self.next_id = 0
-
-    def add_item(self, time:int|float, obj):
-        assert time >= self.time, "Time must be greater than or equal to current time"
-        id = self.next_id
-        self.next_id += 1
-        self.data[id] = obj
-        heapq.heappush(self.heap, (time, id))
-        return id
-
-    def remove_item(self, id:int):
-        return self.data.pop(id,None)
-
-    def get_next_item(self):
-        while self.heap:
-            time, id = heapq.heappop(self.heap)
-            obj = self.remove_item(id)
-            if obj is None:
-                continue
-            self.time = time
-            return {
-                'time': time,
-                'id': id,
-                'obj': obj
-            }
-        return None

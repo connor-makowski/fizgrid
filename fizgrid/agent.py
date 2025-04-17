@@ -1,11 +1,28 @@
-import type_enforced, math
+import type_enforced
+from fizgrid.utils import unique_id
+
+@type_enforced.Enforcer
+class Plan:
+    def __init__(self, agent, start_time, path):
+        """
+        Initializes a plan for an agent.
+
+        Args:
+            id (int): The ID of the plan.
+            agent (Agent): The agent associated with this plan.
+            start_time (int|float): The time at which the plan starts.
+            path (list[dict[int|float]]): A list of steps in the plan, each step is a dictionary with x_delta, y_delta, and time_delta.
+        """
+        self.id = unique_id()
+        self.agent = agent
+        self.start_time = start_time
+        self.path = path
 
 
 @type_enforced.Enforcer
 class Agent:
     def __init__(
-            self, 
-            id:int, 
+            self,
             name:str, 
             shape:list[list[int|float]],
             x_coord:int|float, 
@@ -26,7 +43,7 @@ class Agent:
             y_coord (int|float): The starting y-coordinate of the agent in the grid.
             grid (Grid): The grid the agent is in.
         """
-        self.id = id
+        self.id = unique_id()
         self.name = name
         self.shape = shape
         self.x_coord = x_coord

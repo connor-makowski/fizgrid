@@ -1,6 +1,6 @@
 import type_enforced
 from fizgrid.agent import Agent
-from fizgrid.utils import TimeQueue
+from fizgrid.queue import TimeQueue
 
 @type_enforced.Enforcer
 class Grid:
@@ -34,7 +34,6 @@ class Grid:
         This method creates an agent with the specified parameters and adds it to the grid.
         """
         agent = Agent(
-            id=len(self.agents) + 1,
             name=name,
             shape=shape,
             x_coord=x_coord,
@@ -42,6 +41,10 @@ class Grid:
             grid=self,
         )
         self.agents[agent.id] = agent
+        # TODO: Create a RouteEnd event at time 0 for this agent
+        # Check for collisoins with other agents and raise an exception if there are any since agents cant be colliding when added.
+
+
         return agent
     
     def add_plan(
