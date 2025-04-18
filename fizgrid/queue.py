@@ -1,5 +1,7 @@
 import type_enforced, heapq
 
+from type_enforced.utils import WithSubclasses
+
 @type_enforced.Enforcer
 class QueueEvent:
     def process(self):
@@ -12,8 +14,9 @@ class TimeQueue:
         self.data = {}
         self.time = 0
         self.next_id = 0
+        self.started=False
 
-    def add_event(self, time:int|float, event:QueueEvent):
+    def add_event(self, time:int|float, event:WithSubclasses(QueueEvent)):
         assert time >= self.time, "Time must be greater than or equal to current time"
         id = self.next_id
         self.next_id += 1
@@ -25,6 +28,7 @@ class TimeQueue:
         return self.data.pop(id,None)
 
     def get_next_event(self):
+        self.started=True
         while self.heap:
             time, id = heapq.heappop(self.heap)
             event = self.remove_event(id)

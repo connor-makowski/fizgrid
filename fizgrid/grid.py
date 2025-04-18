@@ -1,6 +1,7 @@
 import type_enforced
 from fizgrid.agent import Agent
 from fizgrid.queue import TimeQueue
+from fizgrid.events import RouteEnd
 
 @type_enforced.Enforcer
 class Grid:
@@ -14,7 +15,6 @@ class Grid:
         # Calculated Attributes
         self.agents = {}
         self.plans = {}
-        self.current_time = 0
         self.queue = TimeQueue()
         self.cells = [[{} for _ in range(x_size)] for _ in range(y_size)]
 
@@ -40,21 +40,17 @@ class Grid:
             y_coord=y_coord,
             grid=self,
         )
+
         self.agents[agent.id] = agent
-        # TODO: Create a RouteEnd event at time 0 for this agent
-        # Check for collisoins with other agents and raise an exception if there are any since agents cant be colliding when added.
-
-
+        self.queue.add_event(
+            time=0,
+            event=RouteEnd(
+                agent=agent,
+                is_result_of_collision=False,
+                raise_on_future_collision=True,
+            )
+        )
         return agent
-    
-    def add_plan(
-            agent:Agent,
-            start_time:int|float,
-            path:list[dict[int|float]],
-        ):
-        # Validate start_time is within bounds
-        if start_time < 0 or start_time > self.max_time:
-            raise ValueError(f"start_time {start_time} is out of bounds (0, {self.max_time}).")
         
 
         

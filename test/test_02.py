@@ -14,6 +14,10 @@ agent_1= grid.add_agent(
     y_coord=5,
 )
 
+
+event_1 = grid.queue.get_next_event()
+print(event_1)
+
 # grid.add_plan(
 #     agent_id=1,
 #     start_time=5,

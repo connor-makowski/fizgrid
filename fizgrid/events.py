@@ -1,14 +1,5 @@
 from fizgrid.queue import QueueEvent
 
-class RouteCollision(QueueEvent):
-    def __init__(self, agent_1, agent_2):
-        self.agent_1 = agent_1
-        self.agent_2 = agent_2
-
-    def process(self):
-        # Add a RouteEnd (collison=true) event for each agent at this point in time
-        pass
-
 class RouteStart(QueueEvent):
     def __init__(self, agent, route_deltas=list[list[int|float]], raise_on_future_collision=False):
         self.agent = agent
@@ -16,8 +7,10 @@ class RouteStart(QueueEvent):
         self.raise_on_future_collision = raise_on_future_collision
 
     def process(self):
+        # Lock the agent: in_task=True
         # Cancel out any other future events related to this agent (routes and / or collisions - this cancels collisions for the other agent involved as well)
         # Clear out any route blocks for this agent
+        # Add a final route delta for with no x or y motion and occuring until the end of the simulation.
         # Given route_deltas Block the grid cells for the agent's shape for the duration that the agent is in each cell
         # Check for collisions with other agents in the grid
             # Add events to the queue for the first collision with each colliding agent
@@ -27,11 +20,11 @@ class RouteStart(QueueEvent):
 
 class RouteEnd(QueueEvent):
     def __init__(self, agent, is_result_of_collision=False, raise_on_future_collision=False):
-        self.agent = agent
-        self.is_result_of_collision = is_result_of_collision
-        self.raise_on_future_collision = raise_on_future_collision
+        output = agent.__end_route__()
+        print(output)
 
     def process(self):
+        # Unlock the agent: in_task = False
         # Set the agent's position to where they are at this point in time
         # Cancel out any other future events related to this agent (routes and / or collisions - this cancels collisions for the other agent involved as well)
         # Remove the route blocks from the grid cells to keep things clean
