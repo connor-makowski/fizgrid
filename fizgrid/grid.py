@@ -51,19 +51,15 @@ class Grid:
         return [agent for agent in self.agents.values() if agent.__route_end_time__ <= self.queue.time]
 
         
-    def process_next_event(self):
+    def resolve_next_state(self):
         """
-        Processes the next event in the queue.
-        This method retrieves the next event from the queue and processes it.
+        Resolves the next state of the grid.
+        This method processes the next event in the queue and updates the grid accordingly.
         """
-        event = self.queue.get_next_event()
-        if event is None:
-            return None
-        event['event'].process()
-        return True
-
+        events = self.queue.get_next_events()
+        for event in events:
+            event['event'].process()
+        return events
+    
     
 
-
-
-    

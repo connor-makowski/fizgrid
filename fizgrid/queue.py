@@ -26,18 +26,46 @@ class TimeQueue:
 
     def remove_event(self, id:int):
         return self.data.pop(id,None)
+    
+    def remove_next_event(self):
+        self.remove_event(heapq.heappop(self.heap)[1])
 
-    def get_next_event(self):
+    def get_next_event(self, peek=False):
         self.started=True
         while self.heap:
-            time, id = heapq.heappop(self.heap)
-            event = self.remove_event(id)
-            if event is None:
-                continue
-            self.time = time
+            if peek:
+                time, id = self.heap[0]
+                event = self.data.get(id, None)
+                if event is None:
+                    # Remove the event from the heap to avoid stale references
+                    heapq.heappop(self.heap)
+                    continue
+            else:
+                time, id = heapq.heappop(self.heap)                
+                event = self.remove_event(id)
+                if event is None:
+                    continue
+                self.time = time
             return {
                 'time': time,
                 'id': id,
                 'event': event
             }
-        return None
+        return {
+            'time': None,
+            'id': None,
+            'event': None
+        }
+    
+    def get_next_events(self):
+        events = []
+        event = self.get_next_event(peek=True)
+        if event['event'] is not None:
+            self.time = event['time']
+            next_event = event
+            while next_event['time'] == self.time:
+                event = next_event
+                self.remove_next_event()
+                events.append(event)
+                next_event = self.get_next_event(peek=True)
+        return events

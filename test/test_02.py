@@ -1,44 +1,41 @@
-from fizgrid.grid import Grid
-from fizgrid.utils import Shape
+# Testing for TimeQueue class
+from fizgrid.queue import TimeQueue, QueueEvent
 
-grid = Grid(
-    name="test_grid",
-    x_size=10,
-    y_size=10,
-)
+passing = True
 
-agent_1 = grid.add_agent(
-    name="Agent_1",
-    shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
-    x_coord=5,
-    y_coord=3,
-)
+try:
+    # Creating a TimeQueue instance
+    queue = TimeQueue()
 
-agent_2 = grid.add_agent(
-    name="Agent_2",
-    shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
-    x_coord=3,
-    y_coord=5,
-)
+    # Creating Empty QueueEvent classes
+    event_0 = QueueEvent()
+    event_1 = QueueEvent()
+    event_2 = QueueEvent()
+    event_3 = QueueEvent()
 
-# Add routes to the agents such that they will collide
+    # Populating some example events
+    t0_id = queue.add_event(5, event_0)
+    t1_id = queue.add_event(10, event_1)
+    t2_id = queue.add_event(7, event_2)
+    t3_id = queue.add_event(8, event_3)
 
-agent_1.add_route(
-    route_deltas=[
-        {'x_shift': 0, 'y_shift': 4, 'time_shift': 1},
-    ]
-)
+    # Removing an event
+    queue.remove_event(t3_id)
 
-agent_2.add_route(
-    route_deltas=[
-        {'x_shift': 4, 'y_shift': 0, 'time_shift': 1},
-    ]
-)
+    # Checking the order of events
+    if queue.get_next_event() != {'time': 5, 'id': t0_id, 'event': event_0}:
+        passing = False
+    if queue.get_next_event() != {'time': 7, 'id': t2_id, 'event': event_2}:
+        passing = False
+    if queue.get_next_event() != {'time': 10, 'id': t1_id, 'event': event_1}:
+        passing = False
+    if queue.get_next_event() != {'time': None, 'id': None, 'event': None}:
+        passing = False
+except:
+    passing = False
 
-# Run the sim
-while grid.process_next_event():
-    pass
-
-
-
+if passing:
+    print("test_03.py: passed")
+else:
+    print("test_03.py: failed")
 
