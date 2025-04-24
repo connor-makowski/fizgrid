@@ -1,7 +1,7 @@
 import type_enforced
 from fizgrid.agent import Agent
 from fizgrid.queue import TimeQueue
-from fizgrid.events import RouteEnd
+from fizgrid.events import RouteStart
 
 @type_enforced.Enforcer
 class Grid:
@@ -40,26 +40,27 @@ class Grid:
             y_coord=y_coord,
             grid=self,
         )
-
         self.agents[agent.id] = agent
-        self.queue.add_event(
-            time=0,
-            event=RouteEnd(
-                agent=agent,
-                is_result_of_collision=False,
-                raise_on_future_collision=True,
-            )
-        )
         return agent
         
 
+    def get_open_agents(self):
+        """
+        Returns a list of all agents in the grid that are not currently in a task.
+        """
+        return [agent for agent in self.agents.values() if agent.__route_end_time__ <= self.queue.time]
+
         
-    
-
-
-        
-
-
+    def process_next_event(self):
+        """
+        Processes the next event in the queue.
+        This method retrieves the next event from the queue and processes it.
+        """
+        event = self.queue.get_next_event()
+        if event is None:
+            return None
+        event['event'].process()
+        return True
 
     
 

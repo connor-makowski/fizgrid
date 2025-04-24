@@ -7,22 +7,38 @@ grid = Grid(
     y_size=10,
 )
 
-agent_1= grid.add_agent(
+agent_1 = grid.add_agent(
     name="Agent_1",
     shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
     x_coord=5,
+    y_coord=3,
+)
+
+agent_2 = grid.add_agent(
+    name="Agent_2",
+    shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
+    x_coord=3,
     y_coord=5,
 )
 
+# Add routes to the agents such that they will collide
 
-event_1 = grid.queue.get_next_event()
-print(event_1)
+agent_1.add_route(
+    route_deltas=[
+        {'x_shift': 0, 'y_shift': 4, 'time_shift': 1},
+    ]
+)
 
-# grid.add_plan(
-#     agent_id=1,
-#     start_time=5,
-#     path=[
-#         {'x_delta': 0, 'y_delta': 1, 'time_delta': 5},
-#         {'x_delta': 1, 'y_delta': 0, 'time_delta': 5},
-#     ]
-# )
+agent_2.add_route(
+    route_deltas=[
+        {'x_shift': 4, 'y_shift': 0, 'time_shift': 1},
+    ]
+)
+
+# Run the sim
+while grid.process_next_event():
+    pass
+
+
+
+
