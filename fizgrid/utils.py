@@ -1,4 +1,5 @@
-import math, type_enforced, uuid
+import math, type_enforced, uuid, types
+from functools import update_wrapper
 
 
 def unique_id():
@@ -6,6 +7,30 @@ def unique_id():
     Generates a unique identifier.
     """
     return str(uuid.uuid4())
+
+class Thunk(type_enforced.utils.Partial):
+    def __call__(self, *args, **kwargs):
+        new_args = self.__args__ + args
+        new_kwargs = {**self.__kwargs__, **kwargs}
+        self.__arity__ = self.__getArity__(new_args, new_kwargs)
+        if self.__arity__ < 0:
+            self.__exception__("Too many arguments were supplied")
+        if self.__arity__ == 0 and len(args) == 0 and len(kwargs) == 0:
+            results = self.__fn__(*new_args, **new_kwargs)
+            return results
+        return Thunk(
+            self.__fn__,
+            *new_args,
+            **new_kwargs,
+        )
+    
+    def __get__(self, instance, owner):
+        def bind(*args, **kwargs):
+            if instance is not None and self.__arity__ == self.__fnArity__:
+                return self.__call__(instance, *args, **kwargs)
+            else:
+                return self.__call__(*args, **kwargs)
+        return bind
 
 @type_enforced.Enforcer
 class Shape:

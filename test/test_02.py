@@ -1,41 +1,46 @@
 # Testing for TimeQueue class
-from fizgrid.queue import TimeQueue, QueueEvent
+from fizgrid.queue import TimeQueue
+from fizgrid.utils import Thunk
 
 passing = True
 
-try:
-    # Creating a TimeQueue instance
-    queue = TimeQueue()
+class EventClass:
+    def custom_event(self, string:str):
+        print(string)
 
-    # Creating Empty QueueEvent classes
-    event_0 = QueueEvent()
-    event_1 = QueueEvent()
-    event_2 = QueueEvent()
-    event_3 = QueueEvent()
+eventMaker = EventClass()
 
-    # Populating some example events
-    t0_id = queue.add_event(5, event_0)
-    t1_id = queue.add_event(10, event_1)
-    t2_id = queue.add_event(7, event_2)
-    t3_id = queue.add_event(8, event_3)
 
-    # Removing an event
-    queue.remove_event(t3_id)
+# Creating a TimeQueue instance
+queue = TimeQueue()
 
-    # Checking the order of events
-    if queue.get_next_event() != {'time': 5, 'id': t0_id, 'event': event_0}:
-        passing = False
-    if queue.get_next_event() != {'time': 7, 'id': t2_id, 'event': event_2}:
-        passing = False
-    if queue.get_next_event() != {'time': 10, 'id': t1_id, 'event': event_1}:
-        passing = False
-    if queue.get_next_event() != {'time': None, 'id': None, 'event': None}:
-        passing = False
-except:
+# Creating Empty QueueEvent classes
+event_0 = {"time":5, 'callable':eventMaker.custom_event , "kwargs":{'string': "Event 0"}}
+event_1 = {"time":10, 'callable':eventMaker.custom_event , "kwargs":{'string': "Event 1"}}
+event_2 = {"time":7, 'callable':eventMaker.custom_event , "kwargs":{'string': "Event 2"}}
+event_3 = {"time":8, 'callable':eventMaker.custom_event , "kwargs":{'string': "Event 3"}}
+
+# Populating some example events
+t0_id = queue.add_event(**event_0)
+t1_id = queue.add_event(**event_1)
+t2_id = queue.add_event(**event_2)
+t3_id = queue.add_event(**event_3)
+
+# Removing an event
+queue.remove_event(t3_id)
+
+# Checking the order of events
+if queue.get_next_event() != {"id": t0_id, **event_0}:
+    passing = False
+if queue.get_next_event() != {'id': t2_id, **event_2}:
+    passing = False
+if queue.get_next_event() != {'id': t1_id, **event_1}:
+    passing = False
+if queue.get_next_event() != {'id': None, "time":None, 'callable': None, 'kwargs': None}:
     passing = False
 
 if passing:
-    print("test_03.py: passed")
+    print("test_02.py: passed")
 else:
-    print("test_03.py: failed")
+    print("test_02.py: failed")
 

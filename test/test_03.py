@@ -162,6 +162,6 @@ except:
     success = False
 
 if success:
-    print("test_04.py: passed")
+    print("test_03.py: passed")
 else:
-    print("test_04.py: failed")
+    print("test_03.py: failed")

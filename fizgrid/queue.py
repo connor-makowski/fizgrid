@@ -1,12 +1,5 @@
 import type_enforced, heapq
 
-from type_enforced.utils import WithSubclasses
-
-@type_enforced.Enforcer
-class QueueEvent:
-    def process(self):
-        raise NotImplementedError("Subclasses should implement this method.")
-
 @type_enforced.Enforcer
 class TimeQueue:
     def __init__(self):
@@ -16,11 +9,15 @@ class TimeQueue:
         self.next_id = 0
         self.started=False
 
-    def add_event(self, time:int|float, event:WithSubclasses(QueueEvent)):
+    def add_event(self, time:int|float, object, method:str, kwargs={}):
         assert time >= self.time, "Time must be greater than or equal to current time"
         id = self.next_id
         self.next_id += 1
-        self.data[id] = event
+        self.data[id] = {
+            'object': object,
+            'method': method,
+            'kwargs': kwargs
+        }
         heapq.heappush(self.heap, (time, id))
         return id
 
@@ -47,20 +44,24 @@ class TimeQueue:
                     continue
                 self.time = time
             return {
-                'time': time,
                 'id': id,
-                'event': event
+                'time': time,
+                'object': event['object'],
+                'method': event['method'],
+                'kwargs': event['kwargs']
             }
         return {
-            'time': None,
             'id': None,
-            'event': None
+            'time': None,
+            'object': None,
+            'method': None,
+            'kwargs': None
         }
     
     def get_next_events(self):
         events = []
         event = self.get_next_event(peek=True)
-        if event['event'] is not None:
+        if event['object'] != None:
             self.time = event['time']
             next_event = event
             while next_event['time'] == self.time:
