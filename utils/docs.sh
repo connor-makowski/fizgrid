@@ -1,7 +1,7 @@
 #!/bin/bash
 cd /app/
 
-# Make a temp init.py that only has the content below the __README_CONTENT_IS_COPIED_ABOVE__ line
+# Make a temp init.py that only has the content below
 cp README.md fizgrid/__init__.py
 sed -i '1s/^/\"\"\"\n/' fizgrid/__init__.py
 echo "\"\"\"" >> fizgrid/__init__.py
