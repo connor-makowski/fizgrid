@@ -11,9 +11,8 @@ grid = Grid(
     name="test_grid",
     x_size=grid_x_size,
     y_size=grid_y_size,
+    add_exterior_walls=True,
 )
-
-grid.add_exterior_walls()
 
 # Add some AMRs to the grid
 amr1 = grid.add_entity(Entity(
@@ -32,14 +31,14 @@ amr2 = grid.add_entity(Entity(
 # Add routes to the entities such that they will collide
 
 amr1.add_route(
-    route_deltas=[
-        {'x_shift': 0, 'y_shift': 4, 'time_shift': 1},
+    waypoints=[
+        (5,7,1),
     ]
 )
 
 amr2.add_route(
-    route_deltas=[
-        {'x_shift': 4, 'y_shift': 0, 'time_shift': 1},
+    waypoints=[
+        (7,5,1),
     ]
 )
 

@@ -5,7 +5,7 @@ from fizgrid.queue import TimeQueue
 
 @type_enforced.Enforcer
 class Grid:
-    def __init__(self, name:str, x_size:int, y_size:int, max_time:int=1000):
+    def __init__(self, name:str, x_size:int, y_size:int, max_time:int=1000, add_exterior_walls:bool=True):
         # Passed Attributes
         self.name = name
         self.x_size = x_size
@@ -17,6 +17,9 @@ class Grid:
         self.plans = {}
         self.queue = TimeQueue()
         self.cells = [[{} for _ in range(x_size)] for _ in range(y_size)]
+
+        if add_exterior_walls:
+            self.add_exterior_walls()
 
     def __repr__(self):
         return f"Grid({self.name} {self.x_size}x{self.y_size})"
@@ -53,6 +56,13 @@ class Grid:
                 'kwargs':kwargs
             }
         )
+    
+    def get_time(self):
+        """
+        Returns the current time of the grid.
+        This method retrieves the current time from the queue.
+        """
+        return self.queue.time
             
     def resolve_next_state(self):
         """

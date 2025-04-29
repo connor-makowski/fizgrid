@@ -29,12 +29,9 @@ class SnifferAMR(Entity):
             raise ValueError("AMR is not available to set a goal.")
 
     def add_next_route(self):
-        if not self.is_available():
-            return
         distance_from_goal = self.get_dist_from_goal()
         if distance_from_goal < self.tolerance:
             return
-        
         goal_angle_rad = math.atan2(self.goal_y - self.y_coord, self.goal_x - self.x_coord)
         random_angle = random.normalvariate(goal_angle_rad, math.pi/2)
         distance = random.uniform(0, min(distance_from_goal,5))
@@ -42,8 +39,8 @@ class SnifferAMR(Entity):
         y_shift = distance * math.sin(random_angle)
 
         self.add_route(
-            route_deltas=[
-                {'x_shift': x_shift, 'y_shift': y_shift, 'time_shift': distance * self.speed},
+            waypoints=[
+                (self.x_coord + x_shift, self.y_coord + y_shift, distance * self.speed),
             ]
         )
 
@@ -52,23 +49,15 @@ class SnifferAMR(Entity):
             if self.get_dist_from_goal() > self.tolerance:
                 self.add_next_route()
             else:
-                #TODO: Look for new goal
                 self.has_goal = False
 
 
-
-
-
-grid_x_size = 1000
-grid_y_size = 1000
-
 grid = Grid(
     name="test_grid",
-    x_size=grid_x_size,
-    y_size=grid_y_size,
+    x_size=1000,
+    y_size=1000,
+    add_exterior_walls=True,
 )
-
-grid.add_exterior_walls()
 
 # Add some AMRs to the grid
 amr1 = grid.add_entity(SnifferAMR(

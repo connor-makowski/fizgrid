@@ -37,7 +37,7 @@ class Entity:
         self.__route_start_time__ = 0
         self.__route_end_time__ = 0
         self.__blocked_grid_cells__ = []
-        self.__route_deltas__ = []
+        self.__planned_waypoints__ = []
         self.__future_event_ids__ = {}
 
     def __repr__(self):
@@ -77,9 +77,19 @@ class Entity:
                     self.__grid__.queue.remove_event(related_event_id)
         self.__future_event_ids__ = {}
 
-    def __plan_route__(self, route_deltas:list[dict[str, float|int]], raise_on_future_collision:bool=False, is_result_of_collision:bool=False):
+    def __waypoint_check__(self, waypoints):
+        for waypoint in waypoints:
+            if len(waypoint) != 3:
+                raise Exception(f"Waypoint must be a tuple of (x_coord, y_coord, time_shift). Waypoint: {waypoint}")
+            if waypoint[0] < 0 or waypoint[1] < 0 or waypoint[2] < 0:
+                raise Exception(f"Waypoint coordinates and times must be positive. Waypoint: {waypoint}")
+            if waypoint[0] > self.__grid__.x_size or waypoint[1] > self.__grid__.y_size:
+                raise Exception(f"Waypoint coordinates must be within the grid. Waypoint: {waypoint}")
+        
+
+    def __plan_route__(self, waypoints:list[tuple[int|float,int|float,int|float]], raise_on_future_collision:bool=False):
         """
-        Sets the route for this entity given a set of route_deltas starting at the current time.
+        Sets the route for this entity given a set of waypoints starting at the current time.
 
         Determines the cells this entity will block and checks for collisions with other entities.
 
@@ -87,68 +97,81 @@ class Entity:
 
         Args:
 
-            route_deltas(list[dict[str, float|int]]): A list of route deltas to be added to the grid queue.
-                - A list of route deltas to be added to the grid queue.
-                    - [{'x_shift': x_delta, 'y_shift': y_delta, 'time_shift': time}]
-                    - EG; 
-                        ```
-                        route_deltas = [
-                            {'x_shift': -2, 'y_shift': 0, 'time_shift': 10},
-                            {'x_shift': 0, 'y_shift': 2, 'time_shift': 10}
-                        ]
-                        ```
-                        - Move left 2 units on the y grid over 10 seconds
-                        - Move up 2 units on the y grid over 10 seconds
-
-                    - Note: x_shift and y_shift are the distance moved in the x and y directions respectively. They can be positive or negative.
-                    - Note: time_shift is the time it takes to move the distance specified by x_shift and y_shift. It must be positive.
-
+            waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.
+                - A list of tuples where each tuple is (x_coord, y_coord, time_shift).
+                - EG; 
+                    ```
+                    waypoints = [
+                        (5, 3, 10),
+                        (3, 5, 10)
+                    ]
+                    ```
+                    - Move to (5, 3) over 10 seconds
+                    - Move to (3, 5) over 10 seconds
+                - Note: x_coord and y_coord are the coordinates of the waypoint. They must both be positive.
+                - Note: time_shift is the time it takes to move to the waypoint. It must be positive.
             raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
-            is_result_of_collision (bool): Whether this route end is the result of a collision.
         """
         # Raise an exception if the entity is already in a route
         if not self.is_available():
                 raise Exception(f"entity {self.name} is not available for a new route. Cannot set a new route until the current route is finished.")
         
+        # Check for valid waypoints
+        self.__waypoint_check__(waypoints)
+
         # Setup util attributes
         self.__clear_blocked_grid_cells__()
         self.__clear_future_events__()
 
         x_tmp = self.x_coord
         y_tmp = self.y_coord
-        t_tmp = self.__grid__.queue.time
-        collisions = {}
-        total_route_time_shift = sum([delta['time_shift'] for delta in route_deltas])
+        t_tmp = self.get_time()
 
-        # Add a final route delta for with no x or y motion and occuring until the end of the simulation.
+        collisions = {}
+        total_route_time_shift = sum([waypoint[2] for waypoint in waypoints])
+
+        # Add a final waypoint occuring until the end of the simulation.
         # This allows us to lock in the position of the entity at the end of the route and block the grid cells accordingly.
-        route_deltas.append({
-            'x_shift': 0,
-            'y_shift': 0,
-            'time_shift': self.__grid__.max_time - t_tmp - total_route_time_shift
-        })
+        if len(waypoints) > 0:
+            waypoints.append((
+                waypoints[-1][0], 
+                waypoints[-1][1], 
+                self.__grid__.max_time - t_tmp - total_route_time_shift
+            ))
+        else:
+            waypoints.append((
+                self.x_coord, 
+                self.y_coord, 
+                self.__grid__.max_time - t_tmp - total_route_time_shift
+            ))
         
         # Store the route deltas and start time for later use to determine the entity's position at a given time
-        self.__route_deltas__ = route_deltas
-        self.__route_start_time__ = self.__grid__.queue.time
+        self.__planned_waypoints__ = waypoints
+        self.__route_start_time__ = self.get_time()
         self.__route_end_time__ = min(self.__grid__.max_time, self.__route_start_time__ + total_route_time_shift)
         
         # For each route delta, calculate the blocks and collisions and add them to the grid
-        for delta in route_deltas:
-            assert delta['time_shift'] > 0, "Time shift must be positive"
+        for waypoint in waypoints:
             blocks = RectangleMoverUtils.moving_shape_overlap_intervals(
                 x_coord=x_tmp,
                 y_coord=y_tmp,
-                x_shift = delta['x_shift'],
-                y_shift = delta['y_shift'],
+                x_shift = waypoint[0] - x_tmp,
+                y_shift = waypoint[1] - y_tmp,
                 t_start=t_tmp,
-                t_end=t_tmp + delta['time_shift'],
+                t_end=t_tmp + waypoint[2],
                 shape=self.shape,
             )
-            x_tmp = x_tmp + delta['x_shift']
-            y_tmp = y_tmp + delta['y_shift']
-            t_tmp = t_tmp + delta['time_shift']
+            x_tmp = waypoint[0]
+            y_tmp = waypoint[1]
+            t_tmp = t_tmp + waypoint[2]
             for (x_cell, y_cell), (t_start, t_end) in blocks.items():
+                # Check if the cell is within the grid bounds
+                if x_cell < 0 or y_cell < 0 or x_cell >= self.__grid__.x_size or y_cell >= self.__grid__.y_size:
+                    # Note: Shape coords outside of the grid raise an exception, but this this would indicate that the shape may have an overlap over the edge.
+                    # Note: If there are exterior walls, no exception here is necessary
+                    # TODO: Determine if this should be an exception or just a warning
+                    # print(f"Warning: Entity {self.name} is outside of the grid bounds is outside of the grid bounds based on its shape.")
+                    continue
                 # Store a unique block_id to allow for removal of the block later
                 block_id = unique_id()
                 # Get the relevant cell in the grid
@@ -190,7 +213,7 @@ class Entity:
             self.__future_event_ids__[event_id] = other_event_id
             other_entity.__future_event_ids__[other_event_id] = event_id
 
-        if self.__route_end_time__ > self.__grid__.queue.time:
+        if self.__route_end_time__ > self.get_time():
             # Add a route_end event for this entity at the timing of the end of the route
             event_id = self.__grid__.add_event(
                 time=self.__route_end_time__,
@@ -219,25 +242,25 @@ class Entity:
         x_tmp = self.x_coord
         y_tmp = self.y_coord
         t_tmp = self.__route_start_time__
-        current_time = self.__grid__.queue.time
-        for delta in self.__route_deltas__:
+        current_time = self.get_time()
+        for waypoint in self.__planned_waypoints__:
             # End the route realization if the time is greater than the current time
             if t_tmp >= current_time:
+                if t_tmp > current_time:
+                    # TODO: Remove this
+                    print("This should never happen.")
                 break
-            # Get partial shifts if the time is less than the time shift
-            elif t_tmp + delta['time_shift'] > current_time:
-                x_shift = (current_time - t_tmp) * delta['x_shift'] / delta['time_shift']
-                y_shift = (current_time - t_tmp) * delta['y_shift'] / delta['time_shift']
-                time_shift = current_time - t_tmp
-            # Otherwise, use the full shifts
+            # Get partial location if interrupted by the current time
+            elif t_tmp + waypoint[2] > current_time:
+                pct_complete = (current_time - t_tmp) / waypoint[2]
+                x_tmp = (waypoint[0] - x_tmp) * pct_complete + x_tmp
+                y_tmp = (waypoint[1] - y_tmp) * pct_complete + y_tmp
+                t_tmp = current_time
+            # Otherwise, update the tmp location
             else:
-                x_shift = delta['x_shift']
-                y_shift = delta['y_shift']
-                time_shift = delta['time_shift']
-
-            x_tmp += x_shift
-            y_tmp += y_shift
-            t_tmp += time_shift
+                x_tmp = waypoint[0]
+                y_tmp = waypoint[1]
+                t_tmp = t_tmp + waypoint[2]
 
             self.history.append({
                 'x': x_tmp,
@@ -254,23 +277,28 @@ class Entity:
 
         # Stop the entity at their current location and update the grid for their expected future
         planned_route = self.__plan_route__(
-            route_deltas=[], 
-            raise_on_future_collision=raise_on_future_collision, 
-            is_result_of_collision=is_result_of_collision,
+            waypoints=[], 
+            raise_on_future_collision=raise_on_future_collision,
         )
         self.on_realize(is_result_of_collision=is_result_of_collision)
         return planned_route
+    
+    def get_time(self):
+        """
+        Returns the current time of the entity.
+        This method retrieves the current time from the grid queue.
+        """
+        return self.__grid__.queue.time
 
     def is_available(self):
         """
         Returns whether this entity is available for a new route.
         """
-        return self.__route_end_time__ <= self.__grid__.queue.time
+        return self.__route_end_time__ <= self.get_time()
 
     def add_route(
             self,
-            route_deltas:list[dict[str, float|int]]|None=None,
-            route_waypoints:list[dict[str, float|int]]|None=None,
+            waypoints:list[tuple[int|float,int|float,int|float]],
             time:int|float|None=None,
             raise_on_future_collision:bool=False,
         ):
@@ -279,57 +307,33 @@ class Entity:
 
         Args:
 
-            route_deltas (list[dict[str, float|int]]): A list of route deltas to be added to the grid queue.
-                - A list of route deltas to be added to the grid queue.
-                    - [{'x_shift': x_delta, 'y_shift': y_delta, 'time_shift': time}]
-                    - EG; 
-                        ```
-                        route_deltas = [
-                            {'x_shift': -2, 'y_shift': 0, 'time_shift': 10},
-                            {'x_shift': 0, 'y_shift': 2, 'time_shift': 10}
-                        ]
-                        ```
-                        - Move left 2 units on the y grid over 10 seconds
-                        - Move up 2 units on the y grid over 10 seconds
-
-                    - Note: x_shift and y_shift are the distance moved in the x and y directions respectively. They can be positive or negative.
-                    - Note: time_shift is the time it takes to move the distance specified by x_shift and y_shift. It must be positive.
-            route_waypoints (list[dict[str, float|int]]): A list of waypoints to be added to the grid queue.
-                - A list of waypoints to be added to the grid queue.
-                    - [{'x_coord': x_coord, 'y_coord': y_coord, 'time_shift': time}]
-                    - EG; 
-                        ```
-                        route_waypoints = [
-                            {'x_coord': 5, 'y_coord': 3, 'time_shift': 10},
-                            {'x_coord': 3, 'y_coord': 5, 'time_shift': 10}
-                        ]
-                        ```
-                        - Move to (5, 3) over 10 seconds
-                        - Move to (3, 5) over 10 seconds
-
-                    - Note: x_coord and y_coord are the coordinates of the waypoint.
-                    - Note: time_shift is the time it takes to move to the waypoint. It must be positive.
+            waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.
+                - A list of tuples where each tuple is (x_coord, y_coord, time_shift).
+                - EG;
+                    ```
+                    waypoints = [
+                        (5, 3, 10),
+                        (3, 5, 10)
+                    ]
+                    ```
+                    - Move to (5, 3) over 10 seconds
+                    - Move to (3, 5) over 10 seconds
+                - Note: x_coord and y_coord are the coordinates of the waypoint. They must both be positive.
+                - Note: time_shift is the time it takes to move to the waypoint. It must be positive.
             time (int|float|None): The time at which to start the route. If None, the current time is used.
             raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
         """
         if self.__grid__ is None:
             raise Exception("Entity is not assigned to a grid. Cannot add a route.")
         if time is None:
-            time = self.__grid__.queue.time
-        if route_waypoints is not None:
-            if route_deltas is None:
-                route_deltas = [{"x_shift": waypoint['x_coord'] - self.x_coord, "y_shift": waypoint['y_coord'] - self.y_coord, "time_shift": waypoint['time_shift']} for waypoint in route_waypoints]
-            else:
-                raise Exception("Cannot provide both route_deltas and route_waypoints. Please provide only one.")
-        elif route_deltas is None:
-            raise Exception("Either route_deltas or route_waypoints must be provided.") 
+            time = self.get_time()
         # Add the event to the queue
         self.__grid__.add_event(
             time=time,
             object=self,
             method="__plan_route__",
             kwargs={
-                'route_deltas': route_deltas,
+                'waypoints': waypoints,
                 'raise_on_future_collision': raise_on_future_collision,
             },
         )
@@ -346,14 +350,14 @@ class Entity:
         if self.__grid__ is None:
             raise Exception("Entity is not assigned to a grid. Cannot cancel a route.")
         if time is None:
-            time = self.__grid__.queue.time        
+            time = self.get_time()        
         # Add the event to the queue
         self.__grid__.add_event(
             time=time,
             object=self,
             method="__realize_route__",
             kwargs={
-                'route_deltas': [],
+                'waypoints': [],
                 'raise_on_future_collision': raise_on_future_collision,
             },
         )
@@ -382,7 +386,7 @@ class StaticEntity(Entity):
         """
         if is_result_of_collision:
             return 
-        self.__route_end_time__ = self.__grid__.queue.time
-        return self.__plan_route__(route_deltas=[], raise_on_future_collision=raise_on_future_collision)
+        self.__route_end_time__ = self.get_time()
+        return self.__plan_route__(waypoints=[], raise_on_future_collision=raise_on_future_collision)
 
 
