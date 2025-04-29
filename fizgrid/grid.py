@@ -18,7 +18,6 @@ class Grid:
         self.queue = TimeQueue()
         self.cells = [[{} for _ in range(x_size)] for _ in range(y_size)]
 
-
     def __repr__(self):
         return f"Grid({self.name} {self.x_size}x{self.y_size})"
     
@@ -31,31 +30,45 @@ class Grid:
         This method creates an entity with the specified parameters and adds it to the grid.
         """
         self.entities[entity.id] = entity
-        entity.assign_to_grid(self)
+        entity.__assign_to_grid__(self)
         return entity
-        
-
-    def get_open_entities(self):
+    
+    def add_event(self, time:int|float, object, method:str, kwargs:dict=dict()):
         """
-        Returns a list of all entities in the grid that are not currently in a task.
-        """
-        return [entity for entity in self.entities.values() if entity.__route_end_time__ <= self.queue.time]
+        Adds an event to the queue.
+        This method schedules an event for a specific object at a specific time.
 
-        
+        Args:
+
+            time (int|float): The time at which the event should occur.
+            object: The object on which the event will occur.
+            method (str): The name of the method to be called on the object.
+            kwargs (dict): The keyword arguments to be passed to the method.
+        """
+        return self.queue.add_event(
+            time = time, 
+            event = {
+                'object':object, 
+                'method':method, 
+                'kwargs':kwargs
+            }
+        )
+            
     def resolve_next_state(self):
         """
         Resolves the next state of the grid.
         This method processes the next event in the queue and updates the grid accordingly.
         """
-        events = self.queue.get_next_events()
-        for event in events:
-            if event['object'] is None:
+        event_items = self.queue.get_next_events()
+        for event_item in event_items:
+            event = event_item.get('event')
+            object = event.get('object')
+            method = event.get('method')
+            kwargs = event.get('kwargs')
+            if object is None:
                 continue
-            object = event['object']
-            getattr(object, event['method'])(**event['kwargs'])
-        return events
-    
-    
+            getattr(object, method)(**kwargs)
+        return event_items
 
     def add_exterior_walls(self):
         """

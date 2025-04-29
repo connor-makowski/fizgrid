@@ -47,8 +47,16 @@ amr2.add_route(
 next_state_events = True
 while next_state_events:
     next_state_events = grid.resolve_next_state()
-    print(next_state_events)
 
+# Check if the entities resulted in a collision 
+try:
+    success = amr1.history[-1]['y'] == 3.5 and amr1.history[-1]['c']==True
+except:
+    success = False
+if success:
+    print("test_04.py: passed")
+else:
+    print("test_04.py: failed")
 
 
 

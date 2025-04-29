@@ -9,15 +9,11 @@ class TimeQueue:
         self.next_id = 0
         self.started=False
 
-    def add_event(self, time:int|float, object, method:str, kwargs={}):
+    def add_event(self, time:int|float, event:dict=dict()):
         assert time >= self.time, "Time must be greater than or equal to current time"
         id = self.next_id
         self.next_id += 1
-        self.data[id] = {
-            'object': object,
-            'method': method,
-            'kwargs': kwargs
-        }
+        self.data[id] = event
         heapq.heappush(self.heap, (time, id))
         return id
 
@@ -46,22 +42,18 @@ class TimeQueue:
             return {
                 'id': id,
                 'time': time,
-                'object': event['object'],
-                'method': event['method'],
-                'kwargs': event['kwargs']
+                'event': event,
             }
         return {
             'id': None,
             'time': None,
-            'object': None,
-            'method': None,
-            'kwargs': None
+            'event': None,
         }
     
     def get_next_events(self):
         events = []
         event = self.get_next_event(peek=True)
-        if event['object'] != None:
+        if event['time'] != None:
             self.time = event['time']
             next_event = event
             while next_event['time'] == self.time:

@@ -1,5 +1,5 @@
 import type_enforced
-from fizgrid.utils import unique_id, RectangleMoverUtils, Thunk
+from fizgrid.utils import unique_id, RectangleMoverUtils
 
 @type_enforced.Enforcer
 class Entity:
@@ -29,7 +29,8 @@ class Entity:
         self.shape = shape
         self.x_coord = x_coord
         self.y_coord = y_coord
-        self.history = []
+        self.history = [{'x': x_coord, 'y': y_coord, 't': 0, 'c':False}]
+
 
         # Util Attributes
         self.__grid__=None
@@ -42,12 +43,12 @@ class Entity:
     def __repr__(self):
         return f"Entity({self.name})"
     
-    def assign_to_grid(self, grid):
+    def __assign_to_grid__(self, grid):
         """
         Assigns the grid to this entity.
         """
         self.__grid__ = grid
-        self.realize_route(is_result_of_collision=False, raise_on_future_collision=True)
+        self.__realize_route__(is_result_of_collision=False, raise_on_future_collision=True)
 
     def __clear_blocked_grid_cells__(self):
         """
@@ -76,13 +77,7 @@ class Entity:
                     self.__grid__.queue.remove_event(related_event_id)
         self.__future_event_ids__ = {}
 
-    def get_in_route(self):
-        """
-        Returns whether this entity is in a route.
-        """
-        return self.__route_end_time__ > self.__grid__.queue.time
-
-    def plan_route(self, route_deltas:list[dict[str, float|int]], raise_on_future_collision:bool=False):
+    def __plan_route__(self, route_deltas:list[dict[str, float|int]], raise_on_future_collision:bool=False, is_result_of_collision:bool=False):
         """
         Sets the route for this entity given a set of route_deltas starting at the current time.
 
@@ -109,10 +104,11 @@ class Entity:
                     - Note: time_shift is the time it takes to move the distance specified by x_shift and y_shift. It must be positive.
 
             raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
+            is_result_of_collision (bool): Whether this route end is the result of a collision.
         """
         # Raise an exception if the entity is already in a route
-        if self.get_in_route():
-                raise Exception(f"entity {self.name} is already in a route. Cannot set a new route until the current route is finished.")
+        if not self.is_available():
+                raise Exception(f"entity {self.name} is not available for a new route. Cannot set a new route until the current route is finished.")
         
         # Setup util attributes
         self.__clear_blocked_grid_cells__()
@@ -174,18 +170,18 @@ class Entity:
         # Create collision events for the first collision with each colliding entity
         for other_entity_id, collision_time in collisions.items():
             other_entity = self.__grid__.entities[other_entity_id]
-            event_id = self.__grid__.queue.add_event(
+            event_id = self.__grid__.add_event(
                 time=collision_time,
                 object=self,
-                method="realize_route",
+                method="__realize_route__",
                 kwargs = {
                     'is_result_of_collision': True,
                 },
             )
-            other_event_id = self.__grid__.queue.add_event(
+            other_event_id = self.__grid__.add_event(
                 time=collision_time,
                 object=other_entity,
-                method="realize_route",
+                method="__realize_route__",
                 kwargs = {
                     'is_result_of_collision': True,
                 }
@@ -196,10 +192,10 @@ class Entity:
 
         if self.__route_end_time__ > self.__grid__.queue.time:
             # Add a route_end event for this entity at the timing of the end of the route
-            event_id = self.__grid__.queue.add_event(
+            event_id = self.__grid__.add_event(
                 time=self.__route_end_time__,
                 object=self,
-                method="realize_route",
+                method="__realize_route__",
                 kwargs={
                     'is_result_of_collision': False,
                 },
@@ -209,15 +205,13 @@ class Entity:
             'has_collision': len(collisions) > 0,
         }
 
-    def realize_route(self, is_result_of_collision:bool=False, raise_on_future_collision:bool=False):
+    def __realize_route__(self, is_result_of_collision:bool=False, raise_on_future_collision:bool=False):
         """
         Realize the route for this entity at the current time.
 
         Args:
 
             is_result_of_collision (bool): Whether this route end is the result of a collision.
-                - If True, the route end is the result of a collision and the entity should not be allowed to start a new route until the collision is resolved.
-                - If False, the route end is not the result of a collision and the entity should be allowed to start a new route.
             raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
                 - Raises an exception if this event causes a future collision with another entity.
         """
@@ -245,11 +239,11 @@ class Entity:
             y_tmp += y_shift
             t_tmp += time_shift
 
-            # TODO: Need to figure out how to handle some edge cases here
             self.history.append({
-                'x_shift': x_shift,
-                'y_shift': y_shift,
-                'time_shift': time_shift,
+                'x': x_tmp,
+                'y': y_tmp,
+                't': t_tmp,
+                'c': is_result_of_collision,
             })
 
         # Set the entity's position to where they are at this point in time
@@ -259,16 +253,29 @@ class Entity:
         self.__route_end_time__ = current_time
 
         # Stop the entity at their current location and update the grid for their expected future
-        return self.plan_route(route_deltas=[], raise_on_future_collision=raise_on_future_collision)
+        planned_route = self.__plan_route__(
+            route_deltas=[], 
+            raise_on_future_collision=raise_on_future_collision, 
+            is_result_of_collision=is_result_of_collision,
+        )
+        self.on_realize(is_result_of_collision=is_result_of_collision)
+        return planned_route
+
+    def is_available(self):
+        """
+        Returns whether this entity is available for a new route.
+        """
+        return self.__route_end_time__ <= self.__grid__.queue.time
 
     def add_route(
             self,
-            route_deltas:list[dict[str, float|int]],
+            route_deltas:list[dict[str, float|int]]|None=None,
+            route_waypoints:list[dict[str, float|int]]|None=None,
             time:int|float|None=None,
             raise_on_future_collision:bool=False,
         ):
         """
-        Adds a route to the grid for this entity.
+        Adds a route to the grid for this entity. You can either provide a set of route deltas or a set of waypoints (which will be converted to route deltas).
 
         Args:
 
@@ -287,28 +294,81 @@ class Entity:
 
                     - Note: x_shift and y_shift are the distance moved in the x and y directions respectively. They can be positive or negative.
                     - Note: time_shift is the time it takes to move the distance specified by x_shift and y_shift. It must be positive.
+            route_waypoints (list[dict[str, float|int]]): A list of waypoints to be added to the grid queue.
+                - A list of waypoints to be added to the grid queue.
+                    - [{'x_coord': x_coord, 'y_coord': y_coord, 'time_shift': time}]
+                    - EG; 
+                        ```
+                        route_waypoints = [
+                            {'x_coord': 5, 'y_coord': 3, 'time_shift': 10},
+                            {'x_coord': 3, 'y_coord': 5, 'time_shift': 10}
+                        ]
+                        ```
+                        - Move to (5, 3) over 10 seconds
+                        - Move to (3, 5) over 10 seconds
 
+                    - Note: x_coord and y_coord are the coordinates of the waypoint.
+                    - Note: time_shift is the time it takes to move to the waypoint. It must be positive.
             time (int|float|None): The time at which to start the route. If None, the current time is used.
             raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
         """
         if self.__grid__ is None:
             raise Exception("Entity is not assigned to a grid. Cannot add a route.")
         if time is None:
-            time = self.__grid__.queue.time        
+            time = self.__grid__.queue.time
+        if route_waypoints is not None:
+            if route_deltas is None:
+                route_deltas = [{"x_shift": waypoint['x_coord'] - self.x_coord, "y_shift": waypoint['y_coord'] - self.y_coord, "time_shift": waypoint['time_shift']} for waypoint in route_waypoints]
+            else:
+                raise Exception("Cannot provide both route_deltas and route_waypoints. Please provide only one.")
+        elif route_deltas is None:
+            raise Exception("Either route_deltas or route_waypoints must be provided.") 
         # Add the event to the queue
-        self.__grid__.queue.add_event(
+        self.__grid__.add_event(
             time=time,
             object=self,
-            method="plan_route",
+            method="__plan_route__",
             kwargs={
                 'route_deltas': route_deltas,
                 'raise_on_future_collision': raise_on_future_collision,
             },
         )
 
+    def cancel_route(self, time:int|float|None=None, raise_on_future_collision:bool=False):
+        """
+        Cancels the route for this entity.
+
+        Args:
+
+            time (int|float|None): The time at which to cancel the route. If None, the current time is used.
+            raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
+        """
+        if self.__grid__ is None:
+            raise Exception("Entity is not assigned to a grid. Cannot cancel a route.")
+        if time is None:
+            time = self.__grid__.queue.time        
+        # Add the event to the queue
+        self.__grid__.add_event(
+            time=time,
+            object=self,
+            method="__realize_route__",
+            kwargs={
+                'route_deltas': [],
+                'raise_on_future_collision': raise_on_future_collision,
+            },
+        )
+
+    def on_realize(self, **kwargs):
+        """
+        Called when the route is realized to allow for custom behavior.
+        This method should be overridden by subclasses to implement custom behavior.
+        """
+        pass
+
+
     
 class StaticEntity(Entity):
-    def realize_route(self, is_result_of_collision:bool=False, raise_on_future_collision:bool=False):
+    def __realize_route__(self, is_result_of_collision:bool=False, raise_on_future_collision:bool=False):
         """
         Realize the route for this entity at the current time.
 
@@ -323,6 +383,6 @@ class StaticEntity(Entity):
         if is_result_of_collision:
             return 
         self.__route_end_time__ = self.__grid__.queue.time
-        return self.plan_route(route_deltas=[], raise_on_future_collision=raise_on_future_collision)
+        return self.__plan_route__(route_deltas=[], raise_on_future_collision=raise_on_future_collision)
 
 

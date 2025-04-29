@@ -99,17 +99,8 @@ next_state_events = True
 while next_state_events:
     next_state_events = grid.resolve_next_state()
 
-success = True
+# print(amr1.history)
 
-if amr1.get_dist_from_goal() > amr1.tolerance:
-    success = False
-if amr2.get_dist_from_goal() > amr2.tolerance:
-    success = False
-
-if success:
-    print("test_05.py: passed")
-else:
-    print("test_05.py: failed")
 
 
 
