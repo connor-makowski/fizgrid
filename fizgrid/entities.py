@@ -16,14 +16,14 @@ class Entity:
 
         Args:
 
-            id (int): The ID of the entity.
-            name (str): The name of the entity.
-            shape (list[list[int|float]]): The shape of the entity as a list of points centered around the shape origin.
+            - id (int): The ID of the entity.
+            - name (str): The name of the entity.
+            - shape (list[list[int|float]]): The shape of the entity as a list of points centered around the shape origin.
                 - The shape origin referenced here should be the center of the shape as the shape origin is used to determine how the shape is located on the grid.
                 - The shape is a list of points, where each point is a list of two coordinates [x, y] relative to the shape origin.
-            x_coord (int|float): The starting x-coordinate of the entity in the grid.
-            y_coord (int|float): The starting y-coordinate of the entity in the grid.
-            grid (Grid): The grid the entity is in.
+            - x_coord (int|float): The starting x-coordinate of the entity in the grid.
+            - y_coord (int|float): The starting y-coordinate of the entity in the grid.
+            - grid (Grid): The grid the entity is in.
         """
         self.id = unique_id()
         self.name = name
@@ -50,7 +50,7 @@ class Entity:
 
         Args:
 
-            grid (Grid): The grid to assign to this entity.
+            - grid (Grid): The grid to assign to this entity.
         """
         self.__grid__ = grid
         self.__realize_route__(
@@ -90,7 +90,7 @@ class Entity:
 
         Args:
 
-            waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.
+            - waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.
         """
         for waypoint in waypoints:
             if len(waypoint) != 3:
@@ -123,7 +123,7 @@ class Entity:
 
         Args:
 
-            waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.
+            - waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.
                 - A list of tuples where each tuple is (x_coord, y_coord, time_shift).
                 - EG;
                     ```
@@ -136,11 +136,11 @@ class Entity:
                     - Move to (3, 5) over 10 seconds
                 - Note: x_coord and y_coord are the coordinates of the waypoint. They must both be positive.
                 - Note: time_shift is the time it takes to move to the waypoint. It must be positive.
-            raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
+            - raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
 
         Returns:
 
-            dict: A dictionary containing the following keys:
+            - dict: A dictionary containing the following keys:
                 - has_collision (bool): Whether the route has a collision with another entity.
         """
         # Raise an exception if the entity is already in a route
@@ -294,13 +294,13 @@ class Entity:
 
         Args:
 
-            is_result_of_collision (bool): Whether this route end is the result of a collision.
-            raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
+            - is_result_of_collision (bool): Whether this route end is the result of a collision.
+            - raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
                 - Raises an exception if this event causes a future collision with another entity.
 
         Returns:
 
-            dict: A dictionary containing the following keys:
+            - dict: A dictionary containing the following keys:
                 - has_collision (bool): Whether the route has a collision with another entity.
         """
         # Determeine Realized Route and update the entity's position / history
@@ -374,7 +374,7 @@ class Entity:
 
         Args:
 
-            waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.
+            - waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.
                 - A list of tuples where each tuple is (x_coord, y_coord, time_shift).
                 - EG;
                     ```
@@ -387,8 +387,8 @@ class Entity:
                     - Move to (3, 5) over 10 seconds
                 - Note: x_coord and y_coord are the coordinates of the waypoint. They must both be positive.
                 - Note: time_shift is the time it takes to move to the waypoint. It must be positive.
-            time (int|float|None): The time at which to start the route. If None, the current time is used.
-            raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
+            - time (int|float|None): The time at which to start the route. If None, the current time is used.
+            - raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
         """
         if self.__grid__ is None:
             raise Exception(
@@ -417,8 +417,8 @@ class Entity:
 
         Args:
 
-            time (int|float|None): The time at which to cancel the route. If None, the current time is used.
-            raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
+            - time (int|float|None): The time at which to cancel the route. If None, the current time is used.
+            - raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
         """
         if self.__grid__ is None:
             raise Exception(
@@ -444,7 +444,7 @@ class Entity:
 
         Args:
 
-            kwargs: Additional arguments passed to the method. Subclasses may use this or add their own arguments.
+            - **kwargs: Additional arguments passed to the method. Subclasses may use this or add their own arguments.
         """
 
 
@@ -459,14 +459,14 @@ class StaticEntity(Entity):
 
         Args:
 
-            is_result_of_collision (bool): Whether this route end is the result of a collision.
+            - is_result_of_collision (bool): Whether this route end is the result of a collision.
                 - If True, the route end is the result of a collision and the entity should not be allowed to start a new route until the collision is resolved.
                 - If False, the route end is not the result of a collision and the entity should be allowed to start a new route.
-            raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
+            - raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
                 - Raises an exception if this event causes a future collision with another entity.
 
         Returns:
-            dict: A dictionary containing the following keys:
+            - dict: A dictionary containing the following keys:
                 - has_collision (bool): Whether the route has a collision with another entity.
         """
         # Since this is a static entity, we don't need to do anything here.

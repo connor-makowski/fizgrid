@@ -13,7 +13,6 @@ class TimeQueue:
         self.data = {}
         self.time = 0
         self.next_id = 0
-        self.started = False
 
     def add_event(self, time: int | float, event: dict = dict()) -> int:
         """
@@ -21,13 +20,14 @@ class TimeQueue:
 
         Args:
 
-            time (int|float): The time at which the event should occur.
-            event (dict): The event to be added to the queue.
+            - time (int|float): The time at which the event should occur.
+            - event (dict): The event to be added to the queue.
                 - Default: {}
                 - This have any dictionary strucutre, depending on your queue needs
 
         Returns:
-            int: The ID of the added event.
+
+            - int: The ID of the added event.
                 - This ID is used to reference the event in the queue.
         """
         assert (
@@ -44,10 +44,11 @@ class TimeQueue:
         Removes an event from the queue using its ID.
 
         Args:
-            id (int): The ID of the event to be removed.
+            
+            - id (int): The ID of the event to be removed.
                 - This ID is used to reference the event in the queue.
         Returns:
-            dict: The removed event.
+            - dict: The removed event.
                 - If the event is not found, None is returned.
         """
         return self.data.pop(id, None)
@@ -58,7 +59,8 @@ class TimeQueue:
         This method is used to get the next event in the queue and remove it from the heap.
 
         Returns:
-            dict: The removed event.
+
+            - dict: The removed event.
                 - If the queue is empty, None is returned.
         """
         self.remove_event(heapq.heappop(self.heap)[1])
@@ -69,14 +71,15 @@ class TimeQueue:
         This method is used to get the next event in the queue
 
         Args:
-            peek (bool): If True, the event is not removed from the queue.
+
+            - peek (bool): If True, the event is not removed from the queue.
                 - Default: False
                 - If False, the event is removed from the queue.
         Returns:
-            dict: The next event in the queue.
+            
+            - dict: The next event in the queue.
                 - If the queue is empty, None is returned.
         """
-        self.started = True
         while self.heap:
             if peek:
                 time, id = self.heap[0]
@@ -109,7 +112,8 @@ class TimeQueue:
         It removes these events from the queue.
 
         Returns:
-            list: A list of events that occur at the same time as the next event.
+
+            - list: A list of events that occur at the same time as the next event.
                 - If the queue is empty, an empty list is returned.
         """
         events = []

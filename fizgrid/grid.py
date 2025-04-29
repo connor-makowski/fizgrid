@@ -18,11 +18,12 @@ class Grid:
         Initializes a grid with the specified parameters.
 
         Args:
-            name (str): The name of the grid.
-            x_size (int): The width of the grid.
-            y_size (int): The height of the grid.
-            max_time (int): The maximum time for the grid simulation.
-            add_exterior_walls (bool): Whether to add exterior walls to the grid.
+
+            - name (str): The name of the grid.
+            - x_size (int): The width of the grid.
+            - y_size (int): The height of the grid.
+            - max_time (int): The maximum time for the grid simulation.
+            - add_exterior_walls (bool): Whether to add exterior walls to the grid.
               - Default: True
         """
         # Passed Attributes
@@ -52,7 +53,7 @@ class Grid:
 
         Args:
 
-            entity (Entity): The entity to be added to the grid.
+            - entity (Entity): The entity to be added to the grid.
                 - Must be an Entity or a subclass of Entity.
         """
         self.entities[entity.id] = entity
@@ -69,10 +70,10 @@ class Grid:
 
         Args:
 
-            time (int|float): The time at which the event should occur.
-            object: The object on which the event will occur.
-            method (str): The name of the method to be called on the object.
-            kwargs (dict): The keyword arguments to be passed to the method.
+            - time (int|float): The time at which the event should occur.
+            - object: The object on which the event will occur.
+            - method (str): The name of the method to be called on the object.
+            - kwargs (dict): The keyword arguments to be passed to the method.
         """
         return self.queue.add_event(
             time=time,

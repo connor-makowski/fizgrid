@@ -34,7 +34,7 @@ class Thunk(type_enforced.utils.Partial):
         return bind
 
 
-@type_enforced.Enforcer
+@type_enforced.Enforcer(enabled=True)
 class Shape:
     @staticmethod
     def circle(radius: int, points: int = 6, round_to: int = 2) -> list:
@@ -77,15 +77,17 @@ class RectangleMoverUtils:
         Calculates the time intervals during which a moving 1D line segment overlaps with each unit-length
         integer-aligned range along the x-axis.
 
-        Parameters:
-            seg_start (int|float): Initial position of the left end of the line segment.
-            seg_end (int|float): Initial position of the right end of the line segment.
-            t_start (int|float): Start time of the motion.
-            t_end (int|float): End time of the motion.
-            shift (int|float): Total distance the line segment moves along the x-axis during [t_start, t_end].
+        Args:
+
+            - seg_start (int|float): Initial position of the left end of the line segment.
+            - seg_end (int|float): Initial position of the right end of the line segment.
+            - t_start (int|float): Start time of the motion.
+            - t_end (int|float): End time of the motion.
+            - shift (int|float): Total distance the line segment moves along the x-axis during [t_start, t_end].
 
         Returns:
-            dict[int, tuplie(int|float,int|float)]: A dictionary mapping each integer `i` to the time interval [t_in, t_out]
+
+            - dict[int, tuplie(int|float,int|float)]: A dictionary mapping each integer `i` to the time interval [t_in, t_out]
                                     during which any part of the line overlaps the range [i, i+1).
                                     Only includes ranges with non-zero overlap duration.
         """
@@ -129,19 +131,23 @@ class RectangleMoverUtils:
         """
         Calculates the time intervals during which a moving rectangle overlaps with each unit-length
         integer-aligned range along the x and y axes.
-        Parameters:
-            x_start (float|int): Initial position of the left end of the rectangle along the x-axis.
-            x_end (float|int): Initial position of the right end of the rectangle along the x-axis.
-            y_start (float|int): Initial position of the bottom end of the rectangle along the y-axis.
-            y_end (float|int): Initial position of the top end of the rectangle along the y-axis.
-            x_shift (float|int): Total distance the rectangle moves along the x-axis during [t_start, t_end].
-            y_shift (float|int): Total distance the rectangle moves along the y-axis during [t_start, t_end].
-            t_start (float|int): Start time of the motion.
-            t_end (float|int): End time of the motion.
+
+        Args:
+
+            - x_start (float|int): Initial position of the left end of the rectangle along the x-axis.
+            - x_end (float|int): Initial position of the right end of the rectangle along the x-axis.
+            - y_start (float|int): Initial position of the bottom end of the rectangle along the y-axis.
+            - y_end (float|int): Initial position of the top end of the rectangle along the y-axis.
+            - x_shift (float|int): Total distance the rectangle moves along the x-axis during [t_start, t_end].
+            - y_shift (float|int): Total distance the rectangle moves along the y-axis during [t_start, t_end].
+            - t_start (float|int): Start time of the motion.
+            - t_end (float|int): End time of the motion.
+
         Returns:
-            dict[tuple(int,int),tuple(int|float,int|float)]: A dictionary mapping each integer (i,j) to the time interval [t_in, t_out]
-                                    during which any part of the rectangle overlaps the range [i, i+1) x [j, j+1).
-                                    Only includes ranges with non-zero overlap duration.
+
+            - dict[tuple(int,int),tuple(int|float,int|float)]: A dictionary mapping each integer (i,j) to the time interval [t_in, t_out]
+                during which any part of the rectangle overlaps the range [i, i+1) x [j, j+1).
+                Only includes ranges with non-zero overlap duration.
 
         """
         x_intervals = RectangleMoverUtils.moving_segment_overlap_intervals(
@@ -189,17 +195,19 @@ class RectangleMoverUtils:
 
         Note: This converts each shape into a full bounding box rectangle and then uses the rectangle overlap function to calculate the intervals.
 
-        Parameters:
-            x_coord (float|int): Initial x-coordinate of the shape's center.
-            y_coord (float|int): Initial y-coordinate of the shape's center.
-            x_shift (float|int): Total distance the shape moves along the x-axis during [t_start, t_end].
-            y_shift (float|int): Total distance the shape moves along the y-axis during [t_start, t_end].
-            t_start (float|int): Start time of the motion.
-            t_end (float|int): End time of the motion.
-            shape (list[list[float|int]]): List of coordinates representing the shape's vertices relative to its center.
+        Args:
+
+            - x_coord (float|int): Initial x-coordinate of the shape's center.
+            - y_coord (float|int): Initial y-coordinate of the shape's center.
+            - x_shift (float|int): Total distance the shape moves along the x-axis during [t_start, t_end].
+            - y_shift (float|int): Total distance the shape moves along the y-axis during [t_start, t_end].
+            - t_start (float|int): Start time of the motion.
+            - t_end (float|int): End time of the motion.
+            - shape (list[list[float|int]]): List of coordinates representing the shape's vertices relative to its center.
 
         Returns:
-            dict[tuple(int,int),tuple(int|float,int|float)]: A dictionary mapping each integer (i,j) to the time interval [t_in, t_out]
+
+            - dict[tuple(int,int),tuple(int|float,int|float)]: A dictionary mapping each integer (i,j) to the time interval [t_in, t_out]
                                     during which any part of the shape overlaps the range [i, i+1) x [j, j+1).
                                     Only includes ranges with non-zero overlap duration.
         """
