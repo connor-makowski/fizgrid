@@ -1,7 +1,7 @@
 import type_enforced
 from fizgrid.utils import unique_id, RectangleMoverUtils
 
-@type_enforced.Enforcer
+@type_enforced.Enforcer(enabled=True)
 class Entity:
     def __init__(
             self,
@@ -43,14 +43,19 @@ class Entity:
     def __repr__(self):
         return f"Entity({self.name})"
     
-    def __assign_to_grid__(self, grid):
+    def __assign_to_grid__(self, grid) -> None:
         """
         Assigns the grid to this entity.
+        Creates a reference in both the grid and the entity to allow easy access from both directions.
+
+        Args:
+
+            grid (Grid): The grid to assign to this entity.
         """
         self.__grid__ = grid
         self.__realize_route__(is_result_of_collision=False, raise_on_future_collision=True)
 
-    def __clear_blocked_grid_cells__(self):
+    def __clear_blocked_grid_cells__(self) -> None:
         """
         Clears the blocked grid cells for this entity.
         """
@@ -59,25 +64,29 @@ class Entity:
             cell.pop(block_id, None)
         self.__blocked_grid_cells__ = []
 
-    def __clear_future_events__(self):
+    def __clear_future_events__(self) -> None:
         """
         Clears the future events for this entity.
         """
         for this_event_id, related_event_id in self.__future_event_ids__.items():
-            # If this event is a standard route_end event, it will not have an related event, so it will be removed with the remove_event call
-            # remove_event might be called on an event that has already been taken out of the queue (processed or removed). This is ok.
-            if related_event_id == None:
-                self.__grid__.queue.remove_event(this_event_id)
-            # If this event is a collision event, it will have an associated event
-            else:
-                event_obj = self.__grid__.queue.remove_event(this_event_id)
-                # If the event_obj is None, then this event has already been processed or removed
-                # If it returns an event_obj, then it has not yet been processed and the related event should be removed as well
-                if event_obj != None:
+            # Remove the event from the queue
+            event_obj = self.__grid__.queue.remove_event(this_event_id)
+            # If this event is a standard route_end event, it will not have an related event, so we can be done here
+            # If the event_obj is None, it has already been processed or removed so we can skip any further processing
+            # If this event is a collision event, it will have an associated event and should be removed too
+            if related_event_id != None and event_obj != None:
                     self.__grid__.queue.remove_event(related_event_id)
         self.__future_event_ids__ = {}
 
-    def __waypoint_check__(self, waypoints):
+    def __waypoint_check__(self, waypoints) -> None:
+        """
+        Checks the waypoints for validity.
+        Raises an exception if the waypoints are not valid.
+
+        Args:
+
+            waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.
+        """
         for waypoint in waypoints:
             if len(waypoint) != 3:
                 raise Exception(f"Waypoint must be a tuple of (x_coord, y_coord, time_shift). Waypoint: {waypoint}")
@@ -87,13 +96,13 @@ class Entity:
                 raise Exception(f"Waypoint coordinates must be within the grid. Waypoint: {waypoint}")
         
 
-    def __plan_route__(self, waypoints:list[tuple[int|float,int|float,int|float]], raise_on_future_collision:bool=False):
+    def __plan_route__(self, waypoints:list[tuple[int|float,int|float,int|float]], raise_on_future_collision:bool=False) -> dict:
         """
         Sets the route for this entity given a set of waypoints starting at the current time.
-
-        Determines the cells this entity will block and checks for collisions with other entities.
-
+        Determines the cells this entity will block and at which times it will block them.
+        Checks for collisions with other entities.
         Adds events to the queue for the first collision with each colliding entity.
+          - Note: Not all events will occur, and future events will be cleared when the first event occurs.
 
         Args:
 
@@ -111,6 +120,11 @@ class Entity:
                 - Note: x_coord and y_coord are the coordinates of the waypoint. They must both be positive.
                 - Note: time_shift is the time it takes to move to the waypoint. It must be positive.
             raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
+
+        Returns:
+
+            dict: A dictionary containing the following keys:
+                - has_collision (bool): Whether the route has a collision with another entity.
         """
         # Raise an exception if the entity is already in a route
         if not self.is_available():
@@ -228,7 +242,7 @@ class Entity:
             'has_collision': len(collisions) > 0,
         }
 
-    def __realize_route__(self, is_result_of_collision:bool=False, raise_on_future_collision:bool=False):
+    def __realize_route__(self, is_result_of_collision:bool=False, raise_on_future_collision:bool=False) -> dict:
         """
         Realize the route for this entity at the current time.
 
@@ -237,6 +251,11 @@ class Entity:
             is_result_of_collision (bool): Whether this route end is the result of a collision.
             raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
                 - Raises an exception if this event causes a future collision with another entity.
+
+        Returns:
+
+            dict: A dictionary containing the following keys:
+                - has_collision (bool): Whether the route has a collision with another entity.
         """
         # Determeine Realized Route and update the entity's position / history
         x_tmp = self.x_coord
@@ -283,9 +302,9 @@ class Entity:
         self.on_realize(is_result_of_collision=is_result_of_collision)
         return planned_route
     
-    def get_time(self):
+    def get_time(self) -> int|float:
         """
-        Returns the current time of the entity.
+        Returns the current time of the grid queue.
         This method retrieves the current time from the grid queue.
         """
         return self.__grid__.queue.time
@@ -301,7 +320,7 @@ class Entity:
             waypoints:list[tuple[int|float,int|float,int|float]],
             time:int|float|None=None,
             raise_on_future_collision:bool=False,
-        ):
+        ) -> None:
         """
         Adds a route to the grid for this entity. You can either provide a set of route deltas or a set of waypoints (which will be converted to route deltas).
 
@@ -338,7 +357,7 @@ class Entity:
             },
         )
 
-    def cancel_route(self, time:int|float|None=None, raise_on_future_collision:bool=False):
+    def cancel_route(self, time:int|float|None=None, raise_on_future_collision:bool=False) -> None:
         """
         Cancels the route for this entity.
 
@@ -366,13 +385,17 @@ class Entity:
         """
         Called when the route is realized to allow for custom behavior.
         This method should be overridden by subclasses to implement custom behavior.
+
+        Args:
+
+            kwargs: Additional arguments passed to the method. Subclasses may use this or add their own arguments.
         """
         pass
 
 
     
 class StaticEntity(Entity):
-    def __realize_route__(self, is_result_of_collision:bool=False, raise_on_future_collision:bool=False):
+    def __realize_route__(self, is_result_of_collision:bool=False, raise_on_future_collision:bool=False) -> dict:
         """
         Realize the route for this entity at the current time.
 
@@ -383,10 +406,17 @@ class StaticEntity(Entity):
                 - If False, the route end is not the result of a collision and the entity should be allowed to start a new route.
             raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
                 - Raises an exception if this event causes a future collision with another entity.
+
+        Returns:
+            dict: A dictionary containing the following keys:
+                - has_collision (bool): Whether the route has a collision with another entity.
         """
+        # Since this is a static entity, we don't need to do anything here.
         if is_result_of_collision:
             return 
+        # Since this is a static entity, the route end time is the current time when the entity is created (should normally be 0)
         self.__route_end_time__ = self.get_time()
+        # Since this object does not move, we don't need to plan a route and will never interrupt it. 
         return self.__plan_route__(waypoints=[], raise_on_future_collision=raise_on_future_collision)
 
 

@@ -1,15 +1,34 @@
 import type_enforced, heapq
 
-@type_enforced.Enforcer
+@type_enforced.Enforcer(enabled=True)
 class TimeQueue:
     def __init__(self):
+        """
+        Initializes a TimeQueue instance.
+        This class is used to manage a queue of events that occur at specific times.
+        It uses a min-heap to efficiently manage the events based on their scheduled times.
+        """
         self.heap = []
         self.data = {}
         self.time = 0
         self.next_id = 0
         self.started=False
 
-    def add_event(self, time:int|float, event:dict=dict()):
+    def add_event(self, time:int|float, event:dict=dict()) -> int:
+        """
+        Adds an event to the queue.
+        
+        Args:
+
+            time (int|float): The time at which the event should occur.
+            event (dict): The event to be added to the queue.
+                - Default: {}
+                - This have any dictionary strucutre, depending on your queue needs
+
+        Returns:
+            int: The ID of the added event.
+                - This ID is used to reference the event in the queue.
+        """
         assert time >= self.time, "Time must be greater than or equal to current time"
         id = self.next_id
         self.next_id += 1
@@ -17,13 +36,43 @@ class TimeQueue:
         heapq.heappush(self.heap, (time, id))
         return id
 
-    def remove_event(self, id:int):
+    def remove_event(self, id:int) -> dict|None:
+        """
+        Removes an event from the queue using its ID.
+
+        Args:
+            id (int): The ID of the event to be removed.
+                - This ID is used to reference the event in the queue.
+        Returns:
+            dict: The removed event.
+                - If the event is not found, None is returned.
+        """
         return self.data.pop(id,None)
     
-    def remove_next_event(self):
+    def remove_next_event(self) -> dict|None:
+        """
+        Removes the next event from the queue.
+        This method is used to get the next event in the queue and remove it from the heap.
+
+        Returns:
+            dict: The removed event.
+                - If the queue is empty, None is returned.
+        """
         self.remove_event(heapq.heappop(self.heap)[1])
 
-    def get_next_event(self, peek=False):
+    def get_next_event(self, peek:bool=False):
+        """
+        Retrieves the next event from the queue without removing it.
+        This method is used to get the next event in the queue
+
+        Args:
+            peek (bool): If True, the event is not removed from the queue.
+                - Default: False
+                - If False, the event is removed from the queue.
+        Returns:
+            dict: The next event in the queue.
+                - If the queue is empty, None is returned.
+        """
         self.started=True
         while self.heap:
             if peek:
@@ -50,7 +99,16 @@ class TimeQueue:
             'event': None,
         }
     
-    def get_next_events(self):
+    def get_next_events(self) -> list[dict]:
+        """
+        Retrieves all events that occur at the same time as the next event.
+        This method is used to get all events that occur at the same time as the next event in the queue.
+        It removes these events from the queue.
+
+        Returns:
+            list: A list of events that occur at the same time as the next event.
+                - If the queue is empty, an empty list is returned.
+        """
         events = []
         event = self.get_next_event(peek=True)
         if event['time'] != None:

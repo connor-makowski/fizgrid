@@ -48,6 +48,7 @@ class Order:
         )
 
     def set_status(self, time, status):
+        self.time = time
         self.status = status
         self.history.append({'time': time, 'status': status})
 

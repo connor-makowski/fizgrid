@@ -3,9 +3,20 @@ from type_enforced.utils import WithSubclasses
 from fizgrid.entities import Entity, StaticEntity
 from fizgrid.queue import TimeQueue
 
-@type_enforced.Enforcer
+@type_enforced.Enforcer(enabled=True)
 class Grid:
     def __init__(self, name:str, x_size:int, y_size:int, max_time:int=1000, add_exterior_walls:bool=True):
+        """
+        Initializes a grid with the specified parameters.
+
+        Args:
+            name (str): The name of the grid.
+            x_size (int): The width of the grid.
+            y_size (int): The height of the grid.
+            max_time (int): The maximum time for the grid simulation.
+            add_exterior_walls (bool): Whether to add exterior walls to the grid.
+              - Default: True
+        """
         # Passed Attributes
         self.name = name
         self.x_size = x_size
@@ -26,11 +37,15 @@ class Grid:
     
     def add_entity(
         self,
-        entity,
+        entity: WithSubclasses(Entity),
     ):
         """
         Adds an entity to the grid.
-        This method creates an entity with the specified parameters and adds it to the grid.
+
+        Args:
+
+            entity (Entity): The entity to be added to the grid.
+                - Must be an Entity or a subclass of Entity.
         """
         self.entities[entity.id] = entity
         entity.__assign_to_grid__(self)
@@ -40,6 +55,7 @@ class Grid:
         """
         Adds an event to the queue.
         This method schedules an event for a specific object at a specific time.
+        Essentially, it allows you to schedule a method call on an object at a specific time.
 
         Args:
 
