@@ -1,5 +1,4 @@
 import math, type_enforced, uuid
-from functools import update_wrapper
 
 
 def unique_id():
@@ -7,6 +6,7 @@ def unique_id():
     Generates a unique identifier.
     """
     return str(uuid.uuid4())
+
 
 class Thunk(type_enforced.utils.Partial):
     def __call__(self, *args, **kwargs):
@@ -23,45 +23,58 @@ class Thunk(type_enforced.utils.Partial):
             *new_args,
             **new_kwargs,
         )
-    
+
     def __get__(self, instance, owner):
         def bind(*args, **kwargs):
             if instance is not None and self.__arity__ == self.__fnArity__:
                 return self.__call__(instance, *args, **kwargs)
             else:
                 return self.__call__(*args, **kwargs)
+
         return bind
+
 
 @type_enforced.Enforcer
 class Shape:
     @staticmethod
-    def circle(radius:int, points:int=6, round_to:int=2) -> list:
+    def circle(radius: int, points: int = 6, round_to: int = 2) -> list:
         """
         Returns a list of addative coordinates that form a circle around a given point.
         """
-        return [[round(radius * math.cos(2 * math.pi / points * i),round_to), round(radius * math.sin(2 * math.pi / points * i),round_to)] for i in range(points)]
+        return [
+            [
+                round(radius * math.cos(2 * math.pi / points * i), round_to),
+                round(radius * math.sin(2 * math.pi / points * i), round_to),
+            ]
+            for i in range(points)
+        ]
 
     @staticmethod
-    def rectangle(x_len:float|int, y_len:float|int, round_to:int=2) -> list:
+    def rectangle(
+        x_len: float | int, y_len: float | int, round_to: int = 2
+    ) -> list:
         """
         Returns a list of addative coordinates that form a rectangle around a given point.
         """
-        return [[round(x_len/2, round_to), round(y_len/2, round_to)],
-                [round(-x_len/2, round_to), round(y_len/2, round_to)],
-                [round(-x_len/2, round_to), round(-y_len/2, round_to)],
-                [round(x_len/2, round_to), round(-y_len/2, round_to)]]
-    
+        return [
+            [round(x_len / 2, round_to), round(y_len / 2, round_to)],
+            [round(-x_len / 2, round_to), round(y_len / 2, round_to)],
+            [round(-x_len / 2, round_to), round(-y_len / 2, round_to)],
+            [round(x_len / 2, round_to), round(-y_len / 2, round_to)],
+        ]
+
+
 class RectangleMoverUtils:
     @staticmethod
     def moving_segment_overlap_intervals(
-            seg_start: int | float,
-            seg_end: int | float,
-            t_start: int | float,
-            t_end: int | float,
-            shift: int | float,
+        seg_start: int | float,
+        seg_end: int | float,
+        t_start: int | float,
+        t_end: int | float,
+        shift: int | float,
     ):
         """
-        Calculates the time intervals during which a moving 1D line segment overlaps with each unit-length 
+        Calculates the time intervals during which a moving 1D line segment overlaps with each unit-length
         integer-aligned range along the x-axis.
 
         Parameters:
@@ -87,7 +100,7 @@ class RectangleMoverUtils:
         global_max = max(seg_end, final_end)
 
         for i in range(int(global_min) - 1, int(global_max) + 2):
-            if velocity==0:
+            if velocity == 0:
                 if seg_end > i and seg_start < i + 1 and t_start < t_end:
                     result[i] = (t_start, t_end)
                 continue
@@ -104,14 +117,14 @@ class RectangleMoverUtils:
 
     @staticmethod
     def moving_rectangle_overlap_intervals(
-            x_start: float|int,
-            x_end: float|int,
-            y_start: float|int,
-            y_end: float|int,
-            x_shift: float|int,
-            y_shift: float|int,
-            t_start: float|int,
-            t_end: float|int,
+        x_start: float | int,
+        x_end: float | int,
+        y_start: float | int,
+        y_end: float | int,
+        x_shift: float | int,
+        y_shift: float | int,
+        t_start: float | int,
+        t_end: float | int,
     ):
         """
         Calculates the time intervals during which a moving rectangle overlaps with each unit-length
@@ -149,23 +162,26 @@ class RectangleMoverUtils:
         for x_key, x_interval in x_intervals.items():
             for y_key, y_interval in y_intervals.items():
                 # Only add intervals with time overlap
-                if x_interval[1] > y_interval[0] and y_interval[1] > x_interval[0]:
+                if (
+                    x_interval[1] > y_interval[0]
+                    and y_interval[1] > x_interval[0]
+                ):
                     result[(x_key, y_key)] = (
                         max(x_interval[0], y_interval[0]),
                         min(x_interval[1], y_interval[1]),
                     )
 
         return result
-    
+
     @staticmethod
     def moving_shape_overlap_intervals(
-        x_coord: float|int,
-        y_coord: float|int,
-        x_shift: float|int,
-        y_shift: float|int,
-        t_start: float|int,
-        t_end: float|int,
-        shape: list[list[float|int]],
+        x_coord: float | int,
+        y_coord: float | int,
+        x_shift: float | int,
+        y_shift: float | int,
+        t_start: float | int,
+        t_end: float | int,
+        shape: list[list[float | int]],
     ):
         """
         Calculates the time intervals during which a moving shape overlaps with each unit-length
@@ -187,12 +203,12 @@ class RectangleMoverUtils:
                                     during which any part of the shape overlaps the range [i, i+1) x [j, j+1).
                                     Only includes ranges with non-zero overlap duration.
         """
-        # Return the overlap intervals for a rectangle 
+        # Return the overlap intervals for a rectangle
         return RectangleMoverUtils.moving_rectangle_overlap_intervals(
-            x_start = min([x_coord+coord[0] for coord in shape]),
-            x_end= max([x_coord+coord[0] for coord in shape]),
-            y_start= min([y_coord+coord[1] for coord in shape]),
-            y_end = max([y_coord+coord[1] for coord in shape]),
+            x_start=min([x_coord + coord[0] for coord in shape]),
+            x_end=max([x_coord + coord[0] for coord in shape]),
+            y_start=min([y_coord + coord[1] for coord in shape]),
+            y_end=max([y_coord + coord[1] for coord in shape]),
             x_shift=x_shift,
             y_shift=y_shift,
             t_start=t_start,

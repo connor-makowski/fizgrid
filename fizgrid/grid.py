@@ -3,9 +3,17 @@ from type_enforced.utils import WithSubclasses
 from fizgrid.entities import Entity, StaticEntity
 from fizgrid.queue import TimeQueue
 
+
 @type_enforced.Enforcer(enabled=True)
 class Grid:
-    def __init__(self, name:str, x_size:int, y_size:int, max_time:int=1000, add_exterior_walls:bool=True):
+    def __init__(
+        self,
+        name: str,
+        x_size: int,
+        y_size: int,
+        max_time: int = 1000,
+        add_exterior_walls: bool = True,
+    ):
         """
         Initializes a grid with the specified parameters.
 
@@ -34,7 +42,7 @@ class Grid:
 
     def __repr__(self):
         return f"Grid({self.name} {self.x_size}x{self.y_size})"
-    
+
     def add_entity(
         self,
         entity: WithSubclasses(Entity),
@@ -50,8 +58,10 @@ class Grid:
         self.entities[entity.id] = entity
         entity.__assign_to_grid__(self)
         return entity
-    
-    def add_event(self, time:int|float, object, method:str, kwargs:dict=dict()):
+
+    def add_event(
+        self, time: int | float, object, method: str, kwargs: dict = dict()
+    ):
         """
         Adds an event to the queue.
         This method schedules an event for a specific object at a specific time.
@@ -65,21 +75,17 @@ class Grid:
             kwargs (dict): The keyword arguments to be passed to the method.
         """
         return self.queue.add_event(
-            time = time, 
-            event = {
-                'object':object, 
-                'method':method, 
-                'kwargs':kwargs
-            }
+            time=time,
+            event={"object": object, "method": method, "kwargs": kwargs},
         )
-    
+
     def get_time(self):
         """
         Returns the current time of the grid.
         This method retrieves the current time from the queue.
         """
         return self.queue.time
-            
+
     def resolve_next_state(self):
         """
         Resolves the next state of the grid.
@@ -87,10 +93,10 @@ class Grid:
         """
         event_items = self.queue.get_next_events()
         for event_item in event_items:
-            event = event_item.get('event')
-            object = event.get('object')
-            method = event.get('method')
-            kwargs = event.get('kwargs')
+            event = event_item.get("event")
+            object = event.get("object")
+            method = event.get("method")
+            kwargs = event.get("kwargs")
             if object is None:
                 continue
             getattr(object, method)(**kwargs)
@@ -101,30 +107,48 @@ class Grid:
         Adds exterior walls to the grid.
         This method creates walls around the grid to prevent entities from moving outside the grid.
         """
-        self.add_entity(StaticEntity(
-            name="Left Wall",
-            shape=[[0, 0], [0, self.y_size], [1,self.y_size], [1,0]],
-            x_coord=0,
-            y_coord=0,
-        ))
+        self.add_entity(
+            StaticEntity(
+                name="Left Wall",
+                shape=[[0, 0], [0, self.y_size], [1, self.y_size], [1, 0]],
+                x_coord=0,
+                y_coord=0,
+            )
+        )
 
-        self.add_entity(StaticEntity(
-            name="Right Wall",
-            shape=[[0, 0], [0, self.y_size], [-1,self.y_size], [-1,0]],
-            x_coord=self.x_size,
-            y_coord=0,
-        ))
+        self.add_entity(
+            StaticEntity(
+                name="Right Wall",
+                shape=[[0, 0], [0, self.y_size], [-1, self.y_size], [-1, 0]],
+                x_coord=self.x_size,
+                y_coord=0,
+            )
+        )
 
-        self.add_entity(StaticEntity(
-            name="Top Wall",
-            shape=[[0, 0], [self.x_size-2, 0], [self.x_size-2, -1], [0, -1]],
-            x_coord=1,
-            y_coord=self.y_size,
-        ))
+        self.add_entity(
+            StaticEntity(
+                name="Top Wall",
+                shape=[
+                    [0, 0],
+                    [self.x_size - 2, 0],
+                    [self.x_size - 2, -1],
+                    [0, -1],
+                ],
+                x_coord=1,
+                y_coord=self.y_size,
+            )
+        )
 
-        self.add_entity(StaticEntity(
-            name="Bottom Wall",
-            shape=[[0, 0], [self.x_size-2, 0], [self.x_size-2, 1], [0,1]],
-            x_coord=1,
-            y_coord=0,
-        ))
+        self.add_entity(
+            StaticEntity(
+                name="Bottom Wall",
+                shape=[
+                    [0, 0],
+                    [self.x_size - 2, 0],
+                    [self.x_size - 2, 1],
+                    [0, 1],
+                ],
+                x_coord=1,
+                y_coord=0,
+            )
+        )

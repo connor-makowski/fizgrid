@@ -16,7 +16,9 @@ try:
         2: (1.0, 2.0),
     }
 
-    result = RectangleMoverUtils.moving_segment_overlap_intervals(seg_start, seg_end, t_start, t_end, shift)
+    result = RectangleMoverUtils.moving_segment_overlap_intervals(
+        seg_start, seg_end, t_start, t_end, shift
+    )
 
     if result != expected_result:
         print("Basic movement test failed")
@@ -37,7 +39,9 @@ try:
         0: (0.0, 2.0),
     }
 
-    result = RectangleMoverUtils.moving_segment_overlap_intervals(seg_start, seg_end, t_start, t_end, shift)
+    result = RectangleMoverUtils.moving_segment_overlap_intervals(
+        seg_start, seg_end, t_start, t_end, shift
+    )
 
     if result != expected_result:
         print("No movement test failed")
@@ -58,7 +62,9 @@ try:
         -1: (0.0, 2.0),
         -2: (1.0, 2.0),
     }
-    result = RectangleMoverUtils.moving_segment_overlap_intervals(seg_start, seg_end, t_start, t_end, shift)
+    result = RectangleMoverUtils.moving_segment_overlap_intervals(
+        seg_start, seg_end, t_start, t_end, shift
+    )
     if result != expected_result:
         print(result)
         print("Negative movement test failed")
@@ -77,7 +83,9 @@ try:
 
     expected_result = {}
 
-    result = RectangleMoverUtils.moving_segment_overlap_intervals(seg_start, seg_end, t_start, t_end, shift)
+    result = RectangleMoverUtils.moving_segment_overlap_intervals(
+        seg_start, seg_end, t_start, t_end, shift
+    )
 
     if result != expected_result:
         print("Zero duration test failed")
@@ -98,13 +106,13 @@ try:
     t_start = 0
     t_end = 2
     expected_result = {
-        (0,0): (0.0, 1.0),
-        (0,1): (0.0, 1.0),
-        (1,0): (0.0, 1.0),
-        (1,1): (0.0, 2.0),
-        (2,1): (1.0, 2.0),
-        (1,2): (1.0, 2.0),
-        (2,2): (1.0, 2.0),
+        (0, 0): (0.0, 1.0),
+        (0, 1): (0.0, 1.0),
+        (1, 0): (0.0, 1.0),
+        (1, 1): (0.0, 2.0),
+        (2, 1): (1.0, 2.0),
+        (1, 2): (1.0, 2.0),
+        (2, 2): (1.0, 2.0),
     }
 
     result = RectangleMoverUtils.moving_rectangle_overlap_intervals(
@@ -126,7 +134,7 @@ except:
     success = False
 
 try:
-    # test with a shape as a rectangle 
+    # test with a shape as a rectangle
     # Use a triangle at (0,0), (1,0), (0,1)
     shape = [[0, 0], [1, 0], [0, 1]]
     x_coord = 0
@@ -136,13 +144,13 @@ try:
     t_start = 0
     t_end = 2
     expected_result = {
-        (0,0): (0.0, 1.0),
-        (0,1): (0.0, 1.0),
-        (1,0): (0.0, 1.0),
-        (1,1): (0.0, 2.0),
-        (2,1): (1.0, 2.0),
-        (1,2): (1.0, 2.0),
-        (2,2): (1.0, 2.0),
+        (0, 0): (0.0, 1.0),
+        (0, 1): (0.0, 1.0),
+        (1, 0): (0.0, 1.0),
+        (1, 1): (0.0, 2.0),
+        (2, 1): (1.0, 2.0),
+        (1, 2): (1.0, 2.0),
+        (2, 2): (1.0, 2.0),
     }
 
     result = RectangleMoverUtils.moving_shape_overlap_intervals(

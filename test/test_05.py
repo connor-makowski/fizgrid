@@ -5,6 +5,7 @@ import random, math
 
 from pprint import pp as print
 
+
 class SnifferAMR(Entity):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -15,14 +16,17 @@ class SnifferAMR(Entity):
         self.speed = None
 
     def get_dist_from_goal(self):
-        return ((self.goal_x - self.x_coord) ** 2 + (self.goal_y - self.y_coord) ** 2) ** 0.5
+        return (
+            (self.goal_x - self.x_coord) ** 2
+            + (self.goal_y - self.y_coord) ** 2
+        ) ** 0.5
 
     def set_goal(self, x_coord, y_coord, tolerance=1, speed=1):
         self.has_goal = True
         self.goal_x = x_coord
         self.goal_y = y_coord
         self.tolerance = tolerance
-        self.speed = speed  
+        self.speed = speed
         if self.is_available():
             self.add_next_route()
         else:
@@ -32,15 +36,21 @@ class SnifferAMR(Entity):
         distance_from_goal = self.get_dist_from_goal()
         if distance_from_goal < self.tolerance:
             return
-        goal_angle_rad = math.atan2(self.goal_y - self.y_coord, self.goal_x - self.x_coord)
-        random_angle = random.normalvariate(goal_angle_rad, math.pi/2)
-        distance = random.uniform(0, min(distance_from_goal,5))
+        goal_angle_rad = math.atan2(
+            self.goal_y - self.y_coord, self.goal_x - self.x_coord
+        )
+        random_angle = random.normalvariate(goal_angle_rad, math.pi / 2)
+        distance = random.uniform(0, min(distance_from_goal, 5))
         x_shift = distance * math.cos(random_angle)
         y_shift = distance * math.sin(random_angle)
 
         self.add_route(
             waypoints=[
-                (self.x_coord + x_shift, self.y_coord + y_shift, distance * self.speed),
+                (
+                    self.x_coord + x_shift,
+                    self.y_coord + y_shift,
+                    distance * self.speed,
+                ),
             ]
         )
 
@@ -60,18 +70,22 @@ grid = Grid(
 )
 
 # Add some AMRs to the grid
-amr1 = grid.add_entity(SnifferAMR(
-    name="AMR1",
-    shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
-    x_coord=450,
-    y_coord=500,
-))
-amr2 = grid.add_entity(SnifferAMR(
-    name="AMR2",
-    shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
-    x_coord=500,
-    y_coord=450,
-))
+amr1 = grid.add_entity(
+    SnifferAMR(
+        name="AMR1",
+        shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
+        x_coord=450,
+        y_coord=500,
+    )
+)
+amr2 = grid.add_entity(
+    SnifferAMR(
+        name="AMR2",
+        shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
+        x_coord=500,
+        y_coord=450,
+    )
+)
 
 amr1.set_goal(
     x_coord=550,
@@ -99,6 +113,3 @@ if success:
     print("test_05.py: passed")
 else:
     print("test_05.py: failed")
-
-
-

@@ -1,15 +1,16 @@
 import type_enforced
 from fizgrid.utils import unique_id, RectangleMoverUtils
 
+
 @type_enforced.Enforcer(enabled=True)
 class Entity:
     def __init__(
-            self,
-            name:str, 
-            shape:list[list[int|float]],
-            x_coord:int|float, 
-            y_coord:int|float,
-        ):
+        self,
+        name: str,
+        shape: list[list[int | float]],
+        x_coord: int | float,
+        y_coord: int | float,
+    ):
         """
         Initializes an entity with a given shape and location in the grid.
 
@@ -29,11 +30,10 @@ class Entity:
         self.shape = shape
         self.x_coord = x_coord
         self.y_coord = y_coord
-        self.history = [{'x': x_coord, 'y': y_coord, 't': 0, 'c':False}]
-
+        self.history = [{"x": x_coord, "y": y_coord, "t": 0, "c": False}]
 
         # Util Attributes
-        self.__grid__=None
+        self.__grid__ = None
         self.__route_start_time__ = 0
         self.__route_end_time__ = 0
         self.__blocked_grid_cells__ = []
@@ -42,7 +42,7 @@ class Entity:
 
     def __repr__(self):
         return f"Entity({self.name})"
-    
+
     def __assign_to_grid__(self, grid) -> None:
         """
         Assigns the grid to this entity.
@@ -53,13 +53,15 @@ class Entity:
             grid (Grid): The grid to assign to this entity.
         """
         self.__grid__ = grid
-        self.__realize_route__(is_result_of_collision=False, raise_on_future_collision=True)
+        self.__realize_route__(
+            is_result_of_collision=False, raise_on_future_collision=True
+        )
 
     def __clear_blocked_grid_cells__(self) -> None:
         """
         Clears the blocked grid cells for this entity.
         """
-        for (x_cell, y_cell, block_id) in self.__blocked_grid_cells__:
+        for x_cell, y_cell, block_id in self.__blocked_grid_cells__:
             cell = self.__grid__.cells[y_cell][x_cell]
             cell.pop(block_id, None)
         self.__blocked_grid_cells__ = []
@@ -68,14 +70,17 @@ class Entity:
         """
         Clears the future events for this entity.
         """
-        for this_event_id, related_event_id in self.__future_event_ids__.items():
+        for (
+            this_event_id,
+            related_event_id,
+        ) in self.__future_event_ids__.items():
             # Remove the event from the queue
             event_obj = self.__grid__.queue.remove_event(this_event_id)
             # If this event is a standard route_end event, it will not have an related event, so we can be done here
             # If the event_obj is None, it has already been processed or removed so we can skip any further processing
             # If this event is a collision event, it will have an associated event and should be removed too
             if related_event_id != None and event_obj != None:
-                    self.__grid__.queue.remove_event(related_event_id)
+                self.__grid__.queue.remove_event(related_event_id)
         self.__future_event_ids__ = {}
 
     def __waypoint_check__(self, waypoints) -> None:
@@ -89,14 +94,26 @@ class Entity:
         """
         for waypoint in waypoints:
             if len(waypoint) != 3:
-                raise Exception(f"Waypoint must be a tuple of (x_coord, y_coord, time_shift). Waypoint: {waypoint}")
+                raise Exception(
+                    f"Waypoint must be a tuple of (x_coord, y_coord, time_shift). Waypoint: {waypoint}"
+                )
             if waypoint[0] < 0 or waypoint[1] < 0 or waypoint[2] < 0:
-                raise Exception(f"Waypoint coordinates and times must be positive. Waypoint: {waypoint}")
-            if waypoint[0] > self.__grid__.x_size or waypoint[1] > self.__grid__.y_size:
-                raise Exception(f"Waypoint coordinates must be within the grid. Waypoint: {waypoint}")
-        
+                raise Exception(
+                    f"Waypoint coordinates and times must be positive. Waypoint: {waypoint}"
+                )
+            if (
+                waypoint[0] > self.__grid__.x_size
+                or waypoint[1] > self.__grid__.y_size
+            ):
+                raise Exception(
+                    f"Waypoint coordinates must be within the grid. Waypoint: {waypoint}"
+                )
 
-    def __plan_route__(self, waypoints:list[tuple[int|float,int|float,int|float]], raise_on_future_collision:bool=False) -> dict:
+    def __plan_route__(
+        self,
+        waypoints: list[tuple[int | float, int | float, int | float]],
+        raise_on_future_collision: bool = False,
+    ) -> dict:
         """
         Sets the route for this entity given a set of waypoints starting at the current time.
         Determines the cells this entity will block and at which times it will block them.
@@ -108,7 +125,7 @@ class Entity:
 
             waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.
                 - A list of tuples where each tuple is (x_coord, y_coord, time_shift).
-                - EG; 
+                - EG;
                     ```
                     waypoints = [
                         (5, 3, 10),
@@ -128,8 +145,10 @@ class Entity:
         """
         # Raise an exception if the entity is already in a route
         if not self.is_available():
-                raise Exception(f"entity {self.name} is not available for a new route. Cannot set a new route until the current route is finished.")
-        
+            raise Exception(
+                f"entity {self.name} is not available for a new route. Cannot set a new route until the current route is finished."
+            )
+
         # Check for valid waypoints
         self.__waypoint_check__(waypoints)
 
@@ -147,30 +166,37 @@ class Entity:
         # Add a final waypoint occuring until the end of the simulation.
         # This allows us to lock in the position of the entity at the end of the route and block the grid cells accordingly.
         if len(waypoints) > 0:
-            waypoints.append((
-                waypoints[-1][0], 
-                waypoints[-1][1], 
-                self.__grid__.max_time - t_tmp - total_route_time_shift
-            ))
+            waypoints.append(
+                (
+                    waypoints[-1][0],
+                    waypoints[-1][1],
+                    self.__grid__.max_time - t_tmp - total_route_time_shift,
+                )
+            )
         else:
-            waypoints.append((
-                self.x_coord, 
-                self.y_coord, 
-                self.__grid__.max_time - t_tmp - total_route_time_shift
-            ))
-        
+            waypoints.append(
+                (
+                    self.x_coord,
+                    self.y_coord,
+                    self.__grid__.max_time - t_tmp - total_route_time_shift,
+                )
+            )
+
         # Store the route deltas and start time for later use to determine the entity's position at a given time
         self.__planned_waypoints__ = waypoints
         self.__route_start_time__ = self.get_time()
-        self.__route_end_time__ = min(self.__grid__.max_time, self.__route_start_time__ + total_route_time_shift)
-        
+        self.__route_end_time__ = min(
+            self.__grid__.max_time,
+            self.__route_start_time__ + total_route_time_shift,
+        )
+
         # For each route delta, calculate the blocks and collisions and add them to the grid
         for waypoint in waypoints:
             blocks = RectangleMoverUtils.moving_shape_overlap_intervals(
                 x_coord=x_tmp,
                 y_coord=y_tmp,
-                x_shift = waypoint[0] - x_tmp,
-                y_shift = waypoint[1] - y_tmp,
+                x_shift=waypoint[0] - x_tmp,
+                y_shift=waypoint[1] - y_tmp,
                 t_start=t_tmp,
                 t_end=t_tmp + waypoint[2],
                 shape=self.shape,
@@ -180,7 +206,12 @@ class Entity:
             t_tmp = t_tmp + waypoint[2]
             for (x_cell, y_cell), (t_start, t_end) in blocks.items():
                 # Check if the cell is within the grid bounds
-                if x_cell < 0 or y_cell < 0 or x_cell >= self.__grid__.x_size or y_cell >= self.__grid__.y_size:
+                if (
+                    x_cell < 0
+                    or y_cell < 0
+                    or x_cell >= self.__grid__.x_size
+                    or y_cell >= self.__grid__.y_size
+                ):
                     # Note: Shape coords outside of the grid raise an exception, but this this would indicate that the shape may have an overlap over the edge.
                     # Note: If there are exterior walls, no exception here is necessary
                     # TODO: Determine if this should be an exception or just a warning
@@ -191,19 +222,30 @@ class Entity:
                 # Get the relevant cell in the grid
                 cell = self.__grid__.cells[y_cell][x_cell]
                 # Check for collisions with other entities in the cell
-                for (other_t_start, other_t_end, other_entity_id) in cell.values():
+                for (
+                    other_t_start,
+                    other_t_end,
+                    other_entity_id,
+                ) in cell.values():
                     if t_start < other_t_end and t_end > other_t_start:
                         # Determine the time of the collision and store the most recent collision time with each colliding entity
                         collision_time = max(t_start, other_t_start)
-                        previous_collision_time = collisions.get(other_entity_id)
-                        if previous_collision_time is None or collision_time < previous_collision_time:
+                        previous_collision_time = collisions.get(
+                            other_entity_id
+                        )
+                        if (
+                            previous_collision_time is None
+                            or collision_time < previous_collision_time
+                        ):
                             collisions[other_entity_id] = collision_time
                 # Block the grid cell for the entity
                 cell[block_id] = (t_start, t_end, self.id)
                 # Store the blocked grid cell for later removal
                 self.__blocked_grid_cells__.append((x_cell, y_cell, block_id))
         if raise_on_future_collision and len(collisions) > 0:
-            raise Exception(f"entity {self.name} collides with other entities and this route is set to raise an exception if there is a future collision detected.")
+            raise Exception(
+                f"entity {self.name} collides with other entities and this route is set to raise an exception if there is a future collision detected."
+            )
         # Create collision events for the first collision with each colliding entity
         for other_entity_id, collision_time in collisions.items():
             other_entity = self.__grid__.entities[other_entity_id]
@@ -211,17 +253,17 @@ class Entity:
                 time=collision_time,
                 object=self,
                 method="__realize_route__",
-                kwargs = {
-                    'is_result_of_collision': True,
+                kwargs={
+                    "is_result_of_collision": True,
                 },
             )
             other_event_id = self.__grid__.add_event(
                 time=collision_time,
                 object=other_entity,
                 method="__realize_route__",
-                kwargs = {
-                    'is_result_of_collision': True,
-                }
+                kwargs={
+                    "is_result_of_collision": True,
+                },
             )
             # Store the event_id for each entity involved in the collision
             self.__future_event_ids__[event_id] = other_event_id
@@ -234,15 +276,19 @@ class Entity:
                 object=self,
                 method="__realize_route__",
                 kwargs={
-                    'is_result_of_collision': False,
+                    "is_result_of_collision": False,
                 },
             )
             self.__future_event_ids__[event_id] = None
         return {
-            'has_collision': len(collisions) > 0,
+            "has_collision": len(collisions) > 0,
         }
 
-    def __realize_route__(self, is_result_of_collision:bool=False, raise_on_future_collision:bool=False) -> dict:
+    def __realize_route__(
+        self,
+        is_result_of_collision: bool = False,
+        raise_on_future_collision: bool = False,
+    ) -> dict:
         """
         Realize the route for this entity at the current time.
 
@@ -281,12 +327,14 @@ class Entity:
                 y_tmp = waypoint[1]
                 t_tmp = t_tmp + waypoint[2]
 
-            self.history.append({
-                'x': x_tmp,
-                'y': y_tmp,
-                't': t_tmp,
-                'c': is_result_of_collision,
-            })
+            self.history.append(
+                {
+                    "x": x_tmp,
+                    "y": y_tmp,
+                    "t": t_tmp,
+                    "c": is_result_of_collision,
+                }
+            )
 
         # Set the entity's position to where they are at this point in time
         self.x_coord = x_tmp
@@ -296,13 +344,13 @@ class Entity:
 
         # Stop the entity at their current location and update the grid for their expected future
         planned_route = self.__plan_route__(
-            waypoints=[], 
+            waypoints=[],
             raise_on_future_collision=raise_on_future_collision,
         )
         self.on_realize(is_result_of_collision=is_result_of_collision)
         return planned_route
-    
-    def get_time(self) -> int|float:
+
+    def get_time(self) -> int | float:
         """
         Returns the current time of the grid queue.
         This method retrieves the current time from the grid queue.
@@ -316,11 +364,11 @@ class Entity:
         return self.__route_end_time__ <= self.get_time()
 
     def add_route(
-            self,
-            waypoints:list[tuple[int|float,int|float,int|float]],
-            time:int|float|None=None,
-            raise_on_future_collision:bool=False,
-        ) -> None:
+        self,
+        waypoints: list[tuple[int | float, int | float, int | float]],
+        time: int | float | None = None,
+        raise_on_future_collision: bool = False,
+    ) -> None:
         """
         Adds a route to the grid for this entity. You can either provide a set of route deltas or a set of waypoints (which will be converted to route deltas).
 
@@ -343,7 +391,9 @@ class Entity:
             raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
         """
         if self.__grid__ is None:
-            raise Exception("Entity is not assigned to a grid. Cannot add a route.")
+            raise Exception(
+                "Entity is not assigned to a grid. Cannot add a route."
+            )
         if time is None:
             time = self.get_time()
         # Add the event to the queue
@@ -352,12 +402,16 @@ class Entity:
             object=self,
             method="__plan_route__",
             kwargs={
-                'waypoints': waypoints,
-                'raise_on_future_collision': raise_on_future_collision,
+                "waypoints": waypoints,
+                "raise_on_future_collision": raise_on_future_collision,
             },
         )
 
-    def cancel_route(self, time:int|float|None=None, raise_on_future_collision:bool=False) -> None:
+    def cancel_route(
+        self,
+        time: int | float | None = None,
+        raise_on_future_collision: bool = False,
+    ) -> None:
         """
         Cancels the route for this entity.
 
@@ -367,17 +421,19 @@ class Entity:
             raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
         """
         if self.__grid__ is None:
-            raise Exception("Entity is not assigned to a grid. Cannot cancel a route.")
+            raise Exception(
+                "Entity is not assigned to a grid. Cannot cancel a route."
+            )
         if time is None:
-            time = self.get_time()        
+            time = self.get_time()
         # Add the event to the queue
         self.__grid__.add_event(
             time=time,
             object=self,
             method="__realize_route__",
             kwargs={
-                'waypoints': [],
-                'raise_on_future_collision': raise_on_future_collision,
+                "waypoints": [],
+                "raise_on_future_collision": raise_on_future_collision,
             },
         )
 
@@ -390,12 +446,14 @@ class Entity:
 
             kwargs: Additional arguments passed to the method. Subclasses may use this or add their own arguments.
         """
-        pass
 
 
-    
 class StaticEntity(Entity):
-    def __realize_route__(self, is_result_of_collision:bool=False, raise_on_future_collision:bool=False) -> dict:
+    def __realize_route__(
+        self,
+        is_result_of_collision: bool = False,
+        raise_on_future_collision: bool = False,
+    ) -> dict:
         """
         Realize the route for this entity at the current time.
 
@@ -413,10 +471,10 @@ class StaticEntity(Entity):
         """
         # Since this is a static entity, we don't need to do anything here.
         if is_result_of_collision:
-            return 
+            return
         # Since this is a static entity, the route end time is the current time when the entity is created (should normally be 0)
         self.__route_end_time__ = self.get_time()
-        # Since this object does not move, we don't need to plan a route and will never interrupt it. 
-        return self.__plan_route__(waypoints=[], raise_on_future_collision=raise_on_future_collision)
-
-
+        # Since this object does not move, we don't need to plan a route and will never interrupt it.
+        return self.__plan_route__(
+            waypoints=[], raise_on_future_collision=raise_on_future_collision
+        )
