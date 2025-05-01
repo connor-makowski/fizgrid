@@ -3,7 +3,7 @@ from fizgrid.entities import Entity
 from fizgrid.utils import Shape
 import random, math
 
-from pprint import pp as print
+# from pprint import pp as print
 
 
 class Scheduler:

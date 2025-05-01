@@ -2,15 +2,12 @@ from fizgrid.grid import Grid
 from fizgrid.entities import Entity
 from fizgrid.utils import Shape
 
-from pprint import pp as print
-
-grid_x_size = 10
-grid_y_size = 10
+# from pprint import pp as print
 
 grid = Grid(
     name="test_grid",
-    x_size=grid_x_size,
-    y_size=grid_y_size,
+    x_size=10,
+    y_size=10,
     add_exterior_walls=True,
 )
 
@@ -37,13 +34,13 @@ amr2 = grid.add_entity(
 amr1.add_route(
     waypoints=[
         (5, 7, 1),
-    ]
+    ],
 )
 
 amr2.add_route(
     waypoints=[
         (7, 5, 1),
-    ]
+    ],
 )
 
 # Run the sim

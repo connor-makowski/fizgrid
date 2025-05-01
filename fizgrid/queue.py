@@ -9,10 +9,10 @@ class TimeQueue:
         This class is used to manage a queue of events that occur at specific times.
         It uses a min-heap to efficiently manage the events based on their scheduled times.
         """
-        self.heap = []
-        self.data = {}
-        self.time = 0
-        self.next_id = 0
+        self.__heap__ = []
+        self.__data__ = {}
+        self.__time__ = 0
+        self.__next_id__ = 0
 
     def add_event(self, time: int | float, event: dict = dict()) -> int:
         """
@@ -20,23 +20,23 @@ class TimeQueue:
 
         Args:
 
-            - time (int|float): The time at which the event should occur.
-            - event (dict): The event to be added to the queue.
-                - Default: {}
-                - This have any dictionary strucutre, depending on your queue needs
+        - time (int|float): The time at which the event should occur.
+        - event (dict): The event to be added to the queue.
+            - Default: {}
+            - This have any dictionary strucutre, depending on your queue needs
 
         Returns:
 
-            - int: The ID of the added event.
-                - This ID is used to reference the event in the queue.
+        - int: The ID of the added event.
+            - This ID is used to reference the event in the queue.
         """
         assert (
-            time >= self.time
+            time >= self.__time__
         ), "Time must be greater than or equal to current time"
-        id = self.next_id
-        self.next_id += 1
-        self.data[id] = event
-        heapq.heappush(self.heap, (time, id))
+        id = self.__next_id__
+        self.__next_id__ += 1
+        self.__data__[id] = event
+        heapq.heappush(self.__heap__, (time, id))
         return id
 
     def remove_event(self, id: int) -> dict | None:
@@ -44,14 +44,14 @@ class TimeQueue:
         Removes an event from the queue using its ID.
 
         Args:
-            
+
             - id (int): The ID of the event to be removed.
                 - This ID is used to reference the event in the queue.
         Returns:
             - dict: The removed event.
                 - If the event is not found, None is returned.
         """
-        return self.data.pop(id, None)
+        return self.__data__.pop(id, None)
 
     def remove_next_event(self) -> dict | None:
         """
@@ -60,10 +60,10 @@ class TimeQueue:
 
         Returns:
 
-            - dict: The removed event.
-                - If the queue is empty, None is returned.
+        - dict: The removed event.
+            - If the queue is empty, None is returned.
         """
-        self.remove_event(heapq.heappop(self.heap)[1])
+        self.remove_event(heapq.heappop(self.__heap__)[1])
 
     def get_next_event(self, peek: bool = False):
         """
@@ -72,28 +72,29 @@ class TimeQueue:
 
         Args:
 
-            - peek (bool): If True, the event is not removed from the queue.
-                - Default: False
-                - If False, the event is removed from the queue.
+        - peek (bool): If True, the event is not removed from the queue.
+            - Default: False
+            - If False, the event is removed from the queue.
+
         Returns:
-            
-            - dict: The next event in the queue.
-                - If the queue is empty, None is returned.
+
+        - dict: The next event in the queue.
+            - If the queue is empty, None is returned.
         """
-        while self.heap:
+        while self.__heap__:
             if peek:
-                time, id = self.heap[0]
-                event = self.data.get(id, None)
+                time, id = self.__heap__[0]
+                event = self.__data__.get(id, None)
                 if event is None:
                     # Remove the event from the heap to avoid stale references
-                    heapq.heappop(self.heap)
+                    heapq.heappop(self.__heap__)
                     continue
             else:
-                time, id = heapq.heappop(self.heap)
+                time, id = heapq.heappop(self.__heap__)
                 event = self.remove_event(id)
                 if event is None:
                     continue
-                self.time = time
+                self.__time__ = time
             return {
                 "id": id,
                 "time": time,
@@ -113,15 +114,15 @@ class TimeQueue:
 
         Returns:
 
-            - list: A list of events that occur at the same time as the next event.
-                - If the queue is empty, an empty list is returned.
+        - list: A list of events that occur at the same time as the next event.
+            - If the queue is empty, an empty list is returned.
         """
         events = []
         event = self.get_next_event(peek=True)
         if event["time"] != None:
-            self.time = event["time"]
+            self.__time__ = event["time"]
             next_event = event
-            while next_event["time"] == self.time:
+            while next_event["time"] == self.__time__:
                 event = next_event
                 self.remove_next_event()
                 events.append(event)

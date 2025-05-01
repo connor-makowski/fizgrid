@@ -5,7 +5,7 @@ cd /app/
 cp README.md fizgrid/__init__.py
 sed -i '1s/^/\"\"\"\n/' fizgrid/__init__.py
 echo "\"\"\"" >> fizgrid/__init__.py
-echo "" >> fizgrid/__init__.py
+# echo "" >> fizgrid/__init__.py
 
 
 # Specify versions for documentation purposes

@@ -40,27 +40,6 @@
                                 <a class="variable" href="#Grid.name">name</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Grid.x_size">x_size</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Grid.y_size">y_size</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Grid.max_time">max_time</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Grid.entities">entities</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Grid.plans">plans</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Grid.queue">queue</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Grid.cells">cells</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#Grid.add_entity">add_entity</a>
                         </li>
                         <li>
@@ -74,6 +53,9 @@
                         </li>
                         <li>
                                 <a class="function" href="#Grid.add_exterior_walls">add_exterior_walls</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Grid.simulate">simulate</a>
                         </li>
                 </ul>
 
@@ -154,30 +136,30 @@
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">        Args:</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">            - name (str): The name of the grid.</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">            - x_size (int): The width of the grid.</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">            - y_size (int): The height of the grid.</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">            - max_time (int): The maximum time for the grid simulation.</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">            - add_exterior_walls (bool): Whether to add exterior walls to the grid.</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="sd">              - Default: True</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">        - name (str): The name of the grid.</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">        - x_size (int): The width of the grid.</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">        - y_size (int): The height of the grid.</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">        - max_time (int): The maximum time for the grid simulation.</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">        - add_exterior_walls (bool): Whether to add exterior walls to the grid.</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="sd">            - Default: True</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>        <span class="c1"># Passed Attributes</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">=</span> <span class="n">x_size</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span> <span class="o">=</span> <span class="n">y_size</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">max_time</span> <span class="o">=</span> <span class="n">max_time</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>        <span class="c1"># Calculated Attributes</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">entities</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">plans</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">TimeQueue</span><span class="p">()</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cells</span> <span class="o">=</span> <span class="p">[[{}</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x_size</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y_size</span><span class="p">)]</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">name</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;The name of the grid.&quot;&quot;&quot;</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">=</span> <span class="n">x_size</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span> <span class="o">=</span> <span class="n">y_size</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__max_time__</span> <span class="o">=</span> <span class="n">max_time</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>        <span class="c1"># Calculated Attributes</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__entities__</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__queue__</span> <span class="o">=</span> <span class="n">TimeQueue</span><span class="p">()</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__cells__</span> <span class="o">=</span> <span class="p">[[{}</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x_size</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y_size</span><span class="p">)]</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>
 </span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>        <span class="k">if</span> <span class="n">add_exterior_walls</span><span class="p">:</span>
 </span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">add_exterior_walls</span><span class="p">()</span>
 </span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>
 </span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Grid(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="si">}</span><span class="s2">)&quot;</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Grid(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="si">}</span><span class="s2">)&quot;</span>
 </span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>
 </span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_entity</span><span class="p">(</span>
 </span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>        <span class="bp">self</span><span class="p">,</span>
@@ -188,106 +170,149 @@
 </span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>
 </span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">        Args:</span>
 </span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">            - entity (Entity): The entity to be added to the grid.</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">                - Must be an Entity or a subclass of Entity.</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">entities</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>        <span class="n">entity</span><span class="o">.</span><span class="n">__assign_to_grid__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>        <span class="k">return</span> <span class="n">entity</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_event</span><span class="p">(</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>    <span class="p">):</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="sd">        Adds an event to the queue.</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">        This method schedules an event for a specific object at a specific time.</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">        Essentially, it allows you to schedule a method call on an object at a specific time.</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">        Args:</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">            - time (int|float): The time at which the event should occur.</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">            - object: The object on which the event will occur.</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">            - method (str): The name of the method to be called on the object.</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">            - kwargs (dict): The keyword arguments to be passed to the method.</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>            <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>            <span class="n">event</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">},</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>        <span class="p">)</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">        Returns the current time of the grid.</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">        This method retrieves the current time from the queue.</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">time</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">resolve_next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">        Resolves the next state of the grid.</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">        This method processes the next event in the queue and updates the grid accordingly.</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="n">event_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get_next_events</span><span class="p">()</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>        <span class="k">for</span> <span class="n">event_item</span> <span class="ow">in</span> <span class="n">event_items</span><span class="p">:</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>            <span class="n">event</span> <span class="o">=</span> <span class="n">event_item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">)</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>            <span class="nb">object</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>            <span class="n">method</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;method&quot;</span><span class="p">)</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kwargs&quot;</span><span class="p">)</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>            <span class="k">if</span> <span class="nb">object</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>                <span class="k">continue</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>            <span class="nb">getattr</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">method</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="n">event_items</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_exterior_walls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">        Adds exterior walls to the grid.</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">        This method creates walls around the grid to prevent entities from moving outside the grid.</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Left Wall&quot;</span><span class="p">,</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>            <span class="p">)</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>        <span class="p">)</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Right Wall&quot;</span><span class="p">,</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>            <span class="p">)</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>        <span class="p">)</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Top Wall&quot;</span><span class="p">,</span>
-</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
-</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>                <span class="p">],</span>
-</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">,</span>
-</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>            <span class="p">)</span>
-</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>        <span class="p">)</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
-</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
-</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Bottom Wall&quot;</span><span class="p">,</span>
-</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
-</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>                <span class="p">],</span>
-</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>            <span class="p">)</span>
-</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>        <span class="p">)</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">        - entity (Entity): The entity to be added to the grid.</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">            - Must be an Entity or a subclass of Entity.</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">        Returns:</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">        - Entity: The added entity.</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__entities__</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>        <span class="n">entity</span><span class="o">.</span><span class="n">__assign_to_grid__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>        <span class="k">return</span> <span class="n">entity</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_event</span><span class="p">(</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">        Adds an event to the queue.</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">        This method schedules an event for a specific object at a specific time.</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">        Essentially, it allows you to schedule a method call on an object at a specific time.</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">        Args:</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="sd">        - time (int|float): The time at which the event should occur.</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="sd">        - object: The object on which the event will occur.</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">        - method (str): The name of the method to be called on the object.</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="sd">        - kwargs (dict): The keyword arguments to be passed to the method.</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">        Returns:</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">        - int: The ID of the added event as generated by the queue.</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__queue__</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>            <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>            <span class="n">event</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">},</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>        <span class="p">)</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">        Returns the current time of the grid.</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">        This method retrieves the current time from the queue.</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">        Returns:</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">        - int|float: The current time of the grid.</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__queue__</span><span class="o">.</span><span class="n">__time__</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">resolve_next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">        Resolves the next state of the grid.</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">        This method processes the next event in the queue and updates the grid accordingly.</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">        Returns:</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">        - list[dict]: A list of events that were processed in this step.</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">            - Each event is a dictionary containing a time, id and event.</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">            - The event dictionary contains the object, method and kwargs.</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">                - id (int): The ID of the event as generated by the queue.</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="sd">                - time (int|float): The time at which the event occurred.</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">                - event (dict): The event that was processed.</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">                    - object: The object on which the event occurred.</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="sd">                    - method (str): The name of the method that was called.</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="sd">                    - kwargs (dict): The keyword arguments that were passed to the method.</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>        <span class="n">event_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__queue__</span><span class="o">.</span><span class="n">get_next_events</span><span class="p">()</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>        <span class="k">for</span> <span class="n">event_item</span> <span class="ow">in</span> <span class="n">event_items</span><span class="p">:</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>            <span class="n">event</span> <span class="o">=</span> <span class="n">event_item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">)</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>            <span class="nb">object</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>            <span class="n">method</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;method&quot;</span><span class="p">)</span>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kwargs&quot;</span><span class="p">)</span>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>            <span class="k">if</span> <span class="nb">object</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>                <span class="k">continue</span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>            <span class="nb">getattr</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">method</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>        <span class="k">return</span> <span class="n">event_items</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_exterior_walls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a><span class="sd">        Adds exterior walls to the grid.</span>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a><span class="sd">        This method creates walls around the grid to prevent entities from moving outside the grid.</span>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Left Wall&quot;</span><span class="p">,</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">],</span>
+</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>                    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">],</span>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>                    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>                <span class="p">],</span>
+</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>            <span class="p">)</span>
+</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>        <span class="p">)</span>
+</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>
+</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
+</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
+</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Right Wall&quot;</span><span class="p">,</span>
+</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
+</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">],</span>
+</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>                    <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">],</span>
+</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>                    <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>                <span class="p">],</span>
+</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span><span class="p">,</span>
+</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>            <span class="p">)</span>
+</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>        <span class="p">)</span>
+</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>
+</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
+</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
+</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Top Wall&quot;</span><span class="p">,</span>
+</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
+</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+</span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>                <span class="p">],</span>
+</span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">,</span>
+</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a>            <span class="p">)</span>
+</span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a>        <span class="p">)</span>
+</span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>
+</span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
+</span><span id="L-178"><a href="#L-178"><span class="linenos">178</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
+</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Bottom Wall&quot;</span><span class="p">,</span>
+</span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
+</span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+</span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+</span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a>                <span class="p">],</span>
+</span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a>            <span class="p">)</span>
+</span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>        <span class="p">)</span>
+</span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>
+</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a><span class="sd">        Runs the simulation for the grid.</span>
+</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a><span class="sd">        This method processes events in the queue until all events are resolved or the maximum time is reached.</span>
+</span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a>        <span class="n">next_state_events</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a>        <span class="k">while</span> <span class="n">next_state_events</span><span class="p">:</span>
+</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a>            <span class="n">next_state_events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_next_state</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -319,30 +344,30 @@
 </span><span id="Grid-20"><a href="#Grid-20"><span class="linenos"> 20</span></a>
 </span><span id="Grid-21"><a href="#Grid-21"><span class="linenos"> 21</span></a><span class="sd">        Args:</span>
 </span><span id="Grid-22"><a href="#Grid-22"><span class="linenos"> 22</span></a>
-</span><span id="Grid-23"><a href="#Grid-23"><span class="linenos"> 23</span></a><span class="sd">            - name (str): The name of the grid.</span>
-</span><span id="Grid-24"><a href="#Grid-24"><span class="linenos"> 24</span></a><span class="sd">            - x_size (int): The width of the grid.</span>
-</span><span id="Grid-25"><a href="#Grid-25"><span class="linenos"> 25</span></a><span class="sd">            - y_size (int): The height of the grid.</span>
-</span><span id="Grid-26"><a href="#Grid-26"><span class="linenos"> 26</span></a><span class="sd">            - max_time (int): The maximum time for the grid simulation.</span>
-</span><span id="Grid-27"><a href="#Grid-27"><span class="linenos"> 27</span></a><span class="sd">            - add_exterior_walls (bool): Whether to add exterior walls to the grid.</span>
-</span><span id="Grid-28"><a href="#Grid-28"><span class="linenos"> 28</span></a><span class="sd">              - Default: True</span>
+</span><span id="Grid-23"><a href="#Grid-23"><span class="linenos"> 23</span></a><span class="sd">        - name (str): The name of the grid.</span>
+</span><span id="Grid-24"><a href="#Grid-24"><span class="linenos"> 24</span></a><span class="sd">        - x_size (int): The width of the grid.</span>
+</span><span id="Grid-25"><a href="#Grid-25"><span class="linenos"> 25</span></a><span class="sd">        - y_size (int): The height of the grid.</span>
+</span><span id="Grid-26"><a href="#Grid-26"><span class="linenos"> 26</span></a><span class="sd">        - max_time (int): The maximum time for the grid simulation.</span>
+</span><span id="Grid-27"><a href="#Grid-27"><span class="linenos"> 27</span></a><span class="sd">        - add_exterior_walls (bool): Whether to add exterior walls to the grid.</span>
+</span><span id="Grid-28"><a href="#Grid-28"><span class="linenos"> 28</span></a><span class="sd">            - Default: True</span>
 </span><span id="Grid-29"><a href="#Grid-29"><span class="linenos"> 29</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Grid-30"><a href="#Grid-30"><span class="linenos"> 30</span></a>        <span class="c1"># Passed Attributes</span>
-</span><span id="Grid-31"><a href="#Grid-31"><span class="linenos"> 31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-</span><span id="Grid-32"><a href="#Grid-32"><span class="linenos"> 32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">=</span> <span class="n">x_size</span>
-</span><span id="Grid-33"><a href="#Grid-33"><span class="linenos"> 33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span> <span class="o">=</span> <span class="n">y_size</span>
-</span><span id="Grid-34"><a href="#Grid-34"><span class="linenos"> 34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">max_time</span> <span class="o">=</span> <span class="n">max_time</span>
-</span><span id="Grid-35"><a href="#Grid-35"><span class="linenos"> 35</span></a>
-</span><span id="Grid-36"><a href="#Grid-36"><span class="linenos"> 36</span></a>        <span class="c1"># Calculated Attributes</span>
-</span><span id="Grid-37"><a href="#Grid-37"><span class="linenos"> 37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">entities</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="Grid-38"><a href="#Grid-38"><span class="linenos"> 38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">plans</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="Grid-39"><a href="#Grid-39"><span class="linenos"> 39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">TimeQueue</span><span class="p">()</span>
-</span><span id="Grid-40"><a href="#Grid-40"><span class="linenos"> 40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cells</span> <span class="o">=</span> <span class="p">[[{}</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x_size</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y_size</span><span class="p">)]</span>
+</span><span id="Grid-31"><a href="#Grid-31"><span class="linenos"> 31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">name</span>
+</span><span id="Grid-32"><a href="#Grid-32"><span class="linenos"> 32</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;The name of the grid.&quot;&quot;&quot;</span>
+</span><span id="Grid-33"><a href="#Grid-33"><span class="linenos"> 33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">=</span> <span class="n">x_size</span>
+</span><span id="Grid-34"><a href="#Grid-34"><span class="linenos"> 34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span> <span class="o">=</span> <span class="n">y_size</span>
+</span><span id="Grid-35"><a href="#Grid-35"><span class="linenos"> 35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__max_time__</span> <span class="o">=</span> <span class="n">max_time</span>
+</span><span id="Grid-36"><a href="#Grid-36"><span class="linenos"> 36</span></a>
+</span><span id="Grid-37"><a href="#Grid-37"><span class="linenos"> 37</span></a>        <span class="c1"># Calculated Attributes</span>
+</span><span id="Grid-38"><a href="#Grid-38"><span class="linenos"> 38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__entities__</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="Grid-39"><a href="#Grid-39"><span class="linenos"> 39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__queue__</span> <span class="o">=</span> <span class="n">TimeQueue</span><span class="p">()</span>
+</span><span id="Grid-40"><a href="#Grid-40"><span class="linenos"> 40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__cells__</span> <span class="o">=</span> <span class="p">[[{}</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x_size</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y_size</span><span class="p">)]</span>
 </span><span id="Grid-41"><a href="#Grid-41"><span class="linenos"> 41</span></a>
 </span><span id="Grid-42"><a href="#Grid-42"><span class="linenos"> 42</span></a>        <span class="k">if</span> <span class="n">add_exterior_walls</span><span class="p">:</span>
 </span><span id="Grid-43"><a href="#Grid-43"><span class="linenos"> 43</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">add_exterior_walls</span><span class="p">()</span>
 </span><span id="Grid-44"><a href="#Grid-44"><span class="linenos"> 44</span></a>
 </span><span id="Grid-45"><a href="#Grid-45"><span class="linenos"> 45</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Grid-46"><a href="#Grid-46"><span class="linenos"> 46</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Grid(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="si">}</span><span class="s2">)&quot;</span>
+</span><span id="Grid-46"><a href="#Grid-46"><span class="linenos"> 46</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Grid(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="si">}</span><span class="s2">)&quot;</span>
 </span><span id="Grid-47"><a href="#Grid-47"><span class="linenos"> 47</span></a>
 </span><span id="Grid-48"><a href="#Grid-48"><span class="linenos"> 48</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_entity</span><span class="p">(</span>
 </span><span id="Grid-49"><a href="#Grid-49"><span class="linenos"> 49</span></a>        <span class="bp">self</span><span class="p">,</span>
@@ -353,106 +378,149 @@
 </span><span id="Grid-54"><a href="#Grid-54"><span class="linenos"> 54</span></a>
 </span><span id="Grid-55"><a href="#Grid-55"><span class="linenos"> 55</span></a><span class="sd">        Args:</span>
 </span><span id="Grid-56"><a href="#Grid-56"><span class="linenos"> 56</span></a>
-</span><span id="Grid-57"><a href="#Grid-57"><span class="linenos"> 57</span></a><span class="sd">            - entity (Entity): The entity to be added to the grid.</span>
-</span><span id="Grid-58"><a href="#Grid-58"><span class="linenos"> 58</span></a><span class="sd">                - Must be an Entity or a subclass of Entity.</span>
-</span><span id="Grid-59"><a href="#Grid-59"><span class="linenos"> 59</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Grid-60"><a href="#Grid-60"><span class="linenos"> 60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">entities</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span>
-</span><span id="Grid-61"><a href="#Grid-61"><span class="linenos"> 61</span></a>        <span class="n">entity</span><span class="o">.</span><span class="n">__assign_to_grid__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="Grid-62"><a href="#Grid-62"><span class="linenos"> 62</span></a>        <span class="k">return</span> <span class="n">entity</span>
-</span><span id="Grid-63"><a href="#Grid-63"><span class="linenos"> 63</span></a>
-</span><span id="Grid-64"><a href="#Grid-64"><span class="linenos"> 64</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_event</span><span class="p">(</span>
-</span><span id="Grid-65"><a href="#Grid-65"><span class="linenos"> 65</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-</span><span id="Grid-66"><a href="#Grid-66"><span class="linenos"> 66</span></a>    <span class="p">):</span>
-</span><span id="Grid-67"><a href="#Grid-67"><span class="linenos"> 67</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Grid-68"><a href="#Grid-68"><span class="linenos"> 68</span></a><span class="sd">        Adds an event to the queue.</span>
-</span><span id="Grid-69"><a href="#Grid-69"><span class="linenos"> 69</span></a><span class="sd">        This method schedules an event for a specific object at a specific time.</span>
-</span><span id="Grid-70"><a href="#Grid-70"><span class="linenos"> 70</span></a><span class="sd">        Essentially, it allows you to schedule a method call on an object at a specific time.</span>
-</span><span id="Grid-71"><a href="#Grid-71"><span class="linenos"> 71</span></a>
-</span><span id="Grid-72"><a href="#Grid-72"><span class="linenos"> 72</span></a><span class="sd">        Args:</span>
-</span><span id="Grid-73"><a href="#Grid-73"><span class="linenos"> 73</span></a>
-</span><span id="Grid-74"><a href="#Grid-74"><span class="linenos"> 74</span></a><span class="sd">            - time (int|float): The time at which the event should occur.</span>
-</span><span id="Grid-75"><a href="#Grid-75"><span class="linenos"> 75</span></a><span class="sd">            - object: The object on which the event will occur.</span>
-</span><span id="Grid-76"><a href="#Grid-76"><span class="linenos"> 76</span></a><span class="sd">            - method (str): The name of the method to be called on the object.</span>
-</span><span id="Grid-77"><a href="#Grid-77"><span class="linenos"> 77</span></a><span class="sd">            - kwargs (dict): The keyword arguments to be passed to the method.</span>
-</span><span id="Grid-78"><a href="#Grid-78"><span class="linenos"> 78</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Grid-79"><a href="#Grid-79"><span class="linenos"> 79</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span>
-</span><span id="Grid-80"><a href="#Grid-80"><span class="linenos"> 80</span></a>            <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
-</span><span id="Grid-81"><a href="#Grid-81"><span class="linenos"> 81</span></a>            <span class="n">event</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">},</span>
-</span><span id="Grid-82"><a href="#Grid-82"><span class="linenos"> 82</span></a>        <span class="p">)</span>
-</span><span id="Grid-83"><a href="#Grid-83"><span class="linenos"> 83</span></a>
-</span><span id="Grid-84"><a href="#Grid-84"><span class="linenos"> 84</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Grid-85"><a href="#Grid-85"><span class="linenos"> 85</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Grid-86"><a href="#Grid-86"><span class="linenos"> 86</span></a><span class="sd">        Returns the current time of the grid.</span>
-</span><span id="Grid-87"><a href="#Grid-87"><span class="linenos"> 87</span></a><span class="sd">        This method retrieves the current time from the queue.</span>
-</span><span id="Grid-88"><a href="#Grid-88"><span class="linenos"> 88</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Grid-89"><a href="#Grid-89"><span class="linenos"> 89</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">time</span>
-</span><span id="Grid-90"><a href="#Grid-90"><span class="linenos"> 90</span></a>
-</span><span id="Grid-91"><a href="#Grid-91"><span class="linenos"> 91</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">resolve_next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Grid-92"><a href="#Grid-92"><span class="linenos"> 92</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Grid-93"><a href="#Grid-93"><span class="linenos"> 93</span></a><span class="sd">        Resolves the next state of the grid.</span>
-</span><span id="Grid-94"><a href="#Grid-94"><span class="linenos"> 94</span></a><span class="sd">        This method processes the next event in the queue and updates the grid accordingly.</span>
-</span><span id="Grid-95"><a href="#Grid-95"><span class="linenos"> 95</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Grid-96"><a href="#Grid-96"><span class="linenos"> 96</span></a>        <span class="n">event_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get_next_events</span><span class="p">()</span>
-</span><span id="Grid-97"><a href="#Grid-97"><span class="linenos"> 97</span></a>        <span class="k">for</span> <span class="n">event_item</span> <span class="ow">in</span> <span class="n">event_items</span><span class="p">:</span>
-</span><span id="Grid-98"><a href="#Grid-98"><span class="linenos"> 98</span></a>            <span class="n">event</span> <span class="o">=</span> <span class="n">event_item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">)</span>
-</span><span id="Grid-99"><a href="#Grid-99"><span class="linenos"> 99</span></a>            <span class="nb">object</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
-</span><span id="Grid-100"><a href="#Grid-100"><span class="linenos">100</span></a>            <span class="n">method</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;method&quot;</span><span class="p">)</span>
-</span><span id="Grid-101"><a href="#Grid-101"><span class="linenos">101</span></a>            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kwargs&quot;</span><span class="p">)</span>
-</span><span id="Grid-102"><a href="#Grid-102"><span class="linenos">102</span></a>            <span class="k">if</span> <span class="nb">object</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Grid-103"><a href="#Grid-103"><span class="linenos">103</span></a>                <span class="k">continue</span>
-</span><span id="Grid-104"><a href="#Grid-104"><span class="linenos">104</span></a>            <span class="nb">getattr</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">method</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="Grid-105"><a href="#Grid-105"><span class="linenos">105</span></a>        <span class="k">return</span> <span class="n">event_items</span>
-</span><span id="Grid-106"><a href="#Grid-106"><span class="linenos">106</span></a>
-</span><span id="Grid-107"><a href="#Grid-107"><span class="linenos">107</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_exterior_walls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Grid-108"><a href="#Grid-108"><span class="linenos">108</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Grid-109"><a href="#Grid-109"><span class="linenos">109</span></a><span class="sd">        Adds exterior walls to the grid.</span>
-</span><span id="Grid-110"><a href="#Grid-110"><span class="linenos">110</span></a><span class="sd">        This method creates walls around the grid to prevent entities from moving outside the grid.</span>
-</span><span id="Grid-111"><a href="#Grid-111"><span class="linenos">111</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Grid-112"><a href="#Grid-112"><span class="linenos">112</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
-</span><span id="Grid-113"><a href="#Grid-113"><span class="linenos">113</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
-</span><span id="Grid-114"><a href="#Grid-114"><span class="linenos">114</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Left Wall&quot;</span><span class="p">,</span>
-</span><span id="Grid-115"><a href="#Grid-115"><span class="linenos">115</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
-</span><span id="Grid-116"><a href="#Grid-116"><span class="linenos">116</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="Grid-117"><a href="#Grid-117"><span class="linenos">117</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="Grid-118"><a href="#Grid-118"><span class="linenos">118</span></a>            <span class="p">)</span>
-</span><span id="Grid-119"><a href="#Grid-119"><span class="linenos">119</span></a>        <span class="p">)</span>
-</span><span id="Grid-120"><a href="#Grid-120"><span class="linenos">120</span></a>
-</span><span id="Grid-121"><a href="#Grid-121"><span class="linenos">121</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
-</span><span id="Grid-122"><a href="#Grid-122"><span class="linenos">122</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
-</span><span id="Grid-123"><a href="#Grid-123"><span class="linenos">123</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Right Wall&quot;</span><span class="p">,</span>
-</span><span id="Grid-124"><a href="#Grid-124"><span class="linenos">124</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
-</span><span id="Grid-125"><a href="#Grid-125"><span class="linenos">125</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span>
-</span><span id="Grid-126"><a href="#Grid-126"><span class="linenos">126</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="Grid-127"><a href="#Grid-127"><span class="linenos">127</span></a>            <span class="p">)</span>
-</span><span id="Grid-128"><a href="#Grid-128"><span class="linenos">128</span></a>        <span class="p">)</span>
-</span><span id="Grid-129"><a href="#Grid-129"><span class="linenos">129</span></a>
-</span><span id="Grid-130"><a href="#Grid-130"><span class="linenos">130</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
-</span><span id="Grid-131"><a href="#Grid-131"><span class="linenos">131</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
-</span><span id="Grid-132"><a href="#Grid-132"><span class="linenos">132</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Top Wall&quot;</span><span class="p">,</span>
-</span><span id="Grid-133"><a href="#Grid-133"><span class="linenos">133</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
-</span><span id="Grid-134"><a href="#Grid-134"><span class="linenos">134</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-</span><span id="Grid-135"><a href="#Grid-135"><span class="linenos">135</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-</span><span id="Grid-136"><a href="#Grid-136"><span class="linenos">136</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-</span><span id="Grid-137"><a href="#Grid-137"><span class="linenos">137</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-</span><span id="Grid-138"><a href="#Grid-138"><span class="linenos">138</span></a>                <span class="p">],</span>
-</span><span id="Grid-139"><a href="#Grid-139"><span class="linenos">139</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-</span><span id="Grid-140"><a href="#Grid-140"><span class="linenos">140</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">,</span>
-</span><span id="Grid-141"><a href="#Grid-141"><span class="linenos">141</span></a>            <span class="p">)</span>
-</span><span id="Grid-142"><a href="#Grid-142"><span class="linenos">142</span></a>        <span class="p">)</span>
-</span><span id="Grid-143"><a href="#Grid-143"><span class="linenos">143</span></a>
-</span><span id="Grid-144"><a href="#Grid-144"><span class="linenos">144</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
-</span><span id="Grid-145"><a href="#Grid-145"><span class="linenos">145</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
-</span><span id="Grid-146"><a href="#Grid-146"><span class="linenos">146</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Bottom Wall&quot;</span><span class="p">,</span>
-</span><span id="Grid-147"><a href="#Grid-147"><span class="linenos">147</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
-</span><span id="Grid-148"><a href="#Grid-148"><span class="linenos">148</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-</span><span id="Grid-149"><a href="#Grid-149"><span class="linenos">149</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-</span><span id="Grid-150"><a href="#Grid-150"><span class="linenos">150</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-</span><span id="Grid-151"><a href="#Grid-151"><span class="linenos">151</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-</span><span id="Grid-152"><a href="#Grid-152"><span class="linenos">152</span></a>                <span class="p">],</span>
-</span><span id="Grid-153"><a href="#Grid-153"><span class="linenos">153</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-</span><span id="Grid-154"><a href="#Grid-154"><span class="linenos">154</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="Grid-155"><a href="#Grid-155"><span class="linenos">155</span></a>            <span class="p">)</span>
-</span><span id="Grid-156"><a href="#Grid-156"><span class="linenos">156</span></a>        <span class="p">)</span>
+</span><span id="Grid-57"><a href="#Grid-57"><span class="linenos"> 57</span></a><span class="sd">        - entity (Entity): The entity to be added to the grid.</span>
+</span><span id="Grid-58"><a href="#Grid-58"><span class="linenos"> 58</span></a><span class="sd">            - Must be an Entity or a subclass of Entity.</span>
+</span><span id="Grid-59"><a href="#Grid-59"><span class="linenos"> 59</span></a>
+</span><span id="Grid-60"><a href="#Grid-60"><span class="linenos"> 60</span></a><span class="sd">        Returns:</span>
+</span><span id="Grid-61"><a href="#Grid-61"><span class="linenos"> 61</span></a>
+</span><span id="Grid-62"><a href="#Grid-62"><span class="linenos"> 62</span></a><span class="sd">        - Entity: The added entity.</span>
+</span><span id="Grid-63"><a href="#Grid-63"><span class="linenos"> 63</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Grid-64"><a href="#Grid-64"><span class="linenos"> 64</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__entities__</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span>
+</span><span id="Grid-65"><a href="#Grid-65"><span class="linenos"> 65</span></a>        <span class="n">entity</span><span class="o">.</span><span class="n">__assign_to_grid__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Grid-66"><a href="#Grid-66"><span class="linenos"> 66</span></a>        <span class="k">return</span> <span class="n">entity</span>
+</span><span id="Grid-67"><a href="#Grid-67"><span class="linenos"> 67</span></a>
+</span><span id="Grid-68"><a href="#Grid-68"><span class="linenos"> 68</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_event</span><span class="p">(</span>
+</span><span id="Grid-69"><a href="#Grid-69"><span class="linenos"> 69</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+</span><span id="Grid-70"><a href="#Grid-70"><span class="linenos"> 70</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Grid-71"><a href="#Grid-71"><span class="linenos"> 71</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Grid-72"><a href="#Grid-72"><span class="linenos"> 72</span></a><span class="sd">        Adds an event to the queue.</span>
+</span><span id="Grid-73"><a href="#Grid-73"><span class="linenos"> 73</span></a><span class="sd">        This method schedules an event for a specific object at a specific time.</span>
+</span><span id="Grid-74"><a href="#Grid-74"><span class="linenos"> 74</span></a><span class="sd">        Essentially, it allows you to schedule a method call on an object at a specific time.</span>
+</span><span id="Grid-75"><a href="#Grid-75"><span class="linenos"> 75</span></a>
+</span><span id="Grid-76"><a href="#Grid-76"><span class="linenos"> 76</span></a><span class="sd">        Args:</span>
+</span><span id="Grid-77"><a href="#Grid-77"><span class="linenos"> 77</span></a>
+</span><span id="Grid-78"><a href="#Grid-78"><span class="linenos"> 78</span></a><span class="sd">        - time (int|float): The time at which the event should occur.</span>
+</span><span id="Grid-79"><a href="#Grid-79"><span class="linenos"> 79</span></a><span class="sd">        - object: The object on which the event will occur.</span>
+</span><span id="Grid-80"><a href="#Grid-80"><span class="linenos"> 80</span></a><span class="sd">        - method (str): The name of the method to be called on the object.</span>
+</span><span id="Grid-81"><a href="#Grid-81"><span class="linenos"> 81</span></a><span class="sd">        - kwargs (dict): The keyword arguments to be passed to the method.</span>
+</span><span id="Grid-82"><a href="#Grid-82"><span class="linenos"> 82</span></a>
+</span><span id="Grid-83"><a href="#Grid-83"><span class="linenos"> 83</span></a><span class="sd">        Returns:</span>
+</span><span id="Grid-84"><a href="#Grid-84"><span class="linenos"> 84</span></a>
+</span><span id="Grid-85"><a href="#Grid-85"><span class="linenos"> 85</span></a><span class="sd">        - int: The ID of the added event as generated by the queue.</span>
+</span><span id="Grid-86"><a href="#Grid-86"><span class="linenos"> 86</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Grid-87"><a href="#Grid-87"><span class="linenos"> 87</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__queue__</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span>
+</span><span id="Grid-88"><a href="#Grid-88"><span class="linenos"> 88</span></a>            <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
+</span><span id="Grid-89"><a href="#Grid-89"><span class="linenos"> 89</span></a>            <span class="n">event</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">},</span>
+</span><span id="Grid-90"><a href="#Grid-90"><span class="linenos"> 90</span></a>        <span class="p">)</span>
+</span><span id="Grid-91"><a href="#Grid-91"><span class="linenos"> 91</span></a>
+</span><span id="Grid-92"><a href="#Grid-92"><span class="linenos"> 92</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="Grid-93"><a href="#Grid-93"><span class="linenos"> 93</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Grid-94"><a href="#Grid-94"><span class="linenos"> 94</span></a><span class="sd">        Returns the current time of the grid.</span>
+</span><span id="Grid-95"><a href="#Grid-95"><span class="linenos"> 95</span></a><span class="sd">        This method retrieves the current time from the queue.</span>
+</span><span id="Grid-96"><a href="#Grid-96"><span class="linenos"> 96</span></a>
+</span><span id="Grid-97"><a href="#Grid-97"><span class="linenos"> 97</span></a><span class="sd">        Returns:</span>
+</span><span id="Grid-98"><a href="#Grid-98"><span class="linenos"> 98</span></a>
+</span><span id="Grid-99"><a href="#Grid-99"><span class="linenos"> 99</span></a><span class="sd">        - int|float: The current time of the grid.</span>
+</span><span id="Grid-100"><a href="#Grid-100"><span class="linenos">100</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Grid-101"><a href="#Grid-101"><span class="linenos">101</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__queue__</span><span class="o">.</span><span class="n">__time__</span>
+</span><span id="Grid-102"><a href="#Grid-102"><span class="linenos">102</span></a>
+</span><span id="Grid-103"><a href="#Grid-103"><span class="linenos">103</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">resolve_next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+</span><span id="Grid-104"><a href="#Grid-104"><span class="linenos">104</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Grid-105"><a href="#Grid-105"><span class="linenos">105</span></a><span class="sd">        Resolves the next state of the grid.</span>
+</span><span id="Grid-106"><a href="#Grid-106"><span class="linenos">106</span></a><span class="sd">        This method processes the next event in the queue and updates the grid accordingly.</span>
+</span><span id="Grid-107"><a href="#Grid-107"><span class="linenos">107</span></a>
+</span><span id="Grid-108"><a href="#Grid-108"><span class="linenos">108</span></a><span class="sd">        Returns:</span>
+</span><span id="Grid-109"><a href="#Grid-109"><span class="linenos">109</span></a>
+</span><span id="Grid-110"><a href="#Grid-110"><span class="linenos">110</span></a><span class="sd">        - list[dict]: A list of events that were processed in this step.</span>
+</span><span id="Grid-111"><a href="#Grid-111"><span class="linenos">111</span></a><span class="sd">            - Each event is a dictionary containing a time, id and event.</span>
+</span><span id="Grid-112"><a href="#Grid-112"><span class="linenos">112</span></a><span class="sd">            - The event dictionary contains the object, method and kwargs.</span>
+</span><span id="Grid-113"><a href="#Grid-113"><span class="linenos">113</span></a><span class="sd">                - id (int): The ID of the event as generated by the queue.</span>
+</span><span id="Grid-114"><a href="#Grid-114"><span class="linenos">114</span></a><span class="sd">                - time (int|float): The time at which the event occurred.</span>
+</span><span id="Grid-115"><a href="#Grid-115"><span class="linenos">115</span></a><span class="sd">                - event (dict): The event that was processed.</span>
+</span><span id="Grid-116"><a href="#Grid-116"><span class="linenos">116</span></a><span class="sd">                    - object: The object on which the event occurred.</span>
+</span><span id="Grid-117"><a href="#Grid-117"><span class="linenos">117</span></a><span class="sd">                    - method (str): The name of the method that was called.</span>
+</span><span id="Grid-118"><a href="#Grid-118"><span class="linenos">118</span></a><span class="sd">                    - kwargs (dict): The keyword arguments that were passed to the method.</span>
+</span><span id="Grid-119"><a href="#Grid-119"><span class="linenos">119</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Grid-120"><a href="#Grid-120"><span class="linenos">120</span></a>        <span class="n">event_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__queue__</span><span class="o">.</span><span class="n">get_next_events</span><span class="p">()</span>
+</span><span id="Grid-121"><a href="#Grid-121"><span class="linenos">121</span></a>        <span class="k">for</span> <span class="n">event_item</span> <span class="ow">in</span> <span class="n">event_items</span><span class="p">:</span>
+</span><span id="Grid-122"><a href="#Grid-122"><span class="linenos">122</span></a>            <span class="n">event</span> <span class="o">=</span> <span class="n">event_item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">)</span>
+</span><span id="Grid-123"><a href="#Grid-123"><span class="linenos">123</span></a>            <span class="nb">object</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
+</span><span id="Grid-124"><a href="#Grid-124"><span class="linenos">124</span></a>            <span class="n">method</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;method&quot;</span><span class="p">)</span>
+</span><span id="Grid-125"><a href="#Grid-125"><span class="linenos">125</span></a>            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kwargs&quot;</span><span class="p">)</span>
+</span><span id="Grid-126"><a href="#Grid-126"><span class="linenos">126</span></a>            <span class="k">if</span> <span class="nb">object</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Grid-127"><a href="#Grid-127"><span class="linenos">127</span></a>                <span class="k">continue</span>
+</span><span id="Grid-128"><a href="#Grid-128"><span class="linenos">128</span></a>            <span class="nb">getattr</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">method</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Grid-129"><a href="#Grid-129"><span class="linenos">129</span></a>        <span class="k">return</span> <span class="n">event_items</span>
+</span><span id="Grid-130"><a href="#Grid-130"><span class="linenos">130</span></a>
+</span><span id="Grid-131"><a href="#Grid-131"><span class="linenos">131</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_exterior_walls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Grid-132"><a href="#Grid-132"><span class="linenos">132</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Grid-133"><a href="#Grid-133"><span class="linenos">133</span></a><span class="sd">        Adds exterior walls to the grid.</span>
+</span><span id="Grid-134"><a href="#Grid-134"><span class="linenos">134</span></a><span class="sd">        This method creates walls around the grid to prevent entities from moving outside the grid.</span>
+</span><span id="Grid-135"><a href="#Grid-135"><span class="linenos">135</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Grid-136"><a href="#Grid-136"><span class="linenos">136</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
+</span><span id="Grid-137"><a href="#Grid-137"><span class="linenos">137</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
+</span><span id="Grid-138"><a href="#Grid-138"><span class="linenos">138</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Left Wall&quot;</span><span class="p">,</span>
+</span><span id="Grid-139"><a href="#Grid-139"><span class="linenos">139</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
+</span><span id="Grid-140"><a href="#Grid-140"><span class="linenos">140</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid-141"><a href="#Grid-141"><span class="linenos">141</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">],</span>
+</span><span id="Grid-142"><a href="#Grid-142"><span class="linenos">142</span></a>                    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">],</span>
+</span><span id="Grid-143"><a href="#Grid-143"><span class="linenos">143</span></a>                    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid-144"><a href="#Grid-144"><span class="linenos">144</span></a>                <span class="p">],</span>
+</span><span id="Grid-145"><a href="#Grid-145"><span class="linenos">145</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="Grid-146"><a href="#Grid-146"><span class="linenos">146</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="Grid-147"><a href="#Grid-147"><span class="linenos">147</span></a>            <span class="p">)</span>
+</span><span id="Grid-148"><a href="#Grid-148"><span class="linenos">148</span></a>        <span class="p">)</span>
+</span><span id="Grid-149"><a href="#Grid-149"><span class="linenos">149</span></a>
+</span><span id="Grid-150"><a href="#Grid-150"><span class="linenos">150</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
+</span><span id="Grid-151"><a href="#Grid-151"><span class="linenos">151</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
+</span><span id="Grid-152"><a href="#Grid-152"><span class="linenos">152</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Right Wall&quot;</span><span class="p">,</span>
+</span><span id="Grid-153"><a href="#Grid-153"><span class="linenos">153</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
+</span><span id="Grid-154"><a href="#Grid-154"><span class="linenos">154</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid-155"><a href="#Grid-155"><span class="linenos">155</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">],</span>
+</span><span id="Grid-156"><a href="#Grid-156"><span class="linenos">156</span></a>                    <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">],</span>
+</span><span id="Grid-157"><a href="#Grid-157"><span class="linenos">157</span></a>                    <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid-158"><a href="#Grid-158"><span class="linenos">158</span></a>                <span class="p">],</span>
+</span><span id="Grid-159"><a href="#Grid-159"><span class="linenos">159</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span><span class="p">,</span>
+</span><span id="Grid-160"><a href="#Grid-160"><span class="linenos">160</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="Grid-161"><a href="#Grid-161"><span class="linenos">161</span></a>            <span class="p">)</span>
+</span><span id="Grid-162"><a href="#Grid-162"><span class="linenos">162</span></a>        <span class="p">)</span>
+</span><span id="Grid-163"><a href="#Grid-163"><span class="linenos">163</span></a>
+</span><span id="Grid-164"><a href="#Grid-164"><span class="linenos">164</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
+</span><span id="Grid-165"><a href="#Grid-165"><span class="linenos">165</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
+</span><span id="Grid-166"><a href="#Grid-166"><span class="linenos">166</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Top Wall&quot;</span><span class="p">,</span>
+</span><span id="Grid-167"><a href="#Grid-167"><span class="linenos">167</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
+</span><span id="Grid-168"><a href="#Grid-168"><span class="linenos">168</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid-169"><a href="#Grid-169"><span class="linenos">169</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid-170"><a href="#Grid-170"><span class="linenos">170</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+</span><span id="Grid-171"><a href="#Grid-171"><span class="linenos">171</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+</span><span id="Grid-172"><a href="#Grid-172"><span class="linenos">172</span></a>                <span class="p">],</span>
+</span><span id="Grid-173"><a href="#Grid-173"><span class="linenos">173</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="Grid-174"><a href="#Grid-174"><span class="linenos">174</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">,</span>
+</span><span id="Grid-175"><a href="#Grid-175"><span class="linenos">175</span></a>            <span class="p">)</span>
+</span><span id="Grid-176"><a href="#Grid-176"><span class="linenos">176</span></a>        <span class="p">)</span>
+</span><span id="Grid-177"><a href="#Grid-177"><span class="linenos">177</span></a>
+</span><span id="Grid-178"><a href="#Grid-178"><span class="linenos">178</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
+</span><span id="Grid-179"><a href="#Grid-179"><span class="linenos">179</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
+</span><span id="Grid-180"><a href="#Grid-180"><span class="linenos">180</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Bottom Wall&quot;</span><span class="p">,</span>
+</span><span id="Grid-181"><a href="#Grid-181"><span class="linenos">181</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
+</span><span id="Grid-182"><a href="#Grid-182"><span class="linenos">182</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid-183"><a href="#Grid-183"><span class="linenos">183</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid-184"><a href="#Grid-184"><span class="linenos">184</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+</span><span id="Grid-185"><a href="#Grid-185"><span class="linenos">185</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+</span><span id="Grid-186"><a href="#Grid-186"><span class="linenos">186</span></a>                <span class="p">],</span>
+</span><span id="Grid-187"><a href="#Grid-187"><span class="linenos">187</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="Grid-188"><a href="#Grid-188"><span class="linenos">188</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="Grid-189"><a href="#Grid-189"><span class="linenos">189</span></a>            <span class="p">)</span>
+</span><span id="Grid-190"><a href="#Grid-190"><span class="linenos">190</span></a>        <span class="p">)</span>
+</span><span id="Grid-191"><a href="#Grid-191"><span class="linenos">191</span></a>
+</span><span id="Grid-192"><a href="#Grid-192"><span class="linenos">192</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Grid-193"><a href="#Grid-193"><span class="linenos">193</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Grid-194"><a href="#Grid-194"><span class="linenos">194</span></a><span class="sd">        Runs the simulation for the grid.</span>
+</span><span id="Grid-195"><a href="#Grid-195"><span class="linenos">195</span></a><span class="sd">        This method processes events in the queue until all events are resolved or the maximum time is reached.</span>
+</span><span id="Grid-196"><a href="#Grid-196"><span class="linenos">196</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Grid-197"><a href="#Grid-197"><span class="linenos">197</span></a>        <span class="n">next_state_events</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="Grid-198"><a href="#Grid-198"><span class="linenos">198</span></a>        <span class="k">while</span> <span class="n">next_state_events</span><span class="p">:</span>
+</span><span id="Grid-199"><a href="#Grid-199"><span class="linenos">199</span></a>            <span class="n">next_state_events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_next_state</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -481,24 +549,24 @@
 </span><span id="Grid.__init__-20"><a href="#Grid.__init__-20"><span class="linenos">20</span></a>
 </span><span id="Grid.__init__-21"><a href="#Grid.__init__-21"><span class="linenos">21</span></a><span class="sd">        Args:</span>
 </span><span id="Grid.__init__-22"><a href="#Grid.__init__-22"><span class="linenos">22</span></a>
-</span><span id="Grid.__init__-23"><a href="#Grid.__init__-23"><span class="linenos">23</span></a><span class="sd">            - name (str): The name of the grid.</span>
-</span><span id="Grid.__init__-24"><a href="#Grid.__init__-24"><span class="linenos">24</span></a><span class="sd">            - x_size (int): The width of the grid.</span>
-</span><span id="Grid.__init__-25"><a href="#Grid.__init__-25"><span class="linenos">25</span></a><span class="sd">            - y_size (int): The height of the grid.</span>
-</span><span id="Grid.__init__-26"><a href="#Grid.__init__-26"><span class="linenos">26</span></a><span class="sd">            - max_time (int): The maximum time for the grid simulation.</span>
-</span><span id="Grid.__init__-27"><a href="#Grid.__init__-27"><span class="linenos">27</span></a><span class="sd">            - add_exterior_walls (bool): Whether to add exterior walls to the grid.</span>
-</span><span id="Grid.__init__-28"><a href="#Grid.__init__-28"><span class="linenos">28</span></a><span class="sd">              - Default: True</span>
+</span><span id="Grid.__init__-23"><a href="#Grid.__init__-23"><span class="linenos">23</span></a><span class="sd">        - name (str): The name of the grid.</span>
+</span><span id="Grid.__init__-24"><a href="#Grid.__init__-24"><span class="linenos">24</span></a><span class="sd">        - x_size (int): The width of the grid.</span>
+</span><span id="Grid.__init__-25"><a href="#Grid.__init__-25"><span class="linenos">25</span></a><span class="sd">        - y_size (int): The height of the grid.</span>
+</span><span id="Grid.__init__-26"><a href="#Grid.__init__-26"><span class="linenos">26</span></a><span class="sd">        - max_time (int): The maximum time for the grid simulation.</span>
+</span><span id="Grid.__init__-27"><a href="#Grid.__init__-27"><span class="linenos">27</span></a><span class="sd">        - add_exterior_walls (bool): Whether to add exterior walls to the grid.</span>
+</span><span id="Grid.__init__-28"><a href="#Grid.__init__-28"><span class="linenos">28</span></a><span class="sd">            - Default: True</span>
 </span><span id="Grid.__init__-29"><a href="#Grid.__init__-29"><span class="linenos">29</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Grid.__init__-30"><a href="#Grid.__init__-30"><span class="linenos">30</span></a>        <span class="c1"># Passed Attributes</span>
-</span><span id="Grid.__init__-31"><a href="#Grid.__init__-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-</span><span id="Grid.__init__-32"><a href="#Grid.__init__-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">=</span> <span class="n">x_size</span>
-</span><span id="Grid.__init__-33"><a href="#Grid.__init__-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span> <span class="o">=</span> <span class="n">y_size</span>
-</span><span id="Grid.__init__-34"><a href="#Grid.__init__-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">max_time</span> <span class="o">=</span> <span class="n">max_time</span>
-</span><span id="Grid.__init__-35"><a href="#Grid.__init__-35"><span class="linenos">35</span></a>
-</span><span id="Grid.__init__-36"><a href="#Grid.__init__-36"><span class="linenos">36</span></a>        <span class="c1"># Calculated Attributes</span>
-</span><span id="Grid.__init__-37"><a href="#Grid.__init__-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">entities</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="Grid.__init__-38"><a href="#Grid.__init__-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">plans</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="Grid.__init__-39"><a href="#Grid.__init__-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">TimeQueue</span><span class="p">()</span>
-</span><span id="Grid.__init__-40"><a href="#Grid.__init__-40"><span class="linenos">40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cells</span> <span class="o">=</span> <span class="p">[[{}</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x_size</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y_size</span><span class="p">)]</span>
+</span><span id="Grid.__init__-31"><a href="#Grid.__init__-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">name</span>
+</span><span id="Grid.__init__-32"><a href="#Grid.__init__-32"><span class="linenos">32</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;The name of the grid.&quot;&quot;&quot;</span>
+</span><span id="Grid.__init__-33"><a href="#Grid.__init__-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">=</span> <span class="n">x_size</span>
+</span><span id="Grid.__init__-34"><a href="#Grid.__init__-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span> <span class="o">=</span> <span class="n">y_size</span>
+</span><span id="Grid.__init__-35"><a href="#Grid.__init__-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__max_time__</span> <span class="o">=</span> <span class="n">max_time</span>
+</span><span id="Grid.__init__-36"><a href="#Grid.__init__-36"><span class="linenos">36</span></a>
+</span><span id="Grid.__init__-37"><a href="#Grid.__init__-37"><span class="linenos">37</span></a>        <span class="c1"># Calculated Attributes</span>
+</span><span id="Grid.__init__-38"><a href="#Grid.__init__-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__entities__</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="Grid.__init__-39"><a href="#Grid.__init__-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__queue__</span> <span class="o">=</span> <span class="n">TimeQueue</span><span class="p">()</span>
+</span><span id="Grid.__init__-40"><a href="#Grid.__init__-40"><span class="linenos">40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__cells__</span> <span class="o">=</span> <span class="p">[[{}</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x_size</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y_size</span><span class="p">)]</span>
 </span><span id="Grid.__init__-41"><a href="#Grid.__init__-41"><span class="linenos">41</span></a>
 </span><span id="Grid.__init__-42"><a href="#Grid.__init__-42"><span class="linenos">42</span></a>        <span class="k">if</span> <span class="n">add_exterior_walls</span><span class="p">:</span>
 </span><span id="Grid.__init__-43"><a href="#Grid.__init__-43"><span class="linenos">43</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">add_exterior_walls</span><span class="p">()</span>
@@ -509,103 +577,31 @@
 
 <p>Args:</p>
 
-<pre><code>- name (str): The name of the grid.
-- x_size (int): The width of the grid.
-- y_size (int): The height of the grid.
-- max_time (int): The maximum time for the grid simulation.
-- add_exterior_walls (bool): Whether to add exterior walls to the grid.
-  - Default: True
-</code></pre>
+<ul>
+<li>name (str): The name of the grid.</li>
+<li>x_size (int): The width of the grid.</li>
+<li>y_size (int): The height of the grid.</li>
+<li>max_time (int): The maximum time for the grid simulation.</li>
+<li>add_exterior_walls (bool): Whether to add exterior walls to the grid.
+<ul>
+<li>Default: True</li>
+</ul></li>
+</ul>
 </div>
 
 
                             </div>
                             <div id="Grid.name" class="classattr">
                                 <div class="attr variable">
-            <span class="name">name</span>
+            <span class="name">name</span><span class="annotation">: str</span>
 
         
     </div>
     <a class="headerlink" href="#Grid.name"></a>
     
-    
+            <div class="docstring"><p>The name of the grid.</p>
+</div>
 
-                            </div>
-                            <div id="Grid.x_size" class="classattr">
-                                <div class="attr variable">
-            <span class="name">x_size</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Grid.x_size"></a>
-    
-    
-
-                            </div>
-                            <div id="Grid.y_size" class="classattr">
-                                <div class="attr variable">
-            <span class="name">y_size</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Grid.y_size"></a>
-    
-    
-
-                            </div>
-                            <div id="Grid.max_time" class="classattr">
-                                <div class="attr variable">
-            <span class="name">max_time</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Grid.max_time"></a>
-    
-    
-
-                            </div>
-                            <div id="Grid.entities" class="classattr">
-                                <div class="attr variable">
-            <span class="name">entities</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Grid.entities"></a>
-    
-    
-
-                            </div>
-                            <div id="Grid.plans" class="classattr">
-                                <div class="attr variable">
-            <span class="name">plans</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Grid.plans"></a>
-    
-    
-
-                            </div>
-                            <div id="Grid.queue" class="classattr">
-                                <div class="attr variable">
-            <span class="name">queue</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Grid.queue"></a>
-    
-    
-
-                            </div>
-                            <div id="Grid.cells" class="classattr">
-                                <div class="attr variable">
-            <span class="name">cells</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Grid.cells"></a>
-    
-    
 
                             </div>
                             <div id="Grid.add_entity" class="classattr">
@@ -628,12 +624,16 @@
 </span><span id="Grid.add_entity-54"><a href="#Grid.add_entity-54"><span class="linenos">54</span></a>
 </span><span id="Grid.add_entity-55"><a href="#Grid.add_entity-55"><span class="linenos">55</span></a><span class="sd">        Args:</span>
 </span><span id="Grid.add_entity-56"><a href="#Grid.add_entity-56"><span class="linenos">56</span></a>
-</span><span id="Grid.add_entity-57"><a href="#Grid.add_entity-57"><span class="linenos">57</span></a><span class="sd">            - entity (Entity): The entity to be added to the grid.</span>
-</span><span id="Grid.add_entity-58"><a href="#Grid.add_entity-58"><span class="linenos">58</span></a><span class="sd">                - Must be an Entity or a subclass of Entity.</span>
-</span><span id="Grid.add_entity-59"><a href="#Grid.add_entity-59"><span class="linenos">59</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Grid.add_entity-60"><a href="#Grid.add_entity-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">entities</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span>
-</span><span id="Grid.add_entity-61"><a href="#Grid.add_entity-61"><span class="linenos">61</span></a>        <span class="n">entity</span><span class="o">.</span><span class="n">__assign_to_grid__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="Grid.add_entity-62"><a href="#Grid.add_entity-62"><span class="linenos">62</span></a>        <span class="k">return</span> <span class="n">entity</span>
+</span><span id="Grid.add_entity-57"><a href="#Grid.add_entity-57"><span class="linenos">57</span></a><span class="sd">        - entity (Entity): The entity to be added to the grid.</span>
+</span><span id="Grid.add_entity-58"><a href="#Grid.add_entity-58"><span class="linenos">58</span></a><span class="sd">            - Must be an Entity or a subclass of Entity.</span>
+</span><span id="Grid.add_entity-59"><a href="#Grid.add_entity-59"><span class="linenos">59</span></a>
+</span><span id="Grid.add_entity-60"><a href="#Grid.add_entity-60"><span class="linenos">60</span></a><span class="sd">        Returns:</span>
+</span><span id="Grid.add_entity-61"><a href="#Grid.add_entity-61"><span class="linenos">61</span></a>
+</span><span id="Grid.add_entity-62"><a href="#Grid.add_entity-62"><span class="linenos">62</span></a><span class="sd">        - Entity: The added entity.</span>
+</span><span id="Grid.add_entity-63"><a href="#Grid.add_entity-63"><span class="linenos">63</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Grid.add_entity-64"><a href="#Grid.add_entity-64"><span class="linenos">64</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__entities__</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">entity</span>
+</span><span id="Grid.add_entity-65"><a href="#Grid.add_entity-65"><span class="linenos">65</span></a>        <span class="n">entity</span><span class="o">.</span><span class="n">__assign_to_grid__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Grid.add_entity-66"><a href="#Grid.add_entity-66"><span class="linenos">66</span></a>        <span class="k">return</span> <span class="n">entity</span>
 </span></pre></div>
 
 
@@ -641,9 +641,18 @@
 
 <p>Args:</p>
 
-<pre><code>- entity (Entity): The entity to be added to the grid.
-    - Must be an Entity or a subclass of Entity.
-</code></pre>
+<ul>
+<li>entity (Entity): The entity to be added to the grid.
+<ul>
+<li>Must be an Entity or a subclass of Entity.</li>
+</ul></li>
+</ul>
+
+<p>Returns:</p>
+
+<ul>
+<li>Entity: The added entity.</li>
+</ul>
 </div>
 
 
@@ -653,31 +662,35 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">add_event</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span>, </span><span class="param"><span class="nb">object</span>, </span><span class="param"><span class="n">method</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span></span><span class="return-annotation">):</span></span>
+        <span class="name">add_event</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span>, </span><span class="param"><span class="nb">object</span>, </span><span class="param"><span class="n">method</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span></span><span class="return-annotation">) -> <span class="nb">int</span>:</span></span>
 
                 <label class="view-source-button" for="Grid.add_event-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Grid.add_event"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Grid.add_event-64"><a href="#Grid.add_event-64"><span class="linenos">64</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_event</span><span class="p">(</span>
-</span><span id="Grid.add_event-65"><a href="#Grid.add_event-65"><span class="linenos">65</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-</span><span id="Grid.add_event-66"><a href="#Grid.add_event-66"><span class="linenos">66</span></a>    <span class="p">):</span>
-</span><span id="Grid.add_event-67"><a href="#Grid.add_event-67"><span class="linenos">67</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Grid.add_event-68"><a href="#Grid.add_event-68"><span class="linenos">68</span></a><span class="sd">        Adds an event to the queue.</span>
-</span><span id="Grid.add_event-69"><a href="#Grid.add_event-69"><span class="linenos">69</span></a><span class="sd">        This method schedules an event for a specific object at a specific time.</span>
-</span><span id="Grid.add_event-70"><a href="#Grid.add_event-70"><span class="linenos">70</span></a><span class="sd">        Essentially, it allows you to schedule a method call on an object at a specific time.</span>
-</span><span id="Grid.add_event-71"><a href="#Grid.add_event-71"><span class="linenos">71</span></a>
-</span><span id="Grid.add_event-72"><a href="#Grid.add_event-72"><span class="linenos">72</span></a><span class="sd">        Args:</span>
-</span><span id="Grid.add_event-73"><a href="#Grid.add_event-73"><span class="linenos">73</span></a>
-</span><span id="Grid.add_event-74"><a href="#Grid.add_event-74"><span class="linenos">74</span></a><span class="sd">            - time (int|float): The time at which the event should occur.</span>
-</span><span id="Grid.add_event-75"><a href="#Grid.add_event-75"><span class="linenos">75</span></a><span class="sd">            - object: The object on which the event will occur.</span>
-</span><span id="Grid.add_event-76"><a href="#Grid.add_event-76"><span class="linenos">76</span></a><span class="sd">            - method (str): The name of the method to be called on the object.</span>
-</span><span id="Grid.add_event-77"><a href="#Grid.add_event-77"><span class="linenos">77</span></a><span class="sd">            - kwargs (dict): The keyword arguments to be passed to the method.</span>
-</span><span id="Grid.add_event-78"><a href="#Grid.add_event-78"><span class="linenos">78</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Grid.add_event-79"><a href="#Grid.add_event-79"><span class="linenos">79</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span>
-</span><span id="Grid.add_event-80"><a href="#Grid.add_event-80"><span class="linenos">80</span></a>            <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
-</span><span id="Grid.add_event-81"><a href="#Grid.add_event-81"><span class="linenos">81</span></a>            <span class="n">event</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">},</span>
-</span><span id="Grid.add_event-82"><a href="#Grid.add_event-82"><span class="linenos">82</span></a>        <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Grid.add_event-68"><a href="#Grid.add_event-68"><span class="linenos">68</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_event</span><span class="p">(</span>
+</span><span id="Grid.add_event-69"><a href="#Grid.add_event-69"><span class="linenos">69</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+</span><span id="Grid.add_event-70"><a href="#Grid.add_event-70"><span class="linenos">70</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Grid.add_event-71"><a href="#Grid.add_event-71"><span class="linenos">71</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Grid.add_event-72"><a href="#Grid.add_event-72"><span class="linenos">72</span></a><span class="sd">        Adds an event to the queue.</span>
+</span><span id="Grid.add_event-73"><a href="#Grid.add_event-73"><span class="linenos">73</span></a><span class="sd">        This method schedules an event for a specific object at a specific time.</span>
+</span><span id="Grid.add_event-74"><a href="#Grid.add_event-74"><span class="linenos">74</span></a><span class="sd">        Essentially, it allows you to schedule a method call on an object at a specific time.</span>
+</span><span id="Grid.add_event-75"><a href="#Grid.add_event-75"><span class="linenos">75</span></a>
+</span><span id="Grid.add_event-76"><a href="#Grid.add_event-76"><span class="linenos">76</span></a><span class="sd">        Args:</span>
+</span><span id="Grid.add_event-77"><a href="#Grid.add_event-77"><span class="linenos">77</span></a>
+</span><span id="Grid.add_event-78"><a href="#Grid.add_event-78"><span class="linenos">78</span></a><span class="sd">        - time (int|float): The time at which the event should occur.</span>
+</span><span id="Grid.add_event-79"><a href="#Grid.add_event-79"><span class="linenos">79</span></a><span class="sd">        - object: The object on which the event will occur.</span>
+</span><span id="Grid.add_event-80"><a href="#Grid.add_event-80"><span class="linenos">80</span></a><span class="sd">        - method (str): The name of the method to be called on the object.</span>
+</span><span id="Grid.add_event-81"><a href="#Grid.add_event-81"><span class="linenos">81</span></a><span class="sd">        - kwargs (dict): The keyword arguments to be passed to the method.</span>
+</span><span id="Grid.add_event-82"><a href="#Grid.add_event-82"><span class="linenos">82</span></a>
+</span><span id="Grid.add_event-83"><a href="#Grid.add_event-83"><span class="linenos">83</span></a><span class="sd">        Returns:</span>
+</span><span id="Grid.add_event-84"><a href="#Grid.add_event-84"><span class="linenos">84</span></a>
+</span><span id="Grid.add_event-85"><a href="#Grid.add_event-85"><span class="linenos">85</span></a><span class="sd">        - int: The ID of the added event as generated by the queue.</span>
+</span><span id="Grid.add_event-86"><a href="#Grid.add_event-86"><span class="linenos">86</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Grid.add_event-87"><a href="#Grid.add_event-87"><span class="linenos">87</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__queue__</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span>
+</span><span id="Grid.add_event-88"><a href="#Grid.add_event-88"><span class="linenos">88</span></a>            <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
+</span><span id="Grid.add_event-89"><a href="#Grid.add_event-89"><span class="linenos">89</span></a>            <span class="n">event</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">},</span>
+</span><span id="Grid.add_event-90"><a href="#Grid.add_event-90"><span class="linenos">90</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -687,11 +700,18 @@ Essentially, it allows you to schedule a method call on an object at a specific 
 
 <p>Args:</p>
 
-<pre><code>- time (int|float): The time at which the event should occur.
-- object: The object on which the event will occur.
-- method (str): The name of the method to be called on the object.
-- kwargs (dict): The keyword arguments to be passed to the method.
-</code></pre>
+<ul>
+<li>time (int|float): The time at which the event should occur.</li>
+<li>object: The object on which the event will occur.</li>
+<li>method (str): The name of the method to be called on the object.</li>
+<li>kwargs (dict): The keyword arguments to be passed to the method.</li>
+</ul>
+
+<p>Returns:</p>
+
+<ul>
+<li>int: The ID of the added event as generated by the queue.</li>
+</ul>
 </div>
 
 
@@ -701,23 +721,33 @@ Essentially, it allows you to schedule a method call on an object at a specific 
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">get_time</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">get_time</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="Grid.get_time-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Grid.get_time"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Grid.get_time-84"><a href="#Grid.get_time-84"><span class="linenos">84</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Grid.get_time-85"><a href="#Grid.get_time-85"><span class="linenos">85</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Grid.get_time-86"><a href="#Grid.get_time-86"><span class="linenos">86</span></a><span class="sd">        Returns the current time of the grid.</span>
-</span><span id="Grid.get_time-87"><a href="#Grid.get_time-87"><span class="linenos">87</span></a><span class="sd">        This method retrieves the current time from the queue.</span>
-</span><span id="Grid.get_time-88"><a href="#Grid.get_time-88"><span class="linenos">88</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Grid.get_time-89"><a href="#Grid.get_time-89"><span class="linenos">89</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">time</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Grid.get_time-92"><a href="#Grid.get_time-92"><span class="linenos"> 92</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="Grid.get_time-93"><a href="#Grid.get_time-93"><span class="linenos"> 93</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Grid.get_time-94"><a href="#Grid.get_time-94"><span class="linenos"> 94</span></a><span class="sd">        Returns the current time of the grid.</span>
+</span><span id="Grid.get_time-95"><a href="#Grid.get_time-95"><span class="linenos"> 95</span></a><span class="sd">        This method retrieves the current time from the queue.</span>
+</span><span id="Grid.get_time-96"><a href="#Grid.get_time-96"><span class="linenos"> 96</span></a>
+</span><span id="Grid.get_time-97"><a href="#Grid.get_time-97"><span class="linenos"> 97</span></a><span class="sd">        Returns:</span>
+</span><span id="Grid.get_time-98"><a href="#Grid.get_time-98"><span class="linenos"> 98</span></a>
+</span><span id="Grid.get_time-99"><a href="#Grid.get_time-99"><span class="linenos"> 99</span></a><span class="sd">        - int|float: The current time of the grid.</span>
+</span><span id="Grid.get_time-100"><a href="#Grid.get_time-100"><span class="linenos">100</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Grid.get_time-101"><a href="#Grid.get_time-101"><span class="linenos">101</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__queue__</span><span class="o">.</span><span class="n">__time__</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Returns the current time of the grid.
 This method retrieves the current time from the queue.</p>
+
+<p>Returns:</p>
+
+<ul>
+<li>int|float: The current time of the grid.</li>
+</ul>
 </div>
 
 
@@ -727,32 +757,64 @@ This method retrieves the current time from the queue.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">resolve_next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">resolve_next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="Grid.resolve_next_state-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Grid.resolve_next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Grid.resolve_next_state-91"><a href="#Grid.resolve_next_state-91"><span class="linenos"> 91</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">resolve_next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Grid.resolve_next_state-92"><a href="#Grid.resolve_next_state-92"><span class="linenos"> 92</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Grid.resolve_next_state-93"><a href="#Grid.resolve_next_state-93"><span class="linenos"> 93</span></a><span class="sd">        Resolves the next state of the grid.</span>
-</span><span id="Grid.resolve_next_state-94"><a href="#Grid.resolve_next_state-94"><span class="linenos"> 94</span></a><span class="sd">        This method processes the next event in the queue and updates the grid accordingly.</span>
-</span><span id="Grid.resolve_next_state-95"><a href="#Grid.resolve_next_state-95"><span class="linenos"> 95</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Grid.resolve_next_state-96"><a href="#Grid.resolve_next_state-96"><span class="linenos"> 96</span></a>        <span class="n">event_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get_next_events</span><span class="p">()</span>
-</span><span id="Grid.resolve_next_state-97"><a href="#Grid.resolve_next_state-97"><span class="linenos"> 97</span></a>        <span class="k">for</span> <span class="n">event_item</span> <span class="ow">in</span> <span class="n">event_items</span><span class="p">:</span>
-</span><span id="Grid.resolve_next_state-98"><a href="#Grid.resolve_next_state-98"><span class="linenos"> 98</span></a>            <span class="n">event</span> <span class="o">=</span> <span class="n">event_item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">)</span>
-</span><span id="Grid.resolve_next_state-99"><a href="#Grid.resolve_next_state-99"><span class="linenos"> 99</span></a>            <span class="nb">object</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
-</span><span id="Grid.resolve_next_state-100"><a href="#Grid.resolve_next_state-100"><span class="linenos">100</span></a>            <span class="n">method</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;method&quot;</span><span class="p">)</span>
-</span><span id="Grid.resolve_next_state-101"><a href="#Grid.resolve_next_state-101"><span class="linenos">101</span></a>            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kwargs&quot;</span><span class="p">)</span>
-</span><span id="Grid.resolve_next_state-102"><a href="#Grid.resolve_next_state-102"><span class="linenos">102</span></a>            <span class="k">if</span> <span class="nb">object</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Grid.resolve_next_state-103"><a href="#Grid.resolve_next_state-103"><span class="linenos">103</span></a>                <span class="k">continue</span>
-</span><span id="Grid.resolve_next_state-104"><a href="#Grid.resolve_next_state-104"><span class="linenos">104</span></a>            <span class="nb">getattr</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">method</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="Grid.resolve_next_state-105"><a href="#Grid.resolve_next_state-105"><span class="linenos">105</span></a>        <span class="k">return</span> <span class="n">event_items</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Grid.resolve_next_state-103"><a href="#Grid.resolve_next_state-103"><span class="linenos">103</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">resolve_next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+</span><span id="Grid.resolve_next_state-104"><a href="#Grid.resolve_next_state-104"><span class="linenos">104</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Grid.resolve_next_state-105"><a href="#Grid.resolve_next_state-105"><span class="linenos">105</span></a><span class="sd">        Resolves the next state of the grid.</span>
+</span><span id="Grid.resolve_next_state-106"><a href="#Grid.resolve_next_state-106"><span class="linenos">106</span></a><span class="sd">        This method processes the next event in the queue and updates the grid accordingly.</span>
+</span><span id="Grid.resolve_next_state-107"><a href="#Grid.resolve_next_state-107"><span class="linenos">107</span></a>
+</span><span id="Grid.resolve_next_state-108"><a href="#Grid.resolve_next_state-108"><span class="linenos">108</span></a><span class="sd">        Returns:</span>
+</span><span id="Grid.resolve_next_state-109"><a href="#Grid.resolve_next_state-109"><span class="linenos">109</span></a>
+</span><span id="Grid.resolve_next_state-110"><a href="#Grid.resolve_next_state-110"><span class="linenos">110</span></a><span class="sd">        - list[dict]: A list of events that were processed in this step.</span>
+</span><span id="Grid.resolve_next_state-111"><a href="#Grid.resolve_next_state-111"><span class="linenos">111</span></a><span class="sd">            - Each event is a dictionary containing a time, id and event.</span>
+</span><span id="Grid.resolve_next_state-112"><a href="#Grid.resolve_next_state-112"><span class="linenos">112</span></a><span class="sd">            - The event dictionary contains the object, method and kwargs.</span>
+</span><span id="Grid.resolve_next_state-113"><a href="#Grid.resolve_next_state-113"><span class="linenos">113</span></a><span class="sd">                - id (int): The ID of the event as generated by the queue.</span>
+</span><span id="Grid.resolve_next_state-114"><a href="#Grid.resolve_next_state-114"><span class="linenos">114</span></a><span class="sd">                - time (int|float): The time at which the event occurred.</span>
+</span><span id="Grid.resolve_next_state-115"><a href="#Grid.resolve_next_state-115"><span class="linenos">115</span></a><span class="sd">                - event (dict): The event that was processed.</span>
+</span><span id="Grid.resolve_next_state-116"><a href="#Grid.resolve_next_state-116"><span class="linenos">116</span></a><span class="sd">                    - object: The object on which the event occurred.</span>
+</span><span id="Grid.resolve_next_state-117"><a href="#Grid.resolve_next_state-117"><span class="linenos">117</span></a><span class="sd">                    - method (str): The name of the method that was called.</span>
+</span><span id="Grid.resolve_next_state-118"><a href="#Grid.resolve_next_state-118"><span class="linenos">118</span></a><span class="sd">                    - kwargs (dict): The keyword arguments that were passed to the method.</span>
+</span><span id="Grid.resolve_next_state-119"><a href="#Grid.resolve_next_state-119"><span class="linenos">119</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Grid.resolve_next_state-120"><a href="#Grid.resolve_next_state-120"><span class="linenos">120</span></a>        <span class="n">event_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__queue__</span><span class="o">.</span><span class="n">get_next_events</span><span class="p">()</span>
+</span><span id="Grid.resolve_next_state-121"><a href="#Grid.resolve_next_state-121"><span class="linenos">121</span></a>        <span class="k">for</span> <span class="n">event_item</span> <span class="ow">in</span> <span class="n">event_items</span><span class="p">:</span>
+</span><span id="Grid.resolve_next_state-122"><a href="#Grid.resolve_next_state-122"><span class="linenos">122</span></a>            <span class="n">event</span> <span class="o">=</span> <span class="n">event_item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">)</span>
+</span><span id="Grid.resolve_next_state-123"><a href="#Grid.resolve_next_state-123"><span class="linenos">123</span></a>            <span class="nb">object</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
+</span><span id="Grid.resolve_next_state-124"><a href="#Grid.resolve_next_state-124"><span class="linenos">124</span></a>            <span class="n">method</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;method&quot;</span><span class="p">)</span>
+</span><span id="Grid.resolve_next_state-125"><a href="#Grid.resolve_next_state-125"><span class="linenos">125</span></a>            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kwargs&quot;</span><span class="p">)</span>
+</span><span id="Grid.resolve_next_state-126"><a href="#Grid.resolve_next_state-126"><span class="linenos">126</span></a>            <span class="k">if</span> <span class="nb">object</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Grid.resolve_next_state-127"><a href="#Grid.resolve_next_state-127"><span class="linenos">127</span></a>                <span class="k">continue</span>
+</span><span id="Grid.resolve_next_state-128"><a href="#Grid.resolve_next_state-128"><span class="linenos">128</span></a>            <span class="nb">getattr</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">method</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Grid.resolve_next_state-129"><a href="#Grid.resolve_next_state-129"><span class="linenos">129</span></a>        <span class="k">return</span> <span class="n">event_items</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Resolves the next state of the grid.
 This method processes the next event in the queue and updates the grid accordingly.</p>
+
+<p>Returns:</p>
+
+<ul>
+<li>list[dict]: A list of events that were processed in this step.
+<ul>
+<li>Each event is a dictionary containing a time, id and event.</li>
+<li>The event dictionary contains the object, method and kwargs.
+<ul>
+<li>id (int): The ID of the event as generated by the queue.</li>
+<li>time (int|float): The time at which the event occurred.</li>
+<li>event (dict): The event that was processed.
+<ul>
+<li>object: The object on which the event occurred.</li>
+<li>method (str): The name of the method that was called.</li>
+<li>kwargs (dict): The keyword arguments that were passed to the method.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
 </div>
 
 
@@ -762,67 +824,105 @@ This method processes the next event in the queue and updates the grid according
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">add_exterior_walls</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">add_exterior_walls</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
 
                 <label class="view-source-button" for="Grid.add_exterior_walls-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Grid.add_exterior_walls"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Grid.add_exterior_walls-107"><a href="#Grid.add_exterior_walls-107"><span class="linenos">107</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_exterior_walls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Grid.add_exterior_walls-108"><a href="#Grid.add_exterior_walls-108"><span class="linenos">108</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Grid.add_exterior_walls-109"><a href="#Grid.add_exterior_walls-109"><span class="linenos">109</span></a><span class="sd">        Adds exterior walls to the grid.</span>
-</span><span id="Grid.add_exterior_walls-110"><a href="#Grid.add_exterior_walls-110"><span class="linenos">110</span></a><span class="sd">        This method creates walls around the grid to prevent entities from moving outside the grid.</span>
-</span><span id="Grid.add_exterior_walls-111"><a href="#Grid.add_exterior_walls-111"><span class="linenos">111</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Grid.add_exterior_walls-112"><a href="#Grid.add_exterior_walls-112"><span class="linenos">112</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
-</span><span id="Grid.add_exterior_walls-113"><a href="#Grid.add_exterior_walls-113"><span class="linenos">113</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
-</span><span id="Grid.add_exterior_walls-114"><a href="#Grid.add_exterior_walls-114"><span class="linenos">114</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Left Wall&quot;</span><span class="p">,</span>
-</span><span id="Grid.add_exterior_walls-115"><a href="#Grid.add_exterior_walls-115"><span class="linenos">115</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
-</span><span id="Grid.add_exterior_walls-116"><a href="#Grid.add_exterior_walls-116"><span class="linenos">116</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="Grid.add_exterior_walls-117"><a href="#Grid.add_exterior_walls-117"><span class="linenos">117</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="Grid.add_exterior_walls-118"><a href="#Grid.add_exterior_walls-118"><span class="linenos">118</span></a>            <span class="p">)</span>
-</span><span id="Grid.add_exterior_walls-119"><a href="#Grid.add_exterior_walls-119"><span class="linenos">119</span></a>        <span class="p">)</span>
-</span><span id="Grid.add_exterior_walls-120"><a href="#Grid.add_exterior_walls-120"><span class="linenos">120</span></a>
-</span><span id="Grid.add_exterior_walls-121"><a href="#Grid.add_exterior_walls-121"><span class="linenos">121</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
-</span><span id="Grid.add_exterior_walls-122"><a href="#Grid.add_exterior_walls-122"><span class="linenos">122</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
-</span><span id="Grid.add_exterior_walls-123"><a href="#Grid.add_exterior_walls-123"><span class="linenos">123</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Right Wall&quot;</span><span class="p">,</span>
-</span><span id="Grid.add_exterior_walls-124"><a href="#Grid.add_exterior_walls-124"><span class="linenos">124</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
-</span><span id="Grid.add_exterior_walls-125"><a href="#Grid.add_exterior_walls-125"><span class="linenos">125</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span>
-</span><span id="Grid.add_exterior_walls-126"><a href="#Grid.add_exterior_walls-126"><span class="linenos">126</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="Grid.add_exterior_walls-127"><a href="#Grid.add_exterior_walls-127"><span class="linenos">127</span></a>            <span class="p">)</span>
-</span><span id="Grid.add_exterior_walls-128"><a href="#Grid.add_exterior_walls-128"><span class="linenos">128</span></a>        <span class="p">)</span>
-</span><span id="Grid.add_exterior_walls-129"><a href="#Grid.add_exterior_walls-129"><span class="linenos">129</span></a>
-</span><span id="Grid.add_exterior_walls-130"><a href="#Grid.add_exterior_walls-130"><span class="linenos">130</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
-</span><span id="Grid.add_exterior_walls-131"><a href="#Grid.add_exterior_walls-131"><span class="linenos">131</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
-</span><span id="Grid.add_exterior_walls-132"><a href="#Grid.add_exterior_walls-132"><span class="linenos">132</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Top Wall&quot;</span><span class="p">,</span>
-</span><span id="Grid.add_exterior_walls-133"><a href="#Grid.add_exterior_walls-133"><span class="linenos">133</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
-</span><span id="Grid.add_exterior_walls-134"><a href="#Grid.add_exterior_walls-134"><span class="linenos">134</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-</span><span id="Grid.add_exterior_walls-135"><a href="#Grid.add_exterior_walls-135"><span class="linenos">135</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-</span><span id="Grid.add_exterior_walls-136"><a href="#Grid.add_exterior_walls-136"><span class="linenos">136</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-</span><span id="Grid.add_exterior_walls-137"><a href="#Grid.add_exterior_walls-137"><span class="linenos">137</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-</span><span id="Grid.add_exterior_walls-138"><a href="#Grid.add_exterior_walls-138"><span class="linenos">138</span></a>                <span class="p">],</span>
-</span><span id="Grid.add_exterior_walls-139"><a href="#Grid.add_exterior_walls-139"><span class="linenos">139</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-</span><span id="Grid.add_exterior_walls-140"><a href="#Grid.add_exterior_walls-140"><span class="linenos">140</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y_size</span><span class="p">,</span>
-</span><span id="Grid.add_exterior_walls-141"><a href="#Grid.add_exterior_walls-141"><span class="linenos">141</span></a>            <span class="p">)</span>
-</span><span id="Grid.add_exterior_walls-142"><a href="#Grid.add_exterior_walls-142"><span class="linenos">142</span></a>        <span class="p">)</span>
-</span><span id="Grid.add_exterior_walls-143"><a href="#Grid.add_exterior_walls-143"><span class="linenos">143</span></a>
-</span><span id="Grid.add_exterior_walls-144"><a href="#Grid.add_exterior_walls-144"><span class="linenos">144</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
-</span><span id="Grid.add_exterior_walls-145"><a href="#Grid.add_exterior_walls-145"><span class="linenos">145</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
-</span><span id="Grid.add_exterior_walls-146"><a href="#Grid.add_exterior_walls-146"><span class="linenos">146</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Bottom Wall&quot;</span><span class="p">,</span>
-</span><span id="Grid.add_exterior_walls-147"><a href="#Grid.add_exterior_walls-147"><span class="linenos">147</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
-</span><span id="Grid.add_exterior_walls-148"><a href="#Grid.add_exterior_walls-148"><span class="linenos">148</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-</span><span id="Grid.add_exterior_walls-149"><a href="#Grid.add_exterior_walls-149"><span class="linenos">149</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-</span><span id="Grid.add_exterior_walls-150"><a href="#Grid.add_exterior_walls-150"><span class="linenos">150</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-</span><span id="Grid.add_exterior_walls-151"><a href="#Grid.add_exterior_walls-151"><span class="linenos">151</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-</span><span id="Grid.add_exterior_walls-152"><a href="#Grid.add_exterior_walls-152"><span class="linenos">152</span></a>                <span class="p">],</span>
-</span><span id="Grid.add_exterior_walls-153"><a href="#Grid.add_exterior_walls-153"><span class="linenos">153</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-</span><span id="Grid.add_exterior_walls-154"><a href="#Grid.add_exterior_walls-154"><span class="linenos">154</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="Grid.add_exterior_walls-155"><a href="#Grid.add_exterior_walls-155"><span class="linenos">155</span></a>            <span class="p">)</span>
-</span><span id="Grid.add_exterior_walls-156"><a href="#Grid.add_exterior_walls-156"><span class="linenos">156</span></a>        <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Grid.add_exterior_walls-131"><a href="#Grid.add_exterior_walls-131"><span class="linenos">131</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_exterior_walls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Grid.add_exterior_walls-132"><a href="#Grid.add_exterior_walls-132"><span class="linenos">132</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Grid.add_exterior_walls-133"><a href="#Grid.add_exterior_walls-133"><span class="linenos">133</span></a><span class="sd">        Adds exterior walls to the grid.</span>
+</span><span id="Grid.add_exterior_walls-134"><a href="#Grid.add_exterior_walls-134"><span class="linenos">134</span></a><span class="sd">        This method creates walls around the grid to prevent entities from moving outside the grid.</span>
+</span><span id="Grid.add_exterior_walls-135"><a href="#Grid.add_exterior_walls-135"><span class="linenos">135</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Grid.add_exterior_walls-136"><a href="#Grid.add_exterior_walls-136"><span class="linenos">136</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
+</span><span id="Grid.add_exterior_walls-137"><a href="#Grid.add_exterior_walls-137"><span class="linenos">137</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
+</span><span id="Grid.add_exterior_walls-138"><a href="#Grid.add_exterior_walls-138"><span class="linenos">138</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Left Wall&quot;</span><span class="p">,</span>
+</span><span id="Grid.add_exterior_walls-139"><a href="#Grid.add_exterior_walls-139"><span class="linenos">139</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
+</span><span id="Grid.add_exterior_walls-140"><a href="#Grid.add_exterior_walls-140"><span class="linenos">140</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-141"><a href="#Grid.add_exterior_walls-141"><span class="linenos">141</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-142"><a href="#Grid.add_exterior_walls-142"><span class="linenos">142</span></a>                    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-143"><a href="#Grid.add_exterior_walls-143"><span class="linenos">143</span></a>                    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-144"><a href="#Grid.add_exterior_walls-144"><span class="linenos">144</span></a>                <span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-145"><a href="#Grid.add_exterior_walls-145"><span class="linenos">145</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="Grid.add_exterior_walls-146"><a href="#Grid.add_exterior_walls-146"><span class="linenos">146</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="Grid.add_exterior_walls-147"><a href="#Grid.add_exterior_walls-147"><span class="linenos">147</span></a>            <span class="p">)</span>
+</span><span id="Grid.add_exterior_walls-148"><a href="#Grid.add_exterior_walls-148"><span class="linenos">148</span></a>        <span class="p">)</span>
+</span><span id="Grid.add_exterior_walls-149"><a href="#Grid.add_exterior_walls-149"><span class="linenos">149</span></a>
+</span><span id="Grid.add_exterior_walls-150"><a href="#Grid.add_exterior_walls-150"><span class="linenos">150</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
+</span><span id="Grid.add_exterior_walls-151"><a href="#Grid.add_exterior_walls-151"><span class="linenos">151</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
+</span><span id="Grid.add_exterior_walls-152"><a href="#Grid.add_exterior_walls-152"><span class="linenos">152</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Right Wall&quot;</span><span class="p">,</span>
+</span><span id="Grid.add_exterior_walls-153"><a href="#Grid.add_exterior_walls-153"><span class="linenos">153</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
+</span><span id="Grid.add_exterior_walls-154"><a href="#Grid.add_exterior_walls-154"><span class="linenos">154</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-155"><a href="#Grid.add_exterior_walls-155"><span class="linenos">155</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-156"><a href="#Grid.add_exterior_walls-156"><span class="linenos">156</span></a>                    <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-157"><a href="#Grid.add_exterior_walls-157"><span class="linenos">157</span></a>                    <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-158"><a href="#Grid.add_exterior_walls-158"><span class="linenos">158</span></a>                <span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-159"><a href="#Grid.add_exterior_walls-159"><span class="linenos">159</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span><span class="p">,</span>
+</span><span id="Grid.add_exterior_walls-160"><a href="#Grid.add_exterior_walls-160"><span class="linenos">160</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="Grid.add_exterior_walls-161"><a href="#Grid.add_exterior_walls-161"><span class="linenos">161</span></a>            <span class="p">)</span>
+</span><span id="Grid.add_exterior_walls-162"><a href="#Grid.add_exterior_walls-162"><span class="linenos">162</span></a>        <span class="p">)</span>
+</span><span id="Grid.add_exterior_walls-163"><a href="#Grid.add_exterior_walls-163"><span class="linenos">163</span></a>
+</span><span id="Grid.add_exterior_walls-164"><a href="#Grid.add_exterior_walls-164"><span class="linenos">164</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
+</span><span id="Grid.add_exterior_walls-165"><a href="#Grid.add_exterior_walls-165"><span class="linenos">165</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
+</span><span id="Grid.add_exterior_walls-166"><a href="#Grid.add_exterior_walls-166"><span class="linenos">166</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Top Wall&quot;</span><span class="p">,</span>
+</span><span id="Grid.add_exterior_walls-167"><a href="#Grid.add_exterior_walls-167"><span class="linenos">167</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
+</span><span id="Grid.add_exterior_walls-168"><a href="#Grid.add_exterior_walls-168"><span class="linenos">168</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-169"><a href="#Grid.add_exterior_walls-169"><span class="linenos">169</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-170"><a href="#Grid.add_exterior_walls-170"><span class="linenos">170</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-171"><a href="#Grid.add_exterior_walls-171"><span class="linenos">171</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-172"><a href="#Grid.add_exterior_walls-172"><span class="linenos">172</span></a>                <span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-173"><a href="#Grid.add_exterior_walls-173"><span class="linenos">173</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="Grid.add_exterior_walls-174"><a href="#Grid.add_exterior_walls-174"><span class="linenos">174</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__y_size__</span><span class="p">,</span>
+</span><span id="Grid.add_exterior_walls-175"><a href="#Grid.add_exterior_walls-175"><span class="linenos">175</span></a>            <span class="p">)</span>
+</span><span id="Grid.add_exterior_walls-176"><a href="#Grid.add_exterior_walls-176"><span class="linenos">176</span></a>        <span class="p">)</span>
+</span><span id="Grid.add_exterior_walls-177"><a href="#Grid.add_exterior_walls-177"><span class="linenos">177</span></a>
+</span><span id="Grid.add_exterior_walls-178"><a href="#Grid.add_exterior_walls-178"><span class="linenos">178</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">add_entity</span><span class="p">(</span>
+</span><span id="Grid.add_exterior_walls-179"><a href="#Grid.add_exterior_walls-179"><span class="linenos">179</span></a>            <span class="n">StaticEntity</span><span class="p">(</span>
+</span><span id="Grid.add_exterior_walls-180"><a href="#Grid.add_exterior_walls-180"><span class="linenos">180</span></a>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Bottom Wall&quot;</span><span class="p">,</span>
+</span><span id="Grid.add_exterior_walls-181"><a href="#Grid.add_exterior_walls-181"><span class="linenos">181</span></a>                <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
+</span><span id="Grid.add_exterior_walls-182"><a href="#Grid.add_exterior_walls-182"><span class="linenos">182</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-183"><a href="#Grid.add_exterior_walls-183"><span class="linenos">183</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-184"><a href="#Grid.add_exterior_walls-184"><span class="linenos">184</span></a>                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__x_size__</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-185"><a href="#Grid.add_exterior_walls-185"><span class="linenos">185</span></a>                    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-186"><a href="#Grid.add_exterior_walls-186"><span class="linenos">186</span></a>                <span class="p">],</span>
+</span><span id="Grid.add_exterior_walls-187"><a href="#Grid.add_exterior_walls-187"><span class="linenos">187</span></a>                <span class="n">x_coord</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="Grid.add_exterior_walls-188"><a href="#Grid.add_exterior_walls-188"><span class="linenos">188</span></a>                <span class="n">y_coord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="Grid.add_exterior_walls-189"><a href="#Grid.add_exterior_walls-189"><span class="linenos">189</span></a>            <span class="p">)</span>
+</span><span id="Grid.add_exterior_walls-190"><a href="#Grid.add_exterior_walls-190"><span class="linenos">190</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Adds exterior walls to the grid.
 This method creates walls around the grid to prevent entities from moving outside the grid.</p>
+</div>
+
+
+                            </div>
+                            <div id="Grid.simulate" class="classattr">
+                                        <input id="Grid.simulate-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">simulate</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <label class="view-source-button" for="Grid.simulate-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Grid.simulate"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Grid.simulate-192"><a href="#Grid.simulate-192"><span class="linenos">192</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Grid.simulate-193"><a href="#Grid.simulate-193"><span class="linenos">193</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Grid.simulate-194"><a href="#Grid.simulate-194"><span class="linenos">194</span></a><span class="sd">        Runs the simulation for the grid.</span>
+</span><span id="Grid.simulate-195"><a href="#Grid.simulate-195"><span class="linenos">195</span></a><span class="sd">        This method processes events in the queue until all events are resolved or the maximum time is reached.</span>
+</span><span id="Grid.simulate-196"><a href="#Grid.simulate-196"><span class="linenos">196</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Grid.simulate-197"><a href="#Grid.simulate-197"><span class="linenos">197</span></a>        <span class="n">next_state_events</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="Grid.simulate-198"><a href="#Grid.simulate-198"><span class="linenos">198</span></a>        <span class="k">while</span> <span class="n">next_state_events</span><span class="p">:</span>
+</span><span id="Grid.simulate-199"><a href="#Grid.simulate-199"><span class="linenos">199</span></a>            <span class="n">next_state_events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_next_state</span><span class="p">()</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Runs the simulation for the grid.
+This method processes events in the queue until all events are resolved or the maximum time is reached.</p>
 </div>
 
 
