@@ -263,7 +263,7 @@ print({
 # Development
 ## Running Tests, Prettifying Code, and Updating Docs
 
-Make sure Docker is installed and running.
+Make sure Docker is installed and running on a Unix system (Linux, MacOS, WSL2).
 
 - Create a docker container and drop into a shell
     - `./run.sh`
