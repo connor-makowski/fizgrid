@@ -132,7 +132,6 @@ from fizgrid.utils import Shape
 import random, math
 
 
-
 class Sniffer(Entity):
     def __init__(self, *args, **kwargs):
         # Override the init method of the Entity class to extend the functionality and add custom attributes.
@@ -204,15 +203,15 @@ class Sniffer(Entity):
                 self.goal_y = None
 
 
-grid = Grid(
+forest = Grid(
     name="forest",
     x_size=1000,
     y_size=1000,
     add_exterior_walls=True,
 )
 
-# Add some AMRs to the grid
-truffle_pig_1 = grid.add_entity(
+# Add some pigs to the forest
+truffle_pig_1 = forest.add_entity(
     Sniffer(
         name="Truffle_Pig_1",
         shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
@@ -220,7 +219,7 @@ truffle_pig_1 = grid.add_entity(
         y_coord=500,
     )
 )
-truffle_pig_2 = grid.add_entity(
+truffle_pig_2 = forest.add_entity(
     Sniffer(
         name="Truffle_Pig_2",
         shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
@@ -240,7 +239,7 @@ truffle_pig_2.set_goal(
 )
 
 # Run the sim
-grid.simulate()
+forest.simulate()
 
 print({
     'Name': truffle_pig_1.name,

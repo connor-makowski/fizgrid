@@ -75,15 +75,15 @@ class Sniffer(Entity):
                 self.goal_y = None
 
 
-grid = Grid(
+forest = Grid(
     name="forest",
     x_size=1000,
     y_size=1000,
     add_exterior_walls=True,
 )
 
-# Add some AMRs to the grid
-truffle_pig_1 = grid.add_entity(
+# Add some pigs to the forest
+truffle_pig_1 = forest.add_entity(
     Sniffer(
         name="Truffle_Pig_1",
         shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
@@ -91,7 +91,7 @@ truffle_pig_1 = grid.add_entity(
         y_coord=500,
     )
 )
-truffle_pig_2 = grid.add_entity(
+truffle_pig_2 = forest.add_entity(
     Sniffer(
         name="Truffle_Pig_2",
         shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
@@ -111,7 +111,7 @@ truffle_pig_2.set_goal(
 )
 
 # Run the sim
-grid.simulate()
+forest.simulate()
 
 # print({
 #     'Name': truffle_pig_1.name,
@@ -123,6 +123,10 @@ grid.simulate()
 #     'x_coord': truffle_pig_2.x_coord,
 #     'y_coord': truffle_pig_2.y_coord,
 # })
+
+# Example Output
+# {'Name': 'Truffle_Pig_1', 'x_coord': 550.6344767270211, 'y_coord': 499.90150976359365}
+# {'Name': 'Truffle_Pig_2', 'x_coord': 499.2754299204255, 'y_coord': 550.6818320798665}
 
 
 # Checks for success
