@@ -3,6 +3,7 @@ from fizgrid.entities import Entity
 from fizgrid.utils import Shape
 import random, math
 
+
 class AMR(Entity):
     def __init__(self, *args, server, **kwargs):
         super().__init__(*args, **kwargs)
@@ -10,6 +11,7 @@ class AMR(Entity):
 
     def on_realize(self, **kwargs):
         self.server.request_next_step(self.id)
+
 
 class Order:
     def __init__(
@@ -32,6 +34,7 @@ class Order:
         self.time = time
         self.status = status
         self.history.append({"time": time, "status": status})
+
 
 class AssignedOrderHandler:
     def __init__(self, amr, order, server):
@@ -88,10 +91,11 @@ class AssignedOrderHandler:
                 (
                     self.amr.x_coord + x_shift,
                     self.amr.y_coord + y_shift,
-                    distance / self.speed
+                    distance / self.speed,
                 ),
             ]
         )
+
 
 class Server:
     def __init__(self, grid):
@@ -104,7 +108,9 @@ class Server:
         self.available_amrs = []
         self.order_handlers = {}
 
-    def schedule_order(self, time, origin_x, origin_y, destination_x, destination_y):
+    def schedule_order(
+        self, time, origin_x, origin_y, destination_x, destination_y
+    ):
         self.grid.add_event(
             time=time,
             object=self,
@@ -119,13 +125,15 @@ class Server:
         )
 
     def create_amr(self, name, x_coord, y_coord):
-        amr = grid.add_entity(AMR(
-            name=name,
-            shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
-            x_coord=x_coord,
-            y_coord=y_coord,
-            server=self,
-        ))
+        amr = grid.add_entity(
+            AMR(
+                name=name,
+                shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
+                x_coord=x_coord,
+                y_coord=y_coord,
+                server=self,
+            )
+        )
         self.grid.add_entity(amr)
         self.add_available_amr(amr)
         return amr
@@ -151,7 +159,7 @@ class Server:
         )
         self.order_handlers[order_handler.amr.id] = order_handler
         order_handler.handle_next_step()
-        
+
     def request_next_step(self, amr_id):
         order_handler = self.order_handlers.get(amr_id)
         if order_handler is not None:

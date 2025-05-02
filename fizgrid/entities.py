@@ -211,7 +211,7 @@ class Entity:
                 )
             )
 
-        # Store the route deltas and start time for later use to determine the entity's position at a given time
+        # Store the route waypoints and start time for later use to determine the entity's position at a given time
         self.__planned_waypoints__ = waypoints
         self.__route_start_time__ = self.get_time()
         self.__route_end_time__ = min(
@@ -219,7 +219,7 @@ class Entity:
             self.__route_start_time__ + total_route_time_shift,
         )
 
-        # For each route delta, calculate the blocks and collisions and add them to the grid
+        # For each route waypoint, calculate the blocks and collisions and add them to the grid
         for waypoint in waypoints:
             blocks = RectangleMoverUtils.moving_shape_overlap_intervals(
                 x_coord=x_tmp,
@@ -406,7 +406,7 @@ class Entity:
         time: int | float | None = None,
     ) -> None:
         """
-        Adds a route to the grid for this entity. You can either provide a set of route deltas or a set of waypoints (which will be converted to route deltas).
+        Adds a route to the grid for this entity.
 
         Args:
 
@@ -508,3 +508,98 @@ class StaticEntity(Entity):
         return self.__plan_route__(
             waypoints=[], raise_on_future_collision=raise_on_future_collision
         )
+
+
+class GhostEntity(Entity):
+    def __plan_route__(
+        self,
+        waypoints: list[tuple[int | float, int | float, int | float]],
+        raise_on_future_collision: bool = False,
+    ) -> dict:
+        """
+        Overrides the __plan_route__ method to allow for a ghost entity to be placed on the grid that never collides with other entities because it does not check for collisions.
+
+        Sets the route for this entity given a set of waypoints starting at the current time.
+
+        Args:
+
+        - waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.
+            - A list of tuples where each tuple is (x_coord, y_coord, time_shift).
+            - EG;
+                ```
+                waypoints = [
+                    (5, 3, 10),
+                    (3, 5, 10)
+                ]
+                ```
+                - Move to (5, 3) over 10 seconds
+                - Move to (3, 5) over 10 seconds
+            - Note: x_coord and y_coord are the coordinates of the waypoint. They must both be positive.
+            - Note: time_shift is the time it takes to move to the waypoint. It must be positive.
+        - raise_on_future_collision (bool): Whether to raise an exception if the entity has any future plans that result in a collision.
+            - Note: This is not used for ghost entities, but is included for consistency with the parent class.
+
+        Returns:
+
+        - dict: A dictionary containing the following keys:
+            - has_collision (bool): Whether the route has a collision with another entity.
+                - Note: This will always be False for ghost entities.
+        """
+        # Raise an exception if the entity is already in a route
+        if not self.is_available():
+            raise Exception(
+                f"entity {self.name} is not available for a new route. Cannot set a new route until the current route is finished."
+            )
+
+        # Check for valid waypoints
+        self.__waypoint_check__(waypoints)
+
+        # Setup util attributes
+        self.__clear_future_events__()
+
+        total_route_time_shift = sum([waypoint[2] for waypoint in waypoints])
+
+        self.__route_start_time__ = self.get_time()
+
+        # Add a final waypoint occuring until the end of the simulation.
+        # This allows us to lock in the position of the entity at the end of the route and block the grid cells accordingly.
+        if len(waypoints) > 0:
+            waypoints.append(
+                (
+                    waypoints[-1][0],
+                    waypoints[-1][1],
+                    self.__grid__.__max_time__
+                    - self.__route_start_time__
+                    - total_route_time_shift,
+                )
+            )
+        else:
+            waypoints.append(
+                (
+                    self.x_coord,
+                    self.y_coord,
+                    self.__grid__.__max_time__
+                    - self.__route_start_time__
+                    - total_route_time_shift,
+                )
+            )
+
+        # Store the route waypoints and start time for later use to determine the entity's position at a given time
+        self.__planned_waypoints__ = waypoints
+        self.__route_end_time__ = min(
+            self.__grid__.__max_time__,
+            self.__route_start_time__ + total_route_time_shift,
+        )
+
+        # Add a route_end event for this entity at the timing of the end of the route
+        if self.__route_start_time__ < self.__route_end_time__:
+            event_id = self.__grid__.add_event(
+                time=self.__route_end_time__,
+                object=self,
+                method="__realize_route__",
+                kwargs={
+                    "is_result_of_collision": False,
+                },
+            )
+            self.__future_event_ids__[event_id] = None
+        return {"has_collision": False}
