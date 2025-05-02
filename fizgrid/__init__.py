@@ -13,8 +13,6 @@ Events are scheduled into a priority queue, ordered by their occurrence time. Th
 
 ## Entity Movement and Scheduling
 
-Entity Movement and Event Scheduling
-
 Entity movements are planned in advance but only realized when an associated event is triggered. When a route is assigned to an entity, each grid cell along its path is reserved for the time the entity is expected to occupy it. During this reservation process, the system checks for potential conflicts. For example, whether another entity is scheduled to occupy the same cell at the same time.
 
 If a conflict is detected, a collision event is added to the queue for both entities. Only the first potential collision between any pair of entities is added to avoid redundancy. Additionally, an end-of-route event is queued for the entity to signal the completion of its movement.
@@ -48,6 +46,11 @@ pip install fizgrid
 ```
 
 ## Basic Usage
+
+### Technical Docs
+The technical documentation is available at [https://connor-makowski.github.io/fizgrid/index.html](https://connor-makowski.github.io/fizgrid/index.html).
+
+### Example
 ```py
 from fizgrid.grid import Grid
 from fizgrid.entities import Entity, StaticEntity, GhostEntity
@@ -259,7 +262,7 @@ print({
 # Development
 ## Running Tests, Prettifying Code, and Updating Docs
 
-Make sure Docker is installed and running.
+Make sure Docker is installed and running on a Unix system (Linux, MacOS, WSL2).
 
 - Create a docker container and drop into a shell
     - `./run.sh`
