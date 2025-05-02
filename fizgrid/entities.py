@@ -478,6 +478,13 @@ class Entity:
 
 
 class StaticEntity(Entity):
+    """
+    This class is used to represent entities that do not move, such as walls or other static objects.
+
+    This is an extension of the Entity class that represents a static entity. 
+    
+    To improve efficiency, many events and logic are avoided as a static entity does not move or respond to events.
+    """
     def __realize_route__(
         self,
         is_result_of_collision: bool = False,
@@ -511,6 +518,14 @@ class StaticEntity(Entity):
 
 
 class GhostEntity(Entity):
+    """
+    This class is used to represent entities that do not collide with other entities. 
+    
+    It is an extension of the Entity class that represents a ghost entity.
+
+    Essentially, these entities can move freely without worrying about collisions. Using them avoids substantial overhead in the simulation and can dramatically improve performance if collisions are irrelevant.
+    """
+
     def __plan_route__(
         self,
         waypoints: list[tuple[int | float, int | float, int | float]],
