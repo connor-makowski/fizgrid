@@ -90,7 +90,7 @@
 <footer>
 <select id="version-selector">
     <option value="latest">latest</option>
-        <option value="1.0.0">1.0.0</option>
+        <option value="1.1.0">1.1.0</option>
         <option value="1.0.0">1.0.0</option>
 </select>
 <script>
@@ -619,146 +619,131 @@
 </span><span id="L-478"><a href="#L-478"><span class="linenos">478</span></a>
 </span><span id="L-479"><a href="#L-479"><span class="linenos">479</span></a>
 </span><span id="L-480"><a href="#L-480"><span class="linenos">480</span></a><span class="k">class</span><span class="w"> </span><span class="nc">StaticEntity</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
-</span><span id="L-481"><a href="#L-481"><span class="linenos">481</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-482"><a href="#L-482"><span class="linenos">482</span></a><span class="sd">    This class is used to represent entities that do not move, such as walls or other static objects.</span>
-</span><span id="L-483"><a href="#L-483"><span class="linenos">483</span></a>
-</span><span id="L-484"><a href="#L-484"><span class="linenos">484</span></a><span class="sd">    This is an extension of the Entity class that represents a static entity. </span>
-</span><span id="L-485"><a href="#L-485"><span class="linenos">485</span></a><span class="sd">    </span>
-</span><span id="L-486"><a href="#L-486"><span class="linenos">486</span></a><span class="sd">    To improve efficiency, many events and logic are avoided as a static entity does not move or respond to events.</span>
-</span><span id="L-487"><a href="#L-487"><span class="linenos">487</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-488"><a href="#L-488"><span class="linenos">488</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__realize_route__</span><span class="p">(</span>
-</span><span id="L-489"><a href="#L-489"><span class="linenos">489</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-490"><a href="#L-490"><span class="linenos">490</span></a>        <span class="n">is_result_of_collision</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="L-491"><a href="#L-491"><span class="linenos">491</span></a>        <span class="n">raise_on_future_collision</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="L-492"><a href="#L-492"><span class="linenos">492</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span id="L-493"><a href="#L-493"><span class="linenos">493</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-494"><a href="#L-494"><span class="linenos">494</span></a><span class="sd">        Realize the route for this entity at the current time.</span>
-</span><span id="L-495"><a href="#L-495"><span class="linenos">495</span></a>
-</span><span id="L-496"><a href="#L-496"><span class="linenos">496</span></a><span class="sd">        Args:</span>
-</span><span id="L-497"><a href="#L-497"><span class="linenos">497</span></a>
-</span><span id="L-498"><a href="#L-498"><span class="linenos">498</span></a><span class="sd">        - is_result_of_collision (bool): Whether this route end is the result of a collision.</span>
-</span><span id="L-499"><a href="#L-499"><span class="linenos">499</span></a><span class="sd">            - If True, the route end is the result of a collision and the entity should not be allowed to start a new route until the collision is resolved.</span>
-</span><span id="L-500"><a href="#L-500"><span class="linenos">500</span></a><span class="sd">            - If False, the route end is not the result of a collision and the entity should be allowed to start a new route.</span>
-</span><span id="L-501"><a href="#L-501"><span class="linenos">501</span></a><span class="sd">        - raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.</span>
-</span><span id="L-502"><a href="#L-502"><span class="linenos">502</span></a><span class="sd">            - Raises an exception if this event causes a future collision with another entity.</span>
-</span><span id="L-503"><a href="#L-503"><span class="linenos">503</span></a>
-</span><span id="L-504"><a href="#L-504"><span class="linenos">504</span></a><span class="sd">        Returns:</span>
-</span><span id="L-505"><a href="#L-505"><span class="linenos">505</span></a>
-</span><span id="L-506"><a href="#L-506"><span class="linenos">506</span></a><span class="sd">        - dict: A dictionary containing the following keys:</span>
-</span><span id="L-507"><a href="#L-507"><span class="linenos">507</span></a><span class="sd">            - has_collision (bool): Whether the route has a collision with another entity.</span>
-</span><span id="L-508"><a href="#L-508"><span class="linenos">508</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-509"><a href="#L-509"><span class="linenos">509</span></a>        <span class="c1"># Since this is a static entity, we don&#39;t need to do anything here.</span>
-</span><span id="L-510"><a href="#L-510"><span class="linenos">510</span></a>        <span class="k">if</span> <span class="n">is_result_of_collision</span><span class="p">:</span>
-</span><span id="L-511"><a href="#L-511"><span class="linenos">511</span></a>            <span class="k">return</span>
-</span><span id="L-512"><a href="#L-512"><span class="linenos">512</span></a>        <span class="c1"># Since this is a static entity, the route end time is the current time when the entity is created (should normally be 0)</span>
-</span><span id="L-513"><a href="#L-513"><span class="linenos">513</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_time</span><span class="p">()</span>
-</span><span id="L-514"><a href="#L-514"><span class="linenos">514</span></a>        <span class="c1"># Since this object does not move, we don&#39;t need to plan a route and will never interrupt it.</span>
-</span><span id="L-515"><a href="#L-515"><span class="linenos">515</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__plan_route__</span><span class="p">(</span>
-</span><span id="L-516"><a href="#L-516"><span class="linenos">516</span></a>            <span class="n">waypoints</span><span class="o">=</span><span class="p">[],</span> <span class="n">raise_on_future_collision</span><span class="o">=</span><span class="n">raise_on_future_collision</span>
-</span><span id="L-517"><a href="#L-517"><span class="linenos">517</span></a>        <span class="p">)</span>
-</span><span id="L-518"><a href="#L-518"><span class="linenos">518</span></a>
-</span><span id="L-519"><a href="#L-519"><span class="linenos">519</span></a>
-</span><span id="L-520"><a href="#L-520"><span class="linenos">520</span></a><span class="k">class</span><span class="w"> </span><span class="nc">GhostEntity</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
-</span><span id="L-521"><a href="#L-521"><span class="linenos">521</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-522"><a href="#L-522"><span class="linenos">522</span></a><span class="sd">    This class is used to represent entities that do not collide with other entities. </span>
-</span><span id="L-523"><a href="#L-523"><span class="linenos">523</span></a><span class="sd">    </span>
-</span><span id="L-524"><a href="#L-524"><span class="linenos">524</span></a><span class="sd">    It is an extension of the Entity class that represents a ghost entity.</span>
+</span><span id="L-481"><a href="#L-481"><span class="linenos">481</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__realize_route__</span><span class="p">(</span>
+</span><span id="L-482"><a href="#L-482"><span class="linenos">482</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-483"><a href="#L-483"><span class="linenos">483</span></a>        <span class="n">is_result_of_collision</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="L-484"><a href="#L-484"><span class="linenos">484</span></a>        <span class="n">raise_on_future_collision</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="L-485"><a href="#L-485"><span class="linenos">485</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span id="L-486"><a href="#L-486"><span class="linenos">486</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-487"><a href="#L-487"><span class="linenos">487</span></a><span class="sd">        Realize the route for this entity at the current time.</span>
+</span><span id="L-488"><a href="#L-488"><span class="linenos">488</span></a>
+</span><span id="L-489"><a href="#L-489"><span class="linenos">489</span></a><span class="sd">        Args:</span>
+</span><span id="L-490"><a href="#L-490"><span class="linenos">490</span></a>
+</span><span id="L-491"><a href="#L-491"><span class="linenos">491</span></a><span class="sd">        - is_result_of_collision (bool): Whether this route end is the result of a collision.</span>
+</span><span id="L-492"><a href="#L-492"><span class="linenos">492</span></a><span class="sd">            - If True, the route end is the result of a collision and the entity should not be allowed to start a new route until the collision is resolved.</span>
+</span><span id="L-493"><a href="#L-493"><span class="linenos">493</span></a><span class="sd">            - If False, the route end is not the result of a collision and the entity should be allowed to start a new route.</span>
+</span><span id="L-494"><a href="#L-494"><span class="linenos">494</span></a><span class="sd">        - raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.</span>
+</span><span id="L-495"><a href="#L-495"><span class="linenos">495</span></a><span class="sd">            - Raises an exception if this event causes a future collision with another entity.</span>
+</span><span id="L-496"><a href="#L-496"><span class="linenos">496</span></a>
+</span><span id="L-497"><a href="#L-497"><span class="linenos">497</span></a><span class="sd">        Returns:</span>
+</span><span id="L-498"><a href="#L-498"><span class="linenos">498</span></a>
+</span><span id="L-499"><a href="#L-499"><span class="linenos">499</span></a><span class="sd">        - dict: A dictionary containing the following keys:</span>
+</span><span id="L-500"><a href="#L-500"><span class="linenos">500</span></a><span class="sd">            - has_collision (bool): Whether the route has a collision with another entity.</span>
+</span><span id="L-501"><a href="#L-501"><span class="linenos">501</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-502"><a href="#L-502"><span class="linenos">502</span></a>        <span class="c1"># Since this is a static entity, we don&#39;t need to do anything here.</span>
+</span><span id="L-503"><a href="#L-503"><span class="linenos">503</span></a>        <span class="k">if</span> <span class="n">is_result_of_collision</span><span class="p">:</span>
+</span><span id="L-504"><a href="#L-504"><span class="linenos">504</span></a>            <span class="k">return</span>
+</span><span id="L-505"><a href="#L-505"><span class="linenos">505</span></a>        <span class="c1"># Since this is a static entity, the route end time is the current time when the entity is created (should normally be 0)</span>
+</span><span id="L-506"><a href="#L-506"><span class="linenos">506</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_time</span><span class="p">()</span>
+</span><span id="L-507"><a href="#L-507"><span class="linenos">507</span></a>        <span class="c1"># Since this object does not move, we don&#39;t need to plan a route and will never interrupt it.</span>
+</span><span id="L-508"><a href="#L-508"><span class="linenos">508</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__plan_route__</span><span class="p">(</span>
+</span><span id="L-509"><a href="#L-509"><span class="linenos">509</span></a>            <span class="n">waypoints</span><span class="o">=</span><span class="p">[],</span> <span class="n">raise_on_future_collision</span><span class="o">=</span><span class="n">raise_on_future_collision</span>
+</span><span id="L-510"><a href="#L-510"><span class="linenos">510</span></a>        <span class="p">)</span>
+</span><span id="L-511"><a href="#L-511"><span class="linenos">511</span></a>
+</span><span id="L-512"><a href="#L-512"><span class="linenos">512</span></a>
+</span><span id="L-513"><a href="#L-513"><span class="linenos">513</span></a><span class="k">class</span><span class="w"> </span><span class="nc">GhostEntity</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+</span><span id="L-514"><a href="#L-514"><span class="linenos">514</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__plan_route__</span><span class="p">(</span>
+</span><span id="L-515"><a href="#L-515"><span class="linenos">515</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-516"><a href="#L-516"><span class="linenos">516</span></a>        <span class="n">waypoints</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]],</span>
+</span><span id="L-517"><a href="#L-517"><span class="linenos">517</span></a>        <span class="n">raise_on_future_collision</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="L-518"><a href="#L-518"><span class="linenos">518</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span id="L-519"><a href="#L-519"><span class="linenos">519</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-520"><a href="#L-520"><span class="linenos">520</span></a><span class="sd">        Overrides the __plan_route__ method to allow for a ghost entity to be placed on the grid that never collides with other entities because it does not check for collisions.</span>
+</span><span id="L-521"><a href="#L-521"><span class="linenos">521</span></a>
+</span><span id="L-522"><a href="#L-522"><span class="linenos">522</span></a><span class="sd">        Sets the route for this entity given a set of waypoints starting at the current time.</span>
+</span><span id="L-523"><a href="#L-523"><span class="linenos">523</span></a>
+</span><span id="L-524"><a href="#L-524"><span class="linenos">524</span></a><span class="sd">        Args:</span>
 </span><span id="L-525"><a href="#L-525"><span class="linenos">525</span></a>
-</span><span id="L-526"><a href="#L-526"><span class="linenos">526</span></a><span class="sd">    Essentially, these entities can move freely without worrying about collisions. Using them avoids substantial overhead in the simulation and can dramatically improve performance if collisions are irrelevant.</span>
-</span><span id="L-527"><a href="#L-527"><span class="linenos">527</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-528"><a href="#L-528"><span class="linenos">528</span></a>
-</span><span id="L-529"><a href="#L-529"><span class="linenos">529</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__plan_route__</span><span class="p">(</span>
-</span><span id="L-530"><a href="#L-530"><span class="linenos">530</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-531"><a href="#L-531"><span class="linenos">531</span></a>        <span class="n">waypoints</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]],</span>
-</span><span id="L-532"><a href="#L-532"><span class="linenos">532</span></a>        <span class="n">raise_on_future_collision</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="L-533"><a href="#L-533"><span class="linenos">533</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span id="L-534"><a href="#L-534"><span class="linenos">534</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-535"><a href="#L-535"><span class="linenos">535</span></a><span class="sd">        Overrides the __plan_route__ method to allow for a ghost entity to be placed on the grid that never collides with other entities because it does not check for collisions.</span>
-</span><span id="L-536"><a href="#L-536"><span class="linenos">536</span></a>
-</span><span id="L-537"><a href="#L-537"><span class="linenos">537</span></a><span class="sd">        Sets the route for this entity given a set of waypoints starting at the current time.</span>
-</span><span id="L-538"><a href="#L-538"><span class="linenos">538</span></a>
-</span><span id="L-539"><a href="#L-539"><span class="linenos">539</span></a><span class="sd">        Args:</span>
-</span><span id="L-540"><a href="#L-540"><span class="linenos">540</span></a>
-</span><span id="L-541"><a href="#L-541"><span class="linenos">541</span></a><span class="sd">        - waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.</span>
-</span><span id="L-542"><a href="#L-542"><span class="linenos">542</span></a><span class="sd">            - A list of tuples where each tuple is (x_coord, y_coord, time_shift).</span>
-</span><span id="L-543"><a href="#L-543"><span class="linenos">543</span></a><span class="sd">            - EG;</span>
-</span><span id="L-544"><a href="#L-544"><span class="linenos">544</span></a><span class="sd">                ```</span>
-</span><span id="L-545"><a href="#L-545"><span class="linenos">545</span></a><span class="sd">                waypoints = [</span>
-</span><span id="L-546"><a href="#L-546"><span class="linenos">546</span></a><span class="sd">                    (5, 3, 10),</span>
-</span><span id="L-547"><a href="#L-547"><span class="linenos">547</span></a><span class="sd">                    (3, 5, 10)</span>
-</span><span id="L-548"><a href="#L-548"><span class="linenos">548</span></a><span class="sd">                ]</span>
-</span><span id="L-549"><a href="#L-549"><span class="linenos">549</span></a><span class="sd">                ```</span>
-</span><span id="L-550"><a href="#L-550"><span class="linenos">550</span></a><span class="sd">                - Move to (5, 3) over 10 seconds</span>
-</span><span id="L-551"><a href="#L-551"><span class="linenos">551</span></a><span class="sd">                - Move to (3, 5) over 10 seconds</span>
-</span><span id="L-552"><a href="#L-552"><span class="linenos">552</span></a><span class="sd">            - Note: x_coord and y_coord are the coordinates of the waypoint. They must both be positive.</span>
-</span><span id="L-553"><a href="#L-553"><span class="linenos">553</span></a><span class="sd">            - Note: time_shift is the time it takes to move to the waypoint. It must be positive.</span>
-</span><span id="L-554"><a href="#L-554"><span class="linenos">554</span></a><span class="sd">        - raise_on_future_collision (bool): Whether to raise an exception if the entity has any future plans that result in a collision.</span>
-</span><span id="L-555"><a href="#L-555"><span class="linenos">555</span></a><span class="sd">            - Note: This is not used for ghost entities, but is included for consistency with the parent class.</span>
+</span><span id="L-526"><a href="#L-526"><span class="linenos">526</span></a><span class="sd">        - waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.</span>
+</span><span id="L-527"><a href="#L-527"><span class="linenos">527</span></a><span class="sd">            - A list of tuples where each tuple is (x_coord, y_coord, time_shift).</span>
+</span><span id="L-528"><a href="#L-528"><span class="linenos">528</span></a><span class="sd">            - EG;</span>
+</span><span id="L-529"><a href="#L-529"><span class="linenos">529</span></a><span class="sd">                ```</span>
+</span><span id="L-530"><a href="#L-530"><span class="linenos">530</span></a><span class="sd">                waypoints = [</span>
+</span><span id="L-531"><a href="#L-531"><span class="linenos">531</span></a><span class="sd">                    (5, 3, 10),</span>
+</span><span id="L-532"><a href="#L-532"><span class="linenos">532</span></a><span class="sd">                    (3, 5, 10)</span>
+</span><span id="L-533"><a href="#L-533"><span class="linenos">533</span></a><span class="sd">                ]</span>
+</span><span id="L-534"><a href="#L-534"><span class="linenos">534</span></a><span class="sd">                ```</span>
+</span><span id="L-535"><a href="#L-535"><span class="linenos">535</span></a><span class="sd">                - Move to (5, 3) over 10 seconds</span>
+</span><span id="L-536"><a href="#L-536"><span class="linenos">536</span></a><span class="sd">                - Move to (3, 5) over 10 seconds</span>
+</span><span id="L-537"><a href="#L-537"><span class="linenos">537</span></a><span class="sd">            - Note: x_coord and y_coord are the coordinates of the waypoint. They must both be positive.</span>
+</span><span id="L-538"><a href="#L-538"><span class="linenos">538</span></a><span class="sd">            - Note: time_shift is the time it takes to move to the waypoint. It must be positive.</span>
+</span><span id="L-539"><a href="#L-539"><span class="linenos">539</span></a><span class="sd">        - raise_on_future_collision (bool): Whether to raise an exception if the entity has any future plans that result in a collision.</span>
+</span><span id="L-540"><a href="#L-540"><span class="linenos">540</span></a><span class="sd">            - Note: This is not used for ghost entities, but is included for consistency with the parent class.</span>
+</span><span id="L-541"><a href="#L-541"><span class="linenos">541</span></a>
+</span><span id="L-542"><a href="#L-542"><span class="linenos">542</span></a><span class="sd">        Returns:</span>
+</span><span id="L-543"><a href="#L-543"><span class="linenos">543</span></a>
+</span><span id="L-544"><a href="#L-544"><span class="linenos">544</span></a><span class="sd">        - dict: A dictionary containing the following keys:</span>
+</span><span id="L-545"><a href="#L-545"><span class="linenos">545</span></a><span class="sd">            - has_collision (bool): Whether the route has a collision with another entity.</span>
+</span><span id="L-546"><a href="#L-546"><span class="linenos">546</span></a><span class="sd">                - Note: This will always be False for ghost entities.</span>
+</span><span id="L-547"><a href="#L-547"><span class="linenos">547</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-548"><a href="#L-548"><span class="linenos">548</span></a>        <span class="c1"># Raise an exception if the entity is already in a route</span>
+</span><span id="L-549"><a href="#L-549"><span class="linenos">549</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+</span><span id="L-550"><a href="#L-550"><span class="linenos">550</span></a>            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+</span><span id="L-551"><a href="#L-551"><span class="linenos">551</span></a>                <span class="sa">f</span><span class="s2">&quot;entity </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is not available for a new route. Cannot set a new route until the current route is finished.&quot;</span>
+</span><span id="L-552"><a href="#L-552"><span class="linenos">552</span></a>            <span class="p">)</span>
+</span><span id="L-553"><a href="#L-553"><span class="linenos">553</span></a>
+</span><span id="L-554"><a href="#L-554"><span class="linenos">554</span></a>        <span class="c1"># Check for valid waypoints</span>
+</span><span id="L-555"><a href="#L-555"><span class="linenos">555</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__waypoint_check__</span><span class="p">(</span><span class="n">waypoints</span><span class="p">)</span>
 </span><span id="L-556"><a href="#L-556"><span class="linenos">556</span></a>
-</span><span id="L-557"><a href="#L-557"><span class="linenos">557</span></a><span class="sd">        Returns:</span>
-</span><span id="L-558"><a href="#L-558"><span class="linenos">558</span></a>
-</span><span id="L-559"><a href="#L-559"><span class="linenos">559</span></a><span class="sd">        - dict: A dictionary containing the following keys:</span>
-</span><span id="L-560"><a href="#L-560"><span class="linenos">560</span></a><span class="sd">            - has_collision (bool): Whether the route has a collision with another entity.</span>
-</span><span id="L-561"><a href="#L-561"><span class="linenos">561</span></a><span class="sd">                - Note: This will always be False for ghost entities.</span>
-</span><span id="L-562"><a href="#L-562"><span class="linenos">562</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-563"><a href="#L-563"><span class="linenos">563</span></a>        <span class="c1"># Raise an exception if the entity is already in a route</span>
-</span><span id="L-564"><a href="#L-564"><span class="linenos">564</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
-</span><span id="L-565"><a href="#L-565"><span class="linenos">565</span></a>            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-</span><span id="L-566"><a href="#L-566"><span class="linenos">566</span></a>                <span class="sa">f</span><span class="s2">&quot;entity </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is not available for a new route. Cannot set a new route until the current route is finished.&quot;</span>
-</span><span id="L-567"><a href="#L-567"><span class="linenos">567</span></a>            <span class="p">)</span>
-</span><span id="L-568"><a href="#L-568"><span class="linenos">568</span></a>
-</span><span id="L-569"><a href="#L-569"><span class="linenos">569</span></a>        <span class="c1"># Check for valid waypoints</span>
-</span><span id="L-570"><a href="#L-570"><span class="linenos">570</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__waypoint_check__</span><span class="p">(</span><span class="n">waypoints</span><span class="p">)</span>
-</span><span id="L-571"><a href="#L-571"><span class="linenos">571</span></a>
-</span><span id="L-572"><a href="#L-572"><span class="linenos">572</span></a>        <span class="c1"># Setup util attributes</span>
-</span><span id="L-573"><a href="#L-573"><span class="linenos">573</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__clear_future_events__</span><span class="p">()</span>
-</span><span id="L-574"><a href="#L-574"><span class="linenos">574</span></a>
-</span><span id="L-575"><a href="#L-575"><span class="linenos">575</span></a>        <span class="n">total_route_time_shift</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">waypoint</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">waypoint</span> <span class="ow">in</span> <span class="n">waypoints</span><span class="p">])</span>
-</span><span id="L-576"><a href="#L-576"><span class="linenos">576</span></a>
-</span><span id="L-577"><a href="#L-577"><span class="linenos">577</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_time</span><span class="p">()</span>
-</span><span id="L-578"><a href="#L-578"><span class="linenos">578</span></a>
-</span><span id="L-579"><a href="#L-579"><span class="linenos">579</span></a>        <span class="c1"># Add a final waypoint occuring until the end of the simulation.</span>
-</span><span id="L-580"><a href="#L-580"><span class="linenos">580</span></a>        <span class="c1"># This allows us to lock in the position of the entity at the end of the route and block the grid cells accordingly.</span>
-</span><span id="L-581"><a href="#L-581"><span class="linenos">581</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">waypoints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="L-582"><a href="#L-582"><span class="linenos">582</span></a>            <span class="n">waypoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span id="L-583"><a href="#L-583"><span class="linenos">583</span></a>                <span class="p">(</span>
-</span><span id="L-584"><a href="#L-584"><span class="linenos">584</span></a>                    <span class="n">waypoints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-</span><span id="L-585"><a href="#L-585"><span class="linenos">585</span></a>                    <span class="n">waypoints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-</span><span id="L-586"><a href="#L-586"><span class="linenos">586</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">__max_time__</span>
-</span><span id="L-587"><a href="#L-587"><span class="linenos">587</span></a>                    <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span>
-</span><span id="L-588"><a href="#L-588"><span class="linenos">588</span></a>                    <span class="o">-</span> <span class="n">total_route_time_shift</span><span class="p">,</span>
-</span><span id="L-589"><a href="#L-589"><span class="linenos">589</span></a>                <span class="p">)</span>
-</span><span id="L-590"><a href="#L-590"><span class="linenos">590</span></a>            <span class="p">)</span>
-</span><span id="L-591"><a href="#L-591"><span class="linenos">591</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="L-592"><a href="#L-592"><span class="linenos">592</span></a>            <span class="n">waypoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span id="L-593"><a href="#L-593"><span class="linenos">593</span></a>                <span class="p">(</span>
-</span><span id="L-594"><a href="#L-594"><span class="linenos">594</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">x_coord</span><span class="p">,</span>
-</span><span id="L-595"><a href="#L-595"><span class="linenos">595</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">y_coord</span><span class="p">,</span>
-</span><span id="L-596"><a href="#L-596"><span class="linenos">596</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">__max_time__</span>
-</span><span id="L-597"><a href="#L-597"><span class="linenos">597</span></a>                    <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span>
-</span><span id="L-598"><a href="#L-598"><span class="linenos">598</span></a>                    <span class="o">-</span> <span class="n">total_route_time_shift</span><span class="p">,</span>
-</span><span id="L-599"><a href="#L-599"><span class="linenos">599</span></a>                <span class="p">)</span>
-</span><span id="L-600"><a href="#L-600"><span class="linenos">600</span></a>            <span class="p">)</span>
-</span><span id="L-601"><a href="#L-601"><span class="linenos">601</span></a>
-</span><span id="L-602"><a href="#L-602"><span class="linenos">602</span></a>        <span class="c1"># Store the route waypoints and start time for later use to determine the entity&#39;s position at a given time</span>
-</span><span id="L-603"><a href="#L-603"><span class="linenos">603</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__planned_waypoints__</span> <span class="o">=</span> <span class="n">waypoints</span>
-</span><span id="L-604"><a href="#L-604"><span class="linenos">604</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
-</span><span id="L-605"><a href="#L-605"><span class="linenos">605</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">__max_time__</span><span class="p">,</span>
-</span><span id="L-606"><a href="#L-606"><span class="linenos">606</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span> <span class="o">+</span> <span class="n">total_route_time_shift</span><span class="p">,</span>
-</span><span id="L-607"><a href="#L-607"><span class="linenos">607</span></a>        <span class="p">)</span>
-</span><span id="L-608"><a href="#L-608"><span class="linenos">608</span></a>
-</span><span id="L-609"><a href="#L-609"><span class="linenos">609</span></a>        <span class="c1"># Add a route_end event for this entity at the timing of the end of the route</span>
-</span><span id="L-610"><a href="#L-610"><span class="linenos">610</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span><span class="p">:</span>
-</span><span id="L-611"><a href="#L-611"><span class="linenos">611</span></a>            <span class="n">event_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span>
-</span><span id="L-612"><a href="#L-612"><span class="linenos">612</span></a>                <span class="n">time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span><span class="p">,</span>
-</span><span id="L-613"><a href="#L-613"><span class="linenos">613</span></a>                <span class="nb">object</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="L-614"><a href="#L-614"><span class="linenos">614</span></a>                <span class="n">method</span><span class="o">=</span><span class="s2">&quot;__realize_route__&quot;</span><span class="p">,</span>
-</span><span id="L-615"><a href="#L-615"><span class="linenos">615</span></a>                <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
-</span><span id="L-616"><a href="#L-616"><span class="linenos">616</span></a>                    <span class="s2">&quot;is_result_of_collision&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="L-617"><a href="#L-617"><span class="linenos">617</span></a>                <span class="p">},</span>
-</span><span id="L-618"><a href="#L-618"><span class="linenos">618</span></a>            <span class="p">)</span>
-</span><span id="L-619"><a href="#L-619"><span class="linenos">619</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__future_event_ids__</span><span class="p">[</span><span class="n">event_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="L-620"><a href="#L-620"><span class="linenos">620</span></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;has_collision&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+</span><span id="L-557"><a href="#L-557"><span class="linenos">557</span></a>        <span class="c1"># Setup util attributes</span>
+</span><span id="L-558"><a href="#L-558"><span class="linenos">558</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__clear_future_events__</span><span class="p">()</span>
+</span><span id="L-559"><a href="#L-559"><span class="linenos">559</span></a>
+</span><span id="L-560"><a href="#L-560"><span class="linenos">560</span></a>        <span class="n">total_route_time_shift</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">waypoint</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">waypoint</span> <span class="ow">in</span> <span class="n">waypoints</span><span class="p">])</span>
+</span><span id="L-561"><a href="#L-561"><span class="linenos">561</span></a>
+</span><span id="L-562"><a href="#L-562"><span class="linenos">562</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_time</span><span class="p">()</span>
+</span><span id="L-563"><a href="#L-563"><span class="linenos">563</span></a>
+</span><span id="L-564"><a href="#L-564"><span class="linenos">564</span></a>        <span class="c1"># Add a final waypoint occuring until the end of the simulation.</span>
+</span><span id="L-565"><a href="#L-565"><span class="linenos">565</span></a>        <span class="c1"># This allows us to lock in the position of the entity at the end of the route and block the grid cells accordingly.</span>
+</span><span id="L-566"><a href="#L-566"><span class="linenos">566</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">waypoints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="L-567"><a href="#L-567"><span class="linenos">567</span></a>            <span class="n">waypoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span id="L-568"><a href="#L-568"><span class="linenos">568</span></a>                <span class="p">(</span>
+</span><span id="L-569"><a href="#L-569"><span class="linenos">569</span></a>                    <span class="n">waypoints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+</span><span id="L-570"><a href="#L-570"><span class="linenos">570</span></a>                    <span class="n">waypoints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+</span><span id="L-571"><a href="#L-571"><span class="linenos">571</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">__max_time__</span>
+</span><span id="L-572"><a href="#L-572"><span class="linenos">572</span></a>                    <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span>
+</span><span id="L-573"><a href="#L-573"><span class="linenos">573</span></a>                    <span class="o">-</span> <span class="n">total_route_time_shift</span><span class="p">,</span>
+</span><span id="L-574"><a href="#L-574"><span class="linenos">574</span></a>                <span class="p">)</span>
+</span><span id="L-575"><a href="#L-575"><span class="linenos">575</span></a>            <span class="p">)</span>
+</span><span id="L-576"><a href="#L-576"><span class="linenos">576</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="L-577"><a href="#L-577"><span class="linenos">577</span></a>            <span class="n">waypoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span id="L-578"><a href="#L-578"><span class="linenos">578</span></a>                <span class="p">(</span>
+</span><span id="L-579"><a href="#L-579"><span class="linenos">579</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">x_coord</span><span class="p">,</span>
+</span><span id="L-580"><a href="#L-580"><span class="linenos">580</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">y_coord</span><span class="p">,</span>
+</span><span id="L-581"><a href="#L-581"><span class="linenos">581</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">__max_time__</span>
+</span><span id="L-582"><a href="#L-582"><span class="linenos">582</span></a>                    <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span>
+</span><span id="L-583"><a href="#L-583"><span class="linenos">583</span></a>                    <span class="o">-</span> <span class="n">total_route_time_shift</span><span class="p">,</span>
+</span><span id="L-584"><a href="#L-584"><span class="linenos">584</span></a>                <span class="p">)</span>
+</span><span id="L-585"><a href="#L-585"><span class="linenos">585</span></a>            <span class="p">)</span>
+</span><span id="L-586"><a href="#L-586"><span class="linenos">586</span></a>
+</span><span id="L-587"><a href="#L-587"><span class="linenos">587</span></a>        <span class="c1"># Store the route waypoints and start time for later use to determine the entity&#39;s position at a given time</span>
+</span><span id="L-588"><a href="#L-588"><span class="linenos">588</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__planned_waypoints__</span> <span class="o">=</span> <span class="n">waypoints</span>
+</span><span id="L-589"><a href="#L-589"><span class="linenos">589</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+</span><span id="L-590"><a href="#L-590"><span class="linenos">590</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">__max_time__</span><span class="p">,</span>
+</span><span id="L-591"><a href="#L-591"><span class="linenos">591</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span> <span class="o">+</span> <span class="n">total_route_time_shift</span><span class="p">,</span>
+</span><span id="L-592"><a href="#L-592"><span class="linenos">592</span></a>        <span class="p">)</span>
+</span><span id="L-593"><a href="#L-593"><span class="linenos">593</span></a>
+</span><span id="L-594"><a href="#L-594"><span class="linenos">594</span></a>        <span class="c1"># Add a route_end event for this entity at the timing of the end of the route</span>
+</span><span id="L-595"><a href="#L-595"><span class="linenos">595</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span><span class="p">:</span>
+</span><span id="L-596"><a href="#L-596"><span class="linenos">596</span></a>            <span class="n">event_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span>
+</span><span id="L-597"><a href="#L-597"><span class="linenos">597</span></a>                <span class="n">time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span><span class="p">,</span>
+</span><span id="L-598"><a href="#L-598"><span class="linenos">598</span></a>                <span class="nb">object</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="L-599"><a href="#L-599"><span class="linenos">599</span></a>                <span class="n">method</span><span class="o">=</span><span class="s2">&quot;__realize_route__&quot;</span><span class="p">,</span>
+</span><span id="L-600"><a href="#L-600"><span class="linenos">600</span></a>                <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+</span><span id="L-601"><a href="#L-601"><span class="linenos">601</span></a>                    <span class="s2">&quot;is_result_of_collision&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="L-602"><a href="#L-602"><span class="linenos">602</span></a>                <span class="p">},</span>
+</span><span id="L-603"><a href="#L-603"><span class="linenos">603</span></a>            <span class="p">)</span>
+</span><span id="L-604"><a href="#L-604"><span class="linenos">604</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__future_event_ids__</span><span class="p">[</span><span class="n">event_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="L-605"><a href="#L-605"><span class="linenos">605</span></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;has_collision&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
 </span></pre></div>
 
 
@@ -1697,53 +1682,40 @@ This method should be overridden by subclasses to implement custom behavior.</p>
     </div>
     <a class="headerlink" href="#StaticEntity"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="StaticEntity-481"><a href="#StaticEntity-481"><span class="linenos">481</span></a><span class="k">class</span><span class="w"> </span><span class="nc">StaticEntity</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
-</span><span id="StaticEntity-482"><a href="#StaticEntity-482"><span class="linenos">482</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="StaticEntity-483"><a href="#StaticEntity-483"><span class="linenos">483</span></a><span class="sd">    This class is used to represent entities that do not move, such as walls or other static objects.</span>
-</span><span id="StaticEntity-484"><a href="#StaticEntity-484"><span class="linenos">484</span></a>
-</span><span id="StaticEntity-485"><a href="#StaticEntity-485"><span class="linenos">485</span></a><span class="sd">    This is an extension of the Entity class that represents a static entity. </span>
-</span><span id="StaticEntity-486"><a href="#StaticEntity-486"><span class="linenos">486</span></a><span class="sd">    </span>
-</span><span id="StaticEntity-487"><a href="#StaticEntity-487"><span class="linenos">487</span></a><span class="sd">    To improve efficiency, many events and logic are avoided as a static entity does not move or respond to events.</span>
-</span><span id="StaticEntity-488"><a href="#StaticEntity-488"><span class="linenos">488</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="StaticEntity-489"><a href="#StaticEntity-489"><span class="linenos">489</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__realize_route__</span><span class="p">(</span>
-</span><span id="StaticEntity-490"><a href="#StaticEntity-490"><span class="linenos">490</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="StaticEntity-491"><a href="#StaticEntity-491"><span class="linenos">491</span></a>        <span class="n">is_result_of_collision</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="StaticEntity-492"><a href="#StaticEntity-492"><span class="linenos">492</span></a>        <span class="n">raise_on_future_collision</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="StaticEntity-493"><a href="#StaticEntity-493"><span class="linenos">493</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span id="StaticEntity-494"><a href="#StaticEntity-494"><span class="linenos">494</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="StaticEntity-495"><a href="#StaticEntity-495"><span class="linenos">495</span></a><span class="sd">        Realize the route for this entity at the current time.</span>
-</span><span id="StaticEntity-496"><a href="#StaticEntity-496"><span class="linenos">496</span></a>
-</span><span id="StaticEntity-497"><a href="#StaticEntity-497"><span class="linenos">497</span></a><span class="sd">        Args:</span>
-</span><span id="StaticEntity-498"><a href="#StaticEntity-498"><span class="linenos">498</span></a>
-</span><span id="StaticEntity-499"><a href="#StaticEntity-499"><span class="linenos">499</span></a><span class="sd">        - is_result_of_collision (bool): Whether this route end is the result of a collision.</span>
-</span><span id="StaticEntity-500"><a href="#StaticEntity-500"><span class="linenos">500</span></a><span class="sd">            - If True, the route end is the result of a collision and the entity should not be allowed to start a new route until the collision is resolved.</span>
-</span><span id="StaticEntity-501"><a href="#StaticEntity-501"><span class="linenos">501</span></a><span class="sd">            - If False, the route end is not the result of a collision and the entity should be allowed to start a new route.</span>
-</span><span id="StaticEntity-502"><a href="#StaticEntity-502"><span class="linenos">502</span></a><span class="sd">        - raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.</span>
-</span><span id="StaticEntity-503"><a href="#StaticEntity-503"><span class="linenos">503</span></a><span class="sd">            - Raises an exception if this event causes a future collision with another entity.</span>
-</span><span id="StaticEntity-504"><a href="#StaticEntity-504"><span class="linenos">504</span></a>
-</span><span id="StaticEntity-505"><a href="#StaticEntity-505"><span class="linenos">505</span></a><span class="sd">        Returns:</span>
-</span><span id="StaticEntity-506"><a href="#StaticEntity-506"><span class="linenos">506</span></a>
-</span><span id="StaticEntity-507"><a href="#StaticEntity-507"><span class="linenos">507</span></a><span class="sd">        - dict: A dictionary containing the following keys:</span>
-</span><span id="StaticEntity-508"><a href="#StaticEntity-508"><span class="linenos">508</span></a><span class="sd">            - has_collision (bool): Whether the route has a collision with another entity.</span>
-</span><span id="StaticEntity-509"><a href="#StaticEntity-509"><span class="linenos">509</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="StaticEntity-510"><a href="#StaticEntity-510"><span class="linenos">510</span></a>        <span class="c1"># Since this is a static entity, we don&#39;t need to do anything here.</span>
-</span><span id="StaticEntity-511"><a href="#StaticEntity-511"><span class="linenos">511</span></a>        <span class="k">if</span> <span class="n">is_result_of_collision</span><span class="p">:</span>
-</span><span id="StaticEntity-512"><a href="#StaticEntity-512"><span class="linenos">512</span></a>            <span class="k">return</span>
-</span><span id="StaticEntity-513"><a href="#StaticEntity-513"><span class="linenos">513</span></a>        <span class="c1"># Since this is a static entity, the route end time is the current time when the entity is created (should normally be 0)</span>
-</span><span id="StaticEntity-514"><a href="#StaticEntity-514"><span class="linenos">514</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_time</span><span class="p">()</span>
-</span><span id="StaticEntity-515"><a href="#StaticEntity-515"><span class="linenos">515</span></a>        <span class="c1"># Since this object does not move, we don&#39;t need to plan a route and will never interrupt it.</span>
-</span><span id="StaticEntity-516"><a href="#StaticEntity-516"><span class="linenos">516</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__plan_route__</span><span class="p">(</span>
-</span><span id="StaticEntity-517"><a href="#StaticEntity-517"><span class="linenos">517</span></a>            <span class="n">waypoints</span><span class="o">=</span><span class="p">[],</span> <span class="n">raise_on_future_collision</span><span class="o">=</span><span class="n">raise_on_future_collision</span>
-</span><span id="StaticEntity-518"><a href="#StaticEntity-518"><span class="linenos">518</span></a>        <span class="p">)</span>
+</span><span id="StaticEntity-482"><a href="#StaticEntity-482"><span class="linenos">482</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__realize_route__</span><span class="p">(</span>
+</span><span id="StaticEntity-483"><a href="#StaticEntity-483"><span class="linenos">483</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="StaticEntity-484"><a href="#StaticEntity-484"><span class="linenos">484</span></a>        <span class="n">is_result_of_collision</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="StaticEntity-485"><a href="#StaticEntity-485"><span class="linenos">485</span></a>        <span class="n">raise_on_future_collision</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="StaticEntity-486"><a href="#StaticEntity-486"><span class="linenos">486</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span id="StaticEntity-487"><a href="#StaticEntity-487"><span class="linenos">487</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="StaticEntity-488"><a href="#StaticEntity-488"><span class="linenos">488</span></a><span class="sd">        Realize the route for this entity at the current time.</span>
+</span><span id="StaticEntity-489"><a href="#StaticEntity-489"><span class="linenos">489</span></a>
+</span><span id="StaticEntity-490"><a href="#StaticEntity-490"><span class="linenos">490</span></a><span class="sd">        Args:</span>
+</span><span id="StaticEntity-491"><a href="#StaticEntity-491"><span class="linenos">491</span></a>
+</span><span id="StaticEntity-492"><a href="#StaticEntity-492"><span class="linenos">492</span></a><span class="sd">        - is_result_of_collision (bool): Whether this route end is the result of a collision.</span>
+</span><span id="StaticEntity-493"><a href="#StaticEntity-493"><span class="linenos">493</span></a><span class="sd">            - If True, the route end is the result of a collision and the entity should not be allowed to start a new route until the collision is resolved.</span>
+</span><span id="StaticEntity-494"><a href="#StaticEntity-494"><span class="linenos">494</span></a><span class="sd">            - If False, the route end is not the result of a collision and the entity should be allowed to start a new route.</span>
+</span><span id="StaticEntity-495"><a href="#StaticEntity-495"><span class="linenos">495</span></a><span class="sd">        - raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.</span>
+</span><span id="StaticEntity-496"><a href="#StaticEntity-496"><span class="linenos">496</span></a><span class="sd">            - Raises an exception if this event causes a future collision with another entity.</span>
+</span><span id="StaticEntity-497"><a href="#StaticEntity-497"><span class="linenos">497</span></a>
+</span><span id="StaticEntity-498"><a href="#StaticEntity-498"><span class="linenos">498</span></a><span class="sd">        Returns:</span>
+</span><span id="StaticEntity-499"><a href="#StaticEntity-499"><span class="linenos">499</span></a>
+</span><span id="StaticEntity-500"><a href="#StaticEntity-500"><span class="linenos">500</span></a><span class="sd">        - dict: A dictionary containing the following keys:</span>
+</span><span id="StaticEntity-501"><a href="#StaticEntity-501"><span class="linenos">501</span></a><span class="sd">            - has_collision (bool): Whether the route has a collision with another entity.</span>
+</span><span id="StaticEntity-502"><a href="#StaticEntity-502"><span class="linenos">502</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="StaticEntity-503"><a href="#StaticEntity-503"><span class="linenos">503</span></a>        <span class="c1"># Since this is a static entity, we don&#39;t need to do anything here.</span>
+</span><span id="StaticEntity-504"><a href="#StaticEntity-504"><span class="linenos">504</span></a>        <span class="k">if</span> <span class="n">is_result_of_collision</span><span class="p">:</span>
+</span><span id="StaticEntity-505"><a href="#StaticEntity-505"><span class="linenos">505</span></a>            <span class="k">return</span>
+</span><span id="StaticEntity-506"><a href="#StaticEntity-506"><span class="linenos">506</span></a>        <span class="c1"># Since this is a static entity, the route end time is the current time when the entity is created (should normally be 0)</span>
+</span><span id="StaticEntity-507"><a href="#StaticEntity-507"><span class="linenos">507</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_time</span><span class="p">()</span>
+</span><span id="StaticEntity-508"><a href="#StaticEntity-508"><span class="linenos">508</span></a>        <span class="c1"># Since this object does not move, we don&#39;t need to plan a route and will never interrupt it.</span>
+</span><span id="StaticEntity-509"><a href="#StaticEntity-509"><span class="linenos">509</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__plan_route__</span><span class="p">(</span>
+</span><span id="StaticEntity-510"><a href="#StaticEntity-510"><span class="linenos">510</span></a>            <span class="n">waypoints</span><span class="o">=</span><span class="p">[],</span> <span class="n">raise_on_future_collision</span><span class="o">=</span><span class="n">raise_on_future_collision</span>
+</span><span id="StaticEntity-511"><a href="#StaticEntity-511"><span class="linenos">511</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>This class is used to represent entities that do not move, such as walls or other static objects.</p>
-
-<p>This is an extension of the Entity class that represents a static entity. </p>
-
-<p>To improve efficiency, many events and logic are avoided as a static entity does not move or respond to events.</p>
-</div>
-
+    
 
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
@@ -1777,117 +1749,103 @@ This method should be overridden by subclasses to implement custom behavior.</p>
 
     </div>
     <a class="headerlink" href="#GhostEntity"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="GhostEntity-521"><a href="#GhostEntity-521"><span class="linenos">521</span></a><span class="k">class</span><span class="w"> </span><span class="nc">GhostEntity</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
-</span><span id="GhostEntity-522"><a href="#GhostEntity-522"><span class="linenos">522</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="GhostEntity-523"><a href="#GhostEntity-523"><span class="linenos">523</span></a><span class="sd">    This class is used to represent entities that do not collide with other entities. </span>
-</span><span id="GhostEntity-524"><a href="#GhostEntity-524"><span class="linenos">524</span></a><span class="sd">    </span>
-</span><span id="GhostEntity-525"><a href="#GhostEntity-525"><span class="linenos">525</span></a><span class="sd">    It is an extension of the Entity class that represents a ghost entity.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="GhostEntity-514"><a href="#GhostEntity-514"><span class="linenos">514</span></a><span class="k">class</span><span class="w"> </span><span class="nc">GhostEntity</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+</span><span id="GhostEntity-515"><a href="#GhostEntity-515"><span class="linenos">515</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__plan_route__</span><span class="p">(</span>
+</span><span id="GhostEntity-516"><a href="#GhostEntity-516"><span class="linenos">516</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="GhostEntity-517"><a href="#GhostEntity-517"><span class="linenos">517</span></a>        <span class="n">waypoints</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]],</span>
+</span><span id="GhostEntity-518"><a href="#GhostEntity-518"><span class="linenos">518</span></a>        <span class="n">raise_on_future_collision</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="GhostEntity-519"><a href="#GhostEntity-519"><span class="linenos">519</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span id="GhostEntity-520"><a href="#GhostEntity-520"><span class="linenos">520</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="GhostEntity-521"><a href="#GhostEntity-521"><span class="linenos">521</span></a><span class="sd">        Overrides the __plan_route__ method to allow for a ghost entity to be placed on the grid that never collides with other entities because it does not check for collisions.</span>
+</span><span id="GhostEntity-522"><a href="#GhostEntity-522"><span class="linenos">522</span></a>
+</span><span id="GhostEntity-523"><a href="#GhostEntity-523"><span class="linenos">523</span></a><span class="sd">        Sets the route for this entity given a set of waypoints starting at the current time.</span>
+</span><span id="GhostEntity-524"><a href="#GhostEntity-524"><span class="linenos">524</span></a>
+</span><span id="GhostEntity-525"><a href="#GhostEntity-525"><span class="linenos">525</span></a><span class="sd">        Args:</span>
 </span><span id="GhostEntity-526"><a href="#GhostEntity-526"><span class="linenos">526</span></a>
-</span><span id="GhostEntity-527"><a href="#GhostEntity-527"><span class="linenos">527</span></a><span class="sd">    Essentially, these entities can move freely without worrying about collisions. Using them avoids substantial overhead in the simulation and can dramatically improve performance if collisions are irrelevant.</span>
-</span><span id="GhostEntity-528"><a href="#GhostEntity-528"><span class="linenos">528</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="GhostEntity-529"><a href="#GhostEntity-529"><span class="linenos">529</span></a>
-</span><span id="GhostEntity-530"><a href="#GhostEntity-530"><span class="linenos">530</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__plan_route__</span><span class="p">(</span>
-</span><span id="GhostEntity-531"><a href="#GhostEntity-531"><span class="linenos">531</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="GhostEntity-532"><a href="#GhostEntity-532"><span class="linenos">532</span></a>        <span class="n">waypoints</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]],</span>
-</span><span id="GhostEntity-533"><a href="#GhostEntity-533"><span class="linenos">533</span></a>        <span class="n">raise_on_future_collision</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="GhostEntity-534"><a href="#GhostEntity-534"><span class="linenos">534</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span id="GhostEntity-535"><a href="#GhostEntity-535"><span class="linenos">535</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="GhostEntity-536"><a href="#GhostEntity-536"><span class="linenos">536</span></a><span class="sd">        Overrides the __plan_route__ method to allow for a ghost entity to be placed on the grid that never collides with other entities because it does not check for collisions.</span>
-</span><span id="GhostEntity-537"><a href="#GhostEntity-537"><span class="linenos">537</span></a>
-</span><span id="GhostEntity-538"><a href="#GhostEntity-538"><span class="linenos">538</span></a><span class="sd">        Sets the route for this entity given a set of waypoints starting at the current time.</span>
-</span><span id="GhostEntity-539"><a href="#GhostEntity-539"><span class="linenos">539</span></a>
-</span><span id="GhostEntity-540"><a href="#GhostEntity-540"><span class="linenos">540</span></a><span class="sd">        Args:</span>
-</span><span id="GhostEntity-541"><a href="#GhostEntity-541"><span class="linenos">541</span></a>
-</span><span id="GhostEntity-542"><a href="#GhostEntity-542"><span class="linenos">542</span></a><span class="sd">        - waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.</span>
-</span><span id="GhostEntity-543"><a href="#GhostEntity-543"><span class="linenos">543</span></a><span class="sd">            - A list of tuples where each tuple is (x_coord, y_coord, time_shift).</span>
-</span><span id="GhostEntity-544"><a href="#GhostEntity-544"><span class="linenos">544</span></a><span class="sd">            - EG;</span>
-</span><span id="GhostEntity-545"><a href="#GhostEntity-545"><span class="linenos">545</span></a><span class="sd">                ```</span>
-</span><span id="GhostEntity-546"><a href="#GhostEntity-546"><span class="linenos">546</span></a><span class="sd">                waypoints = [</span>
-</span><span id="GhostEntity-547"><a href="#GhostEntity-547"><span class="linenos">547</span></a><span class="sd">                    (5, 3, 10),</span>
-</span><span id="GhostEntity-548"><a href="#GhostEntity-548"><span class="linenos">548</span></a><span class="sd">                    (3, 5, 10)</span>
-</span><span id="GhostEntity-549"><a href="#GhostEntity-549"><span class="linenos">549</span></a><span class="sd">                ]</span>
-</span><span id="GhostEntity-550"><a href="#GhostEntity-550"><span class="linenos">550</span></a><span class="sd">                ```</span>
-</span><span id="GhostEntity-551"><a href="#GhostEntity-551"><span class="linenos">551</span></a><span class="sd">                - Move to (5, 3) over 10 seconds</span>
-</span><span id="GhostEntity-552"><a href="#GhostEntity-552"><span class="linenos">552</span></a><span class="sd">                - Move to (3, 5) over 10 seconds</span>
-</span><span id="GhostEntity-553"><a href="#GhostEntity-553"><span class="linenos">553</span></a><span class="sd">            - Note: x_coord and y_coord are the coordinates of the waypoint. They must both be positive.</span>
-</span><span id="GhostEntity-554"><a href="#GhostEntity-554"><span class="linenos">554</span></a><span class="sd">            - Note: time_shift is the time it takes to move to the waypoint. It must be positive.</span>
-</span><span id="GhostEntity-555"><a href="#GhostEntity-555"><span class="linenos">555</span></a><span class="sd">        - raise_on_future_collision (bool): Whether to raise an exception if the entity has any future plans that result in a collision.</span>
-</span><span id="GhostEntity-556"><a href="#GhostEntity-556"><span class="linenos">556</span></a><span class="sd">            - Note: This is not used for ghost entities, but is included for consistency with the parent class.</span>
+</span><span id="GhostEntity-527"><a href="#GhostEntity-527"><span class="linenos">527</span></a><span class="sd">        - waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.</span>
+</span><span id="GhostEntity-528"><a href="#GhostEntity-528"><span class="linenos">528</span></a><span class="sd">            - A list of tuples where each tuple is (x_coord, y_coord, time_shift).</span>
+</span><span id="GhostEntity-529"><a href="#GhostEntity-529"><span class="linenos">529</span></a><span class="sd">            - EG;</span>
+</span><span id="GhostEntity-530"><a href="#GhostEntity-530"><span class="linenos">530</span></a><span class="sd">                ```</span>
+</span><span id="GhostEntity-531"><a href="#GhostEntity-531"><span class="linenos">531</span></a><span class="sd">                waypoints = [</span>
+</span><span id="GhostEntity-532"><a href="#GhostEntity-532"><span class="linenos">532</span></a><span class="sd">                    (5, 3, 10),</span>
+</span><span id="GhostEntity-533"><a href="#GhostEntity-533"><span class="linenos">533</span></a><span class="sd">                    (3, 5, 10)</span>
+</span><span id="GhostEntity-534"><a href="#GhostEntity-534"><span class="linenos">534</span></a><span class="sd">                ]</span>
+</span><span id="GhostEntity-535"><a href="#GhostEntity-535"><span class="linenos">535</span></a><span class="sd">                ```</span>
+</span><span id="GhostEntity-536"><a href="#GhostEntity-536"><span class="linenos">536</span></a><span class="sd">                - Move to (5, 3) over 10 seconds</span>
+</span><span id="GhostEntity-537"><a href="#GhostEntity-537"><span class="linenos">537</span></a><span class="sd">                - Move to (3, 5) over 10 seconds</span>
+</span><span id="GhostEntity-538"><a href="#GhostEntity-538"><span class="linenos">538</span></a><span class="sd">            - Note: x_coord and y_coord are the coordinates of the waypoint. They must both be positive.</span>
+</span><span id="GhostEntity-539"><a href="#GhostEntity-539"><span class="linenos">539</span></a><span class="sd">            - Note: time_shift is the time it takes to move to the waypoint. It must be positive.</span>
+</span><span id="GhostEntity-540"><a href="#GhostEntity-540"><span class="linenos">540</span></a><span class="sd">        - raise_on_future_collision (bool): Whether to raise an exception if the entity has any future plans that result in a collision.</span>
+</span><span id="GhostEntity-541"><a href="#GhostEntity-541"><span class="linenos">541</span></a><span class="sd">            - Note: This is not used for ghost entities, but is included for consistency with the parent class.</span>
+</span><span id="GhostEntity-542"><a href="#GhostEntity-542"><span class="linenos">542</span></a>
+</span><span id="GhostEntity-543"><a href="#GhostEntity-543"><span class="linenos">543</span></a><span class="sd">        Returns:</span>
+</span><span id="GhostEntity-544"><a href="#GhostEntity-544"><span class="linenos">544</span></a>
+</span><span id="GhostEntity-545"><a href="#GhostEntity-545"><span class="linenos">545</span></a><span class="sd">        - dict: A dictionary containing the following keys:</span>
+</span><span id="GhostEntity-546"><a href="#GhostEntity-546"><span class="linenos">546</span></a><span class="sd">            - has_collision (bool): Whether the route has a collision with another entity.</span>
+</span><span id="GhostEntity-547"><a href="#GhostEntity-547"><span class="linenos">547</span></a><span class="sd">                - Note: This will always be False for ghost entities.</span>
+</span><span id="GhostEntity-548"><a href="#GhostEntity-548"><span class="linenos">548</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="GhostEntity-549"><a href="#GhostEntity-549"><span class="linenos">549</span></a>        <span class="c1"># Raise an exception if the entity is already in a route</span>
+</span><span id="GhostEntity-550"><a href="#GhostEntity-550"><span class="linenos">550</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+</span><span id="GhostEntity-551"><a href="#GhostEntity-551"><span class="linenos">551</span></a>            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+</span><span id="GhostEntity-552"><a href="#GhostEntity-552"><span class="linenos">552</span></a>                <span class="sa">f</span><span class="s2">&quot;entity </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is not available for a new route. Cannot set a new route until the current route is finished.&quot;</span>
+</span><span id="GhostEntity-553"><a href="#GhostEntity-553"><span class="linenos">553</span></a>            <span class="p">)</span>
+</span><span id="GhostEntity-554"><a href="#GhostEntity-554"><span class="linenos">554</span></a>
+</span><span id="GhostEntity-555"><a href="#GhostEntity-555"><span class="linenos">555</span></a>        <span class="c1"># Check for valid waypoints</span>
+</span><span id="GhostEntity-556"><a href="#GhostEntity-556"><span class="linenos">556</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__waypoint_check__</span><span class="p">(</span><span class="n">waypoints</span><span class="p">)</span>
 </span><span id="GhostEntity-557"><a href="#GhostEntity-557"><span class="linenos">557</span></a>
-</span><span id="GhostEntity-558"><a href="#GhostEntity-558"><span class="linenos">558</span></a><span class="sd">        Returns:</span>
-</span><span id="GhostEntity-559"><a href="#GhostEntity-559"><span class="linenos">559</span></a>
-</span><span id="GhostEntity-560"><a href="#GhostEntity-560"><span class="linenos">560</span></a><span class="sd">        - dict: A dictionary containing the following keys:</span>
-</span><span id="GhostEntity-561"><a href="#GhostEntity-561"><span class="linenos">561</span></a><span class="sd">            - has_collision (bool): Whether the route has a collision with another entity.</span>
-</span><span id="GhostEntity-562"><a href="#GhostEntity-562"><span class="linenos">562</span></a><span class="sd">                - Note: This will always be False for ghost entities.</span>
-</span><span id="GhostEntity-563"><a href="#GhostEntity-563"><span class="linenos">563</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="GhostEntity-564"><a href="#GhostEntity-564"><span class="linenos">564</span></a>        <span class="c1"># Raise an exception if the entity is already in a route</span>
-</span><span id="GhostEntity-565"><a href="#GhostEntity-565"><span class="linenos">565</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
-</span><span id="GhostEntity-566"><a href="#GhostEntity-566"><span class="linenos">566</span></a>            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-</span><span id="GhostEntity-567"><a href="#GhostEntity-567"><span class="linenos">567</span></a>                <span class="sa">f</span><span class="s2">&quot;entity </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is not available for a new route. Cannot set a new route until the current route is finished.&quot;</span>
-</span><span id="GhostEntity-568"><a href="#GhostEntity-568"><span class="linenos">568</span></a>            <span class="p">)</span>
-</span><span id="GhostEntity-569"><a href="#GhostEntity-569"><span class="linenos">569</span></a>
-</span><span id="GhostEntity-570"><a href="#GhostEntity-570"><span class="linenos">570</span></a>        <span class="c1"># Check for valid waypoints</span>
-</span><span id="GhostEntity-571"><a href="#GhostEntity-571"><span class="linenos">571</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__waypoint_check__</span><span class="p">(</span><span class="n">waypoints</span><span class="p">)</span>
-</span><span id="GhostEntity-572"><a href="#GhostEntity-572"><span class="linenos">572</span></a>
-</span><span id="GhostEntity-573"><a href="#GhostEntity-573"><span class="linenos">573</span></a>        <span class="c1"># Setup util attributes</span>
-</span><span id="GhostEntity-574"><a href="#GhostEntity-574"><span class="linenos">574</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__clear_future_events__</span><span class="p">()</span>
-</span><span id="GhostEntity-575"><a href="#GhostEntity-575"><span class="linenos">575</span></a>
-</span><span id="GhostEntity-576"><a href="#GhostEntity-576"><span class="linenos">576</span></a>        <span class="n">total_route_time_shift</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">waypoint</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">waypoint</span> <span class="ow">in</span> <span class="n">waypoints</span><span class="p">])</span>
-</span><span id="GhostEntity-577"><a href="#GhostEntity-577"><span class="linenos">577</span></a>
-</span><span id="GhostEntity-578"><a href="#GhostEntity-578"><span class="linenos">578</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_time</span><span class="p">()</span>
-</span><span id="GhostEntity-579"><a href="#GhostEntity-579"><span class="linenos">579</span></a>
-</span><span id="GhostEntity-580"><a href="#GhostEntity-580"><span class="linenos">580</span></a>        <span class="c1"># Add a final waypoint occuring until the end of the simulation.</span>
-</span><span id="GhostEntity-581"><a href="#GhostEntity-581"><span class="linenos">581</span></a>        <span class="c1"># This allows us to lock in the position of the entity at the end of the route and block the grid cells accordingly.</span>
-</span><span id="GhostEntity-582"><a href="#GhostEntity-582"><span class="linenos">582</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">waypoints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="GhostEntity-583"><a href="#GhostEntity-583"><span class="linenos">583</span></a>            <span class="n">waypoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span id="GhostEntity-584"><a href="#GhostEntity-584"><span class="linenos">584</span></a>                <span class="p">(</span>
-</span><span id="GhostEntity-585"><a href="#GhostEntity-585"><span class="linenos">585</span></a>                    <span class="n">waypoints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-</span><span id="GhostEntity-586"><a href="#GhostEntity-586"><span class="linenos">586</span></a>                    <span class="n">waypoints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-</span><span id="GhostEntity-587"><a href="#GhostEntity-587"><span class="linenos">587</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">__max_time__</span>
-</span><span id="GhostEntity-588"><a href="#GhostEntity-588"><span class="linenos">588</span></a>                    <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span>
-</span><span id="GhostEntity-589"><a href="#GhostEntity-589"><span class="linenos">589</span></a>                    <span class="o">-</span> <span class="n">total_route_time_shift</span><span class="p">,</span>
-</span><span id="GhostEntity-590"><a href="#GhostEntity-590"><span class="linenos">590</span></a>                <span class="p">)</span>
-</span><span id="GhostEntity-591"><a href="#GhostEntity-591"><span class="linenos">591</span></a>            <span class="p">)</span>
-</span><span id="GhostEntity-592"><a href="#GhostEntity-592"><span class="linenos">592</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="GhostEntity-593"><a href="#GhostEntity-593"><span class="linenos">593</span></a>            <span class="n">waypoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span id="GhostEntity-594"><a href="#GhostEntity-594"><span class="linenos">594</span></a>                <span class="p">(</span>
-</span><span id="GhostEntity-595"><a href="#GhostEntity-595"><span class="linenos">595</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">x_coord</span><span class="p">,</span>
-</span><span id="GhostEntity-596"><a href="#GhostEntity-596"><span class="linenos">596</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">y_coord</span><span class="p">,</span>
-</span><span id="GhostEntity-597"><a href="#GhostEntity-597"><span class="linenos">597</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">__max_time__</span>
-</span><span id="GhostEntity-598"><a href="#GhostEntity-598"><span class="linenos">598</span></a>                    <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span>
-</span><span id="GhostEntity-599"><a href="#GhostEntity-599"><span class="linenos">599</span></a>                    <span class="o">-</span> <span class="n">total_route_time_shift</span><span class="p">,</span>
-</span><span id="GhostEntity-600"><a href="#GhostEntity-600"><span class="linenos">600</span></a>                <span class="p">)</span>
-</span><span id="GhostEntity-601"><a href="#GhostEntity-601"><span class="linenos">601</span></a>            <span class="p">)</span>
-</span><span id="GhostEntity-602"><a href="#GhostEntity-602"><span class="linenos">602</span></a>
-</span><span id="GhostEntity-603"><a href="#GhostEntity-603"><span class="linenos">603</span></a>        <span class="c1"># Store the route waypoints and start time for later use to determine the entity&#39;s position at a given time</span>
-</span><span id="GhostEntity-604"><a href="#GhostEntity-604"><span class="linenos">604</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__planned_waypoints__</span> <span class="o">=</span> <span class="n">waypoints</span>
-</span><span id="GhostEntity-605"><a href="#GhostEntity-605"><span class="linenos">605</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
-</span><span id="GhostEntity-606"><a href="#GhostEntity-606"><span class="linenos">606</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">__max_time__</span><span class="p">,</span>
-</span><span id="GhostEntity-607"><a href="#GhostEntity-607"><span class="linenos">607</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span> <span class="o">+</span> <span class="n">total_route_time_shift</span><span class="p">,</span>
-</span><span id="GhostEntity-608"><a href="#GhostEntity-608"><span class="linenos">608</span></a>        <span class="p">)</span>
-</span><span id="GhostEntity-609"><a href="#GhostEntity-609"><span class="linenos">609</span></a>
-</span><span id="GhostEntity-610"><a href="#GhostEntity-610"><span class="linenos">610</span></a>        <span class="c1"># Add a route_end event for this entity at the timing of the end of the route</span>
-</span><span id="GhostEntity-611"><a href="#GhostEntity-611"><span class="linenos">611</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span><span class="p">:</span>
-</span><span id="GhostEntity-612"><a href="#GhostEntity-612"><span class="linenos">612</span></a>            <span class="n">event_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span>
-</span><span id="GhostEntity-613"><a href="#GhostEntity-613"><span class="linenos">613</span></a>                <span class="n">time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span><span class="p">,</span>
-</span><span id="GhostEntity-614"><a href="#GhostEntity-614"><span class="linenos">614</span></a>                <span class="nb">object</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="GhostEntity-615"><a href="#GhostEntity-615"><span class="linenos">615</span></a>                <span class="n">method</span><span class="o">=</span><span class="s2">&quot;__realize_route__&quot;</span><span class="p">,</span>
-</span><span id="GhostEntity-616"><a href="#GhostEntity-616"><span class="linenos">616</span></a>                <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
-</span><span id="GhostEntity-617"><a href="#GhostEntity-617"><span class="linenos">617</span></a>                    <span class="s2">&quot;is_result_of_collision&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="GhostEntity-618"><a href="#GhostEntity-618"><span class="linenos">618</span></a>                <span class="p">},</span>
-</span><span id="GhostEntity-619"><a href="#GhostEntity-619"><span class="linenos">619</span></a>            <span class="p">)</span>
-</span><span id="GhostEntity-620"><a href="#GhostEntity-620"><span class="linenos">620</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__future_event_ids__</span><span class="p">[</span><span class="n">event_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="GhostEntity-621"><a href="#GhostEntity-621"><span class="linenos">621</span></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;has_collision&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+</span><span id="GhostEntity-558"><a href="#GhostEntity-558"><span class="linenos">558</span></a>        <span class="c1"># Setup util attributes</span>
+</span><span id="GhostEntity-559"><a href="#GhostEntity-559"><span class="linenos">559</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__clear_future_events__</span><span class="p">()</span>
+</span><span id="GhostEntity-560"><a href="#GhostEntity-560"><span class="linenos">560</span></a>
+</span><span id="GhostEntity-561"><a href="#GhostEntity-561"><span class="linenos">561</span></a>        <span class="n">total_route_time_shift</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">waypoint</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">waypoint</span> <span class="ow">in</span> <span class="n">waypoints</span><span class="p">])</span>
+</span><span id="GhostEntity-562"><a href="#GhostEntity-562"><span class="linenos">562</span></a>
+</span><span id="GhostEntity-563"><a href="#GhostEntity-563"><span class="linenos">563</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_time</span><span class="p">()</span>
+</span><span id="GhostEntity-564"><a href="#GhostEntity-564"><span class="linenos">564</span></a>
+</span><span id="GhostEntity-565"><a href="#GhostEntity-565"><span class="linenos">565</span></a>        <span class="c1"># Add a final waypoint occuring until the end of the simulation.</span>
+</span><span id="GhostEntity-566"><a href="#GhostEntity-566"><span class="linenos">566</span></a>        <span class="c1"># This allows us to lock in the position of the entity at the end of the route and block the grid cells accordingly.</span>
+</span><span id="GhostEntity-567"><a href="#GhostEntity-567"><span class="linenos">567</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">waypoints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="GhostEntity-568"><a href="#GhostEntity-568"><span class="linenos">568</span></a>            <span class="n">waypoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span id="GhostEntity-569"><a href="#GhostEntity-569"><span class="linenos">569</span></a>                <span class="p">(</span>
+</span><span id="GhostEntity-570"><a href="#GhostEntity-570"><span class="linenos">570</span></a>                    <span class="n">waypoints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+</span><span id="GhostEntity-571"><a href="#GhostEntity-571"><span class="linenos">571</span></a>                    <span class="n">waypoints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+</span><span id="GhostEntity-572"><a href="#GhostEntity-572"><span class="linenos">572</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">__max_time__</span>
+</span><span id="GhostEntity-573"><a href="#GhostEntity-573"><span class="linenos">573</span></a>                    <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span>
+</span><span id="GhostEntity-574"><a href="#GhostEntity-574"><span class="linenos">574</span></a>                    <span class="o">-</span> <span class="n">total_route_time_shift</span><span class="p">,</span>
+</span><span id="GhostEntity-575"><a href="#GhostEntity-575"><span class="linenos">575</span></a>                <span class="p">)</span>
+</span><span id="GhostEntity-576"><a href="#GhostEntity-576"><span class="linenos">576</span></a>            <span class="p">)</span>
+</span><span id="GhostEntity-577"><a href="#GhostEntity-577"><span class="linenos">577</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="GhostEntity-578"><a href="#GhostEntity-578"><span class="linenos">578</span></a>            <span class="n">waypoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span id="GhostEntity-579"><a href="#GhostEntity-579"><span class="linenos">579</span></a>                <span class="p">(</span>
+</span><span id="GhostEntity-580"><a href="#GhostEntity-580"><span class="linenos">580</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">x_coord</span><span class="p">,</span>
+</span><span id="GhostEntity-581"><a href="#GhostEntity-581"><span class="linenos">581</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">y_coord</span><span class="p">,</span>
+</span><span id="GhostEntity-582"><a href="#GhostEntity-582"><span class="linenos">582</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">__max_time__</span>
+</span><span id="GhostEntity-583"><a href="#GhostEntity-583"><span class="linenos">583</span></a>                    <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span>
+</span><span id="GhostEntity-584"><a href="#GhostEntity-584"><span class="linenos">584</span></a>                    <span class="o">-</span> <span class="n">total_route_time_shift</span><span class="p">,</span>
+</span><span id="GhostEntity-585"><a href="#GhostEntity-585"><span class="linenos">585</span></a>                <span class="p">)</span>
+</span><span id="GhostEntity-586"><a href="#GhostEntity-586"><span class="linenos">586</span></a>            <span class="p">)</span>
+</span><span id="GhostEntity-587"><a href="#GhostEntity-587"><span class="linenos">587</span></a>
+</span><span id="GhostEntity-588"><a href="#GhostEntity-588"><span class="linenos">588</span></a>        <span class="c1"># Store the route waypoints and start time for later use to determine the entity&#39;s position at a given time</span>
+</span><span id="GhostEntity-589"><a href="#GhostEntity-589"><span class="linenos">589</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__planned_waypoints__</span> <span class="o">=</span> <span class="n">waypoints</span>
+</span><span id="GhostEntity-590"><a href="#GhostEntity-590"><span class="linenos">590</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+</span><span id="GhostEntity-591"><a href="#GhostEntity-591"><span class="linenos">591</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">__max_time__</span><span class="p">,</span>
+</span><span id="GhostEntity-592"><a href="#GhostEntity-592"><span class="linenos">592</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span> <span class="o">+</span> <span class="n">total_route_time_shift</span><span class="p">,</span>
+</span><span id="GhostEntity-593"><a href="#GhostEntity-593"><span class="linenos">593</span></a>        <span class="p">)</span>
+</span><span id="GhostEntity-594"><a href="#GhostEntity-594"><span class="linenos">594</span></a>
+</span><span id="GhostEntity-595"><a href="#GhostEntity-595"><span class="linenos">595</span></a>        <span class="c1"># Add a route_end event for this entity at the timing of the end of the route</span>
+</span><span id="GhostEntity-596"><a href="#GhostEntity-596"><span class="linenos">596</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_start_time__</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span><span class="p">:</span>
+</span><span id="GhostEntity-597"><a href="#GhostEntity-597"><span class="linenos">597</span></a>            <span class="n">event_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid__</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span>
+</span><span id="GhostEntity-598"><a href="#GhostEntity-598"><span class="linenos">598</span></a>                <span class="n">time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__route_end_time__</span><span class="p">,</span>
+</span><span id="GhostEntity-599"><a href="#GhostEntity-599"><span class="linenos">599</span></a>                <span class="nb">object</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="GhostEntity-600"><a href="#GhostEntity-600"><span class="linenos">600</span></a>                <span class="n">method</span><span class="o">=</span><span class="s2">&quot;__realize_route__&quot;</span><span class="p">,</span>
+</span><span id="GhostEntity-601"><a href="#GhostEntity-601"><span class="linenos">601</span></a>                <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+</span><span id="GhostEntity-602"><a href="#GhostEntity-602"><span class="linenos">602</span></a>                    <span class="s2">&quot;is_result_of_collision&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="GhostEntity-603"><a href="#GhostEntity-603"><span class="linenos">603</span></a>                <span class="p">},</span>
+</span><span id="GhostEntity-604"><a href="#GhostEntity-604"><span class="linenos">604</span></a>            <span class="p">)</span>
+</span><span id="GhostEntity-605"><a href="#GhostEntity-605"><span class="linenos">605</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__future_event_ids__</span><span class="p">[</span><span class="n">event_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="GhostEntity-606"><a href="#GhostEntity-606"><span class="linenos">606</span></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;has_collision&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>This class is used to represent entities that do not collide with other entities. </p>
-
-<p>It is an extension of the Entity class that represents a ghost entity.</p>
-
-<p>Essentially, these entities can move freely without worrying about collisions. Using them avoids substantial overhead in the simulation and can dramatically improve performance if collisions are irrelevant.</p>
-</div>
-
+    
 
                             <div class="inherited">
                                 <h5>Inherited Members</h5>

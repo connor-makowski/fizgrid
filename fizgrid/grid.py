@@ -75,8 +75,10 @@ class Grid:
                 kwargs={},
             )
         return entity
-    
-    def remove_entity(self, entity: WithSubclasses(Entity), time: int | float | None = None):
+
+    def remove_entity(
+        self, entity: WithSubclasses(Entity), time: int | float | None = None
+    ):
         """
         Removes an entity from the grid.
 

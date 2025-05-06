@@ -70,7 +70,7 @@ class Entity:
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.name})"
-    
+
     def __assoc_grid__(self, grid) -> None:
         """
         Associate the grid to this entity.
@@ -102,7 +102,14 @@ class Entity:
             )
         self.__on_grid__ = True
         self.__route_start_time__ = self.get_time()
-        self.history.append({"x": self.x_coord, "y": self.y_coord, "t": self.get_time(), "c": False})
+        self.history.append(
+            {
+                "x": self.x_coord,
+                "y": self.y_coord,
+                "t": self.get_time(),
+                "c": False,
+            }
+        )
         self.__realize_route__(
             is_result_of_collision=False,
             raise_on_future_collision=True,
@@ -120,7 +127,7 @@ class Entity:
             )
         if self.__on_grid__:
             self.__realize_route__(
-                is_result_of_collision=False, 
+                is_result_of_collision=False,
                 raise_on_future_collision=False,
                 is_result_of_dissoc_grid=True,
             )
@@ -128,7 +135,7 @@ class Entity:
         self.__clear_blocked_grid_cells__()
         self.__clear_future_events__()
         self.__route_start_time__ = None
-        self.__grid__= None
+        self.__grid__ = None
         self.__on_grid__ = False
 
     def __clear_blocked_grid_cells__(self) -> None:
@@ -378,8 +385,8 @@ class Entity:
         - is_result_of_collision (bool): Whether this route end is the result of a collision.
         - raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
             - Raises an exception if this event causes a future collision with another entity.
-        - is_result_of_dissoc_grid (bool): Whether the entity will be removed from the grid after this event. 
-            
+        - is_result_of_dissoc_grid (bool): Whether the entity will be removed from the grid after this event.
+
         Returns:
 
         - dict: A dictionary containing the following keys:
@@ -425,7 +432,7 @@ class Entity:
         self.__route_end_time__ = current_time
 
         if is_result_of_dissoc_grid:
-            return
+            return {'is_result_of_collision': False}
         # Stop the entity at their current location and update the grid for their expected future
         planned_route = self.__plan_route__(
             waypoints=[],
@@ -536,10 +543,11 @@ class StaticEntity(Entity):
     """
     This class is used to represent entities that do not move, such as walls or other static objects.
 
-    This is an extension of the Entity class that represents a static entity. 
-    
+    This is an extension of the Entity class that represents a static entity.
+
     To improve efficiency, many events and logic are avoided as a static entity does not move or respond to events.
     """
+
     def __realize_route__(
         self,
         is_result_of_collision: bool = False,
@@ -582,8 +590,8 @@ class StaticEntity(Entity):
 
 class GhostEntity(Entity):
     """
-    This class is used to represent entities that do not collide with other entities. 
-    
+    This class is used to represent entities that do not collide with other entities.
+
     It is an extension of the Entity class that represents a ghost entity.
 
     Essentially, these entities can move freely without worrying about collisions. Using them avoids substantial overhead in the simulation and can dramatically improve performance if collisions are irrelevant.
