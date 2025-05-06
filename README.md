@@ -124,7 +124,7 @@ print(ghost.history)
 
 ## Create a basic sniffer entity
 Create a Truffle Pig that sniffs out truffles on a grid. 
-```
+```py
 from fizgrid.grid import Grid
 from fizgrid.entities import Entity
 from fizgrid.utils import Shape
