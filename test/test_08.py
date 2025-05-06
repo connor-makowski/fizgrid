@@ -134,7 +134,6 @@ class Server:
                 server=self,
             )
         )
-        self.grid.add_entity(amr)
         self.add_available_amr(amr)
         return amr
 

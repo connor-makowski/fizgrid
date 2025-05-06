@@ -45,7 +45,7 @@ class Entity:
         - Note: This is only updated when events realize the route. This means that a route in progress would not have the correct
             location until the route is realized (either completed or interrupted by a cancellation or collision).
         """
-        self.history = [{"x": x_coord, "y": y_coord, "t": 0, "c": False}]
+        self.history = []
         """
         The history of the entity's location and collision status. 
         This is a list of dictionaries containing the x, y, t, and c values.
@@ -61,7 +61,8 @@ class Entity:
 
         # Util Attributes
         self.__grid__ = None
-        self.__route_start_time__ = 0
+        self.__on_grid__ = False
+        self.__route_start_time__ = None
         self.__route_end_time__ = 0
         self.__blocked_grid_cells__ = []
         self.__planned_waypoints__ = []
@@ -69,20 +70,66 @@ class Entity:
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.name})"
-
-    def __assign_to_grid__(self, grid) -> None:
+    
+    def __assoc_grid__(self, grid) -> None:
         """
-        Assigns the grid to this entity.
+        Associate the grid to this entity.
         Creates a reference in both the grid and the entity to allow easy access from both directions.
 
         Args:
 
         - grid (Grid): The grid to assign to this entity.
         """
+        if self.__grid__ is not None:
+            raise Exception(
+                f"Entity {self.name} is already associated with a grid. Cannot associate with a new grid."
+            )
         self.__grid__ = grid
+
+    def __place_on_grid__(self) -> None:
+        """
+        Place this entity on the grid and claim the grid cells it will block.
+
+        This allows the entity to take up space and move around the grid.
+
+        Args:
+
+        - grid (Grid): The grid to assign to this entity.
+        """
+        if self.__grid__ is None:
+            raise Exception(
+                f"Entity {self.name} is not associated with a grid. Cannot place on grid."
+            )
+        self.__on_grid__ = True
+        self.__route_start_time__ = self.get_time()
+        self.history.append({"x": self.x_coord, "y": self.y_coord, "t": self.get_time(), "c": False})
         self.__realize_route__(
-            is_result_of_collision=False, raise_on_future_collision=True
+            is_result_of_collision=False,
+            raise_on_future_collision=True,
+            is_result_of_dissoc_grid=False,
         )
+
+    def __dissoc_grid__(self) -> None:
+        """
+        Dissociate the grid from this entity.
+        This method removes the entity from the grid and clears any blocked grid cells and future events.
+        """
+        if self.__grid__ is None:
+            raise Exception(
+                f"Entity {self.name} is not associated with a grid. Cannot dissociate from grid."
+            )
+        if self.__on_grid__:
+            self.__realize_route__(
+                is_result_of_collision=False, 
+                raise_on_future_collision=False,
+                is_result_of_dissoc_grid=True,
+            )
+        # Clear the blocked grid cells and future events
+        self.__clear_blocked_grid_cells__()
+        self.__clear_future_events__()
+        self.__route_start_time__ = None
+        self.__grid__= None
+        self.__on_grid__ = False
 
     def __clear_blocked_grid_cells__(self) -> None:
         """
@@ -172,6 +219,10 @@ class Entity:
         - dict: A dictionary containing the following keys:
             - has_collision (bool): Whether the route has a collision with another entity.
         """
+        if not self.__on_grid__:
+            raise Exception(
+                "Entity is not on this grid yet, but is attempting to plan a route. Either it has not been assigned to this grid, or the time it will be placed on the grid is in the future."
+            )
         # Raise an exception if the entity is already in a route
         if not self.is_available():
             raise Exception(
@@ -317,6 +368,7 @@ class Entity:
         self,
         is_result_of_collision: bool = False,
         raise_on_future_collision: bool = False,
+        is_result_of_dissoc_grid: bool = False,
     ) -> dict:
         """
         Realize the route for this entity at the current time.
@@ -326,7 +378,8 @@ class Entity:
         - is_result_of_collision (bool): Whether this route end is the result of a collision.
         - raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
             - Raises an exception if this event causes a future collision with another entity.
-
+        - is_result_of_dissoc_grid (bool): Whether the entity will be removed from the grid after this event. 
+            
         Returns:
 
         - dict: A dictionary containing the following keys:
@@ -371,6 +424,8 @@ class Entity:
         # Set the entity's route end time to the current time
         self.__route_end_time__ = current_time
 
+        if is_result_of_dissoc_grid:
+            return
         # Stop the entity at their current location and update the grid for their expected future
         planned_route = self.__plan_route__(
             waypoints=[],
@@ -489,6 +544,7 @@ class StaticEntity(Entity):
         self,
         is_result_of_collision: bool = False,
         raise_on_future_collision: bool = False,
+        is_result_of_dissoc_grid: bool = False,
     ) -> dict:
         """
         Realize the route for this entity at the current time.
@@ -500,6 +556,7 @@ class StaticEntity(Entity):
             - If False, the route end is not the result of a collision and the entity should be allowed to start a new route.
         - raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
             - Raises an exception if this event causes a future collision with another entity.
+        - is_result_of_dissoc_grid (bool): Whether the entity will be removed from the grid after this event.
 
         Returns:
 
@@ -509,6 +566,12 @@ class StaticEntity(Entity):
         # Since this is a static entity, we don't need to do anything here.
         if is_result_of_collision:
             return
+        if is_result_of_dissoc_grid:
+            super().__realize_route__(
+                is_result_of_collision=False,
+                raise_on_future_collision=False,
+                is_result_of_dissoc_grid=True,
+            )
         # Since this is a static entity, the route end time is the current time when the entity is created (should normally be 0)
         self.__route_end_time__ = self.get_time()
         # Since this object does not move, we don't need to plan a route and will never interrupt it.

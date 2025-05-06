@@ -47,6 +47,7 @@ class Grid:
     def add_entity(
         self,
         entity: WithSubclasses(Entity),
+        time: int | float | None = None,
     ):
         """
         Adds an entity to the grid.
@@ -55,14 +56,48 @@ class Grid:
 
         - entity (Entity): The entity to be added to the grid.
             - Must be an Entity or a subclass of Entity.
+        - time (int|float|None): The time at which the entity should be added to the grid.
+            - If None, the entity is added immediately.
 
         Returns:
 
         - Entity: The added entity.
         """
+        entity.__assoc_grid__(self)
         self.__entities__[entity.id] = entity
-        entity.__assign_to_grid__(self)
+        if time is None:
+            entity.__place_on_grid__()
+        else:
+            self.add_event(
+                time=time,
+                object=entity,
+                method="__place_on_grid__",
+                kwargs={},
+            )
         return entity
+    
+    def remove_entity(self, entity: WithSubclasses(Entity), time: int | float | None = None):
+        """
+        Removes an entity from the grid.
+
+        Args:
+
+        - entity (Entity): The entity to be removed from the grid.
+            - Must be an Entity or a subclass of Entity.
+        - time (int|float|None): The time at which the entity should be removed from the grid.
+            - If None, the entity is removed immediately.
+        """
+        if time is not None:
+            self.add_event(
+                time=time,
+                object=self,
+                method="remove_entity",
+                kwargs={"entity": entity},
+            )
+            return entity
+        if entity.id in self.__entities__:
+            entity.__dissoc_grid__()
+            self.__entities__.pop(entity.id, None)
 
     def add_event(
         self, time: int | float, object, method: str, kwargs: dict = dict()
