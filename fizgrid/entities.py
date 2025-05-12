@@ -432,7 +432,7 @@ class Entity:
         self.__route_end_time__ = current_time
 
         if is_result_of_dissoc_grid:
-            return {'is_result_of_collision': False}
+            return {"is_result_of_collision": False}
         # Stop the entity at their current location and update the grid for their expected future
         planned_route = self.__plan_route__(
             waypoints=[],
@@ -523,9 +523,7 @@ class Entity:
             time=time,
             object=self,
             method="__realize_route__",
-            kwargs={
-                "waypoints": [],
-            },
+            kwargs={},
         )
 
     def on_realize(self, **kwargs):
