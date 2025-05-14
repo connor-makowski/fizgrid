@@ -14,7 +14,7 @@ class TimeQueue:
         self.__time__ = 0
         self.__next_id__ = 0
 
-    def add_event(self, time: int | float, event: dict = dict()) -> int:
+    def add_event(self, time: int | float, event: dict = dict(), priority:int=0) -> int:
         """
         Adds an event to the queue.
 
@@ -24,6 +24,12 @@ class TimeQueue:
         - event (dict): The event to be added to the queue.
             - Default: {}
             - This have any dictionary strucutre, depending on your queue needs
+        - priority (int): The priority of the event.
+            - Default: 0
+            - Higher values indicate higher priority.
+            - This is used to determine the order of events with the same time.
+            - If two events have the same time, the one with the higher priority will be processed first.
+            - If the priority is the same, the event with the lower ID will be processed first.
 
         Returns:
 
@@ -36,7 +42,7 @@ class TimeQueue:
         id = self.__next_id__
         self.__next_id__ += 1
         self.__data__[id] = event
-        heapq.heappush(self.__heap__, (time, id))
+        heapq.heappush(self.__heap__, (time,-priority,id))
         return id
 
     def remove_event(self, id: int) -> dict | None:
@@ -63,7 +69,7 @@ class TimeQueue:
         - dict: The removed event.
             - If the queue is empty, None is returned.
         """
-        self.remove_event(heapq.heappop(self.__heap__)[1])
+        self.remove_event(heapq.heappop(self.__heap__)[2])
 
     def get_next_event(self, peek: bool = False):
         """
@@ -83,14 +89,14 @@ class TimeQueue:
         """
         while self.__heap__:
             if peek:
-                time, id = self.__heap__[0]
+                time, priority, id = self.__heap__[0]
                 event = self.__data__.get(id, None)
                 if event is None:
                     # Remove the event from the heap to avoid stale references
                     heapq.heappop(self.__heap__)
                     continue
             else:
-                time, id = heapq.heappop(self.__heap__)
+                time, priority, id = heapq.heappop(self.__heap__)
                 event = self.remove_event(id)
                 if event is None:
                     continue

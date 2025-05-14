@@ -43,6 +43,13 @@ amr2.add_route(
     ],
 )
 
+amr1.add_route(
+    time=0.1,
+    waypoints=[
+        (5, 3, 1),
+    ],
+)
+
 amr1.cancel_route(
     time=0.1,
 )

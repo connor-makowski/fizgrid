@@ -343,6 +343,7 @@ class Entity:
                 kwargs={
                     "is_result_of_collision": True,
                 },
+                priority=3,
             )
             other_event_id = self.__grid__.add_event(
                 time=collision_time,
@@ -351,6 +352,7 @@ class Entity:
                 kwargs={
                     "is_result_of_collision": True,
                 },
+                priority=3,
             )
             # Store the event_id for each entity involved in the collision
             self.__future_event_ids__[event_id] = other_event_id
@@ -365,6 +367,7 @@ class Entity:
                 kwargs={
                     "is_result_of_collision": False,
                 },
+                priority=2,
             )
             self.__future_event_ids__[event_id] = None
         return {
@@ -499,6 +502,7 @@ class Entity:
             object=self,
             method="__plan_route__",
             kwargs={"waypoints": waypoints},
+            priority=0,
         )
 
     def cancel_route(
@@ -524,6 +528,7 @@ class Entity:
             object=self,
             method="__realize_route__",
             kwargs={},
+            priority=4,
         )
 
     def on_realize(self, **kwargs):
@@ -684,6 +689,7 @@ class GhostEntity(Entity):
                 kwargs={
                     "is_result_of_collision": False,
                 },
+                priority=2,
             )
             self.__future_event_ids__[event_id] = None
         return {"has_collision": False}
