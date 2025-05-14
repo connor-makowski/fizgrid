@@ -178,7 +178,7 @@ class ShapeMoverUtils:
                     )
 
         return result
-    
+
     @staticmethod
     def argmin(lst):
         return min(enumerate(lst), key=lambda x: x[1])[0]
@@ -186,9 +186,11 @@ class ShapeMoverUtils:
     @staticmethod
     def argmax(lst):
         return max(enumerate(lst), key=lambda x: x[1])[0]
-    
+
     @staticmethod
-    def find_extreme_orthogonal_vertices(points:list[tuple[int|float,int|float]], slope:float|int):
+    def find_extreme_orthogonal_vertices(
+        points: list[tuple[int | float, int | float]], slope: float | int
+    ):
         """
         Finds the points in a list that are the furthest apart in the direction
         orthogonal to the given slope. This is useful for finding the extreme
@@ -204,24 +206,29 @@ class ShapeMoverUtils:
         - tuple: The points with the minimum and maximum projections.
         """
         # Compute orthogonal slope
-        orthogonal = float('inf') if slope == 0 else -1 / slope
+        orthogonal = float("inf") if slope == 0 else -1 / slope
         # Define direction projections (a normalized direction vector, but without the linear algebra)
         # Handle vertical slope
-        if orthogonal == float('inf'):
+        if orthogonal == float("inf"):
             x_proj = 0.0
             y_proj = 1.0
         else:
             # Note: Technically normalized length is (1**2 + orthogonal**2)**.5, but we avoid the extra square for performance
-            length = (1 + orthogonal**2)**.5
+            length = (1 + orthogonal**2) ** 0.5
             x_proj = 1.0 / length
             y_proj = orthogonal / length
         # Compute projections
         projections = [x * x_proj + y * y_proj for x, y in points]
         # Return the min and max projections
-        return points[ShapeMoverUtils.argmin(projections)], points[ShapeMoverUtils.argmax(projections)]
+        return (
+            points[ShapeMoverUtils.argmin(projections)],
+            points[ShapeMoverUtils.argmax(projections)],
+        )
 
     @staticmethod
-    def find_extreme_orthogonal_vertices_simplified(points:list[tuple[int|float,int|float]], slope:float|int):
+    def find_extreme_orthogonal_vertices_simplified(
+        points: list[tuple[int | float, int | float]], slope: float | int
+    ):
         """
         A simplified version of the function `find_extreme_orthogonal_vertices`
         that assumes the slope is never 0.
@@ -244,8 +251,10 @@ class ShapeMoverUtils:
         orthogonal = -1 / slope
         # Define direction projections (a normalized direction vector, but without the linear algebra)
         # Note: Technically normalized length is (1**2 + orthogonal**2)**.5, but we avoid the extra square for performance
-        length = (1 + orthogonal**2)**.5
-        projections = [x * 1.0 / length + y * orthogonal / length for x, y in points]
+        length = (1 + orthogonal**2) ** 0.5
+        projections = [
+            x * 1.0 / length + y * orthogonal / length for x, y in points
+        ]
         # Return the min and max verticies
         vertex_1 = points[ShapeMoverUtils.argmin(projections)]
         vertex_2 = points[ShapeMoverUtils.argmax(projections)]
@@ -253,12 +262,12 @@ class ShapeMoverUtils:
             return vertex_1, vertex_2
         else:
             return vertex_2, vertex_1
-    
+
     @staticmethod
     def remove_untouched_intervals(
         intervals: dict[tuple[int, int], tuple[int | float, int | float]],
         slope: float | int,
-        absolute_shape: list[tuple[int|float, int|float]],
+        absolute_shape: list[tuple[int | float, int | float]],
     ):
         """
         Removes unnecessary intervals from the dictionary of intervals.
@@ -274,13 +283,13 @@ class ShapeMoverUtils:
 
             - dict[tuple(int,int),tuple(int|float,int|float)]: A dictionary with unnecessary intervals removed.
         """
-        min_vertex, max_vertex = ShapeMoverUtils.find_extreme_orthogonal_vertices_simplified(
-            points = absolute_shape, 
-            slope=slope
+        min_vertex, max_vertex = (
+            ShapeMoverUtils.find_extreme_orthogonal_vertices_simplified(
+                points=absolute_shape, slope=slope
+            )
         )
         shape_min_intercept = min_vertex[1] - slope * min_vertex[0]
         shape_max_intercept = max_vertex[1] - slope * max_vertex[0]
-
 
         # Given the slope, determine which cell vertex to use for the max and min intercepts
         # This is to ensure that the intervals are removed correctly
@@ -289,10 +298,15 @@ class ShapeMoverUtils:
 
         remove_keys = []
         for x_cell, y_cell in intervals.keys():
-            cell_min_intercept = y_cell - (slope * (x_cell+gtx_increment))
-            cell_max_intercept = (y_cell+1) - (slope * (x_cell+ltx_increment))
+            cell_min_intercept = y_cell - (slope * (x_cell + gtx_increment))
+            cell_max_intercept = (y_cell + 1) - (
+                slope * (x_cell + ltx_increment)
+            )
             # If the intercept ranges do not overlap, remove the interval
-            if not (cell_min_intercept < shape_max_intercept and shape_min_intercept < cell_max_intercept):
+            if not (
+                cell_min_intercept < shape_max_intercept
+                and shape_min_intercept < cell_max_intercept
+            ):
                 remove_keys.append((x_cell, y_cell))
         for key in remove_keys:
             del intervals[key]
@@ -334,15 +348,17 @@ class ShapeMoverUtils:
         absolute_shape = [
             [x_coord + coord[0], y_coord + coord[1]] for coord in shape
         ]
-        rectangle_overlap_intervals = ShapeMoverUtils.moving_rectangle_overlap_intervals(
-            x_start=min([coord[0] for coord in absolute_shape]),
-            x_end=max([coord[0] for coord in absolute_shape]),
-            y_start=min([coord[1] for coord in absolute_shape]),
-            y_end=max([coord[1] for coord in absolute_shape]),
-            x_shift=x_shift,
-            y_shift=y_shift,
-            t_start=t_start,
-            t_end=t_end,
+        rectangle_overlap_intervals = (
+            ShapeMoverUtils.moving_rectangle_overlap_intervals(
+                x_start=min([coord[0] for coord in absolute_shape]),
+                x_end=max([coord[0] for coord in absolute_shape]),
+                y_start=min([coord[1] for coord in absolute_shape]),
+                y_end=max([coord[1] for coord in absolute_shape]),
+                x_shift=x_shift,
+                y_shift=y_shift,
+                t_start=t_start,
+                t_end=t_end,
+            )
         )
         # If the shape is only moving vertically or horizontally, we can just return the rectangle overlap intervals
         if x_shift == 0 or y_shift == 0:

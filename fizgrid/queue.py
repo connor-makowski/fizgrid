@@ -14,7 +14,9 @@ class TimeQueue:
         self.__time__ = 0
         self.__next_id__ = 0
 
-    def add_event(self, time: int | float, event: dict = dict(), priority:int=0) -> int:
+    def add_event(
+        self, time: int | float, event: dict = dict(), priority: int = 0
+    ) -> int:
         """
         Adds an event to the queue.
 
@@ -42,7 +44,7 @@ class TimeQueue:
         id = self.__next_id__
         self.__next_id__ += 1
         self.__data__[id] = event
-        heapq.heappush(self.__heap__, (time,-priority,id))
+        heapq.heappush(self.__heap__, (time, -priority, id))
         return id
 
     def remove_event(self, id: int) -> dict | None:

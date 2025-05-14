@@ -104,7 +104,12 @@ class Grid:
             self.__entities__.pop(entity.id, None)
 
     def add_event(
-        self, time: int | float, object, method: str, kwargs: dict = dict(), priority: int = 0
+        self,
+        time: int | float,
+        object,
+        method: str,
+        kwargs: dict = dict(),
+        priority: int = 0,
     ) -> int:
         """
         Adds an event to the queue.
