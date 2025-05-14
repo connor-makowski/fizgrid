@@ -1,5 +1,5 @@
 import type_enforced
-from fizgrid.utils import unique_id, RectangleMoverUtils
+from fizgrid.utils import unique_id, ShapeMoverUtils
 
 
 @type_enforced.Enforcer(enabled=True)
@@ -279,7 +279,7 @@ class Entity:
 
         # For each route waypoint, calculate the blocks and collisions and add them to the grid
         for waypoint in waypoints:
-            blocks = RectangleMoverUtils.moving_shape_overlap_intervals(
+            blocks = ShapeMoverUtils.moving_shape_overlap_intervals(
                 x_coord=x_tmp,
                 y_coord=y_tmp,
                 x_shift=waypoint[0] - x_tmp,

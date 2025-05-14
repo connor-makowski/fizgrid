@@ -1,4 +1,4 @@
-from fizgrid.utils import RectangleMoverUtils
+from fizgrid.utils import ShapeMoverUtils
 
 
 success = True
@@ -16,7 +16,7 @@ try:
         2: (1.0, 2.0),
     }
 
-    result = RectangleMoverUtils.moving_segment_overlap_intervals(
+    result = ShapeMoverUtils.moving_segment_overlap_intervals(
         seg_start, seg_end, t_start, t_end, shift
     )
 
@@ -39,7 +39,7 @@ try:
         0: (0.0, 2.0),
     }
 
-    result = RectangleMoverUtils.moving_segment_overlap_intervals(
+    result = ShapeMoverUtils.moving_segment_overlap_intervals(
         seg_start, seg_end, t_start, t_end, shift
     )
 
@@ -62,11 +62,10 @@ try:
         -1: (0.0, 2.0),
         -2: (1.0, 2.0),
     }
-    result = RectangleMoverUtils.moving_segment_overlap_intervals(
+    result = ShapeMoverUtils.moving_segment_overlap_intervals(
         seg_start, seg_end, t_start, t_end, shift
     )
     if result != expected_result:
-        print(result)
         print("Negative movement test failed")
         success = False
 except:
@@ -83,7 +82,7 @@ try:
 
     expected_result = {}
 
-    result = RectangleMoverUtils.moving_segment_overlap_intervals(
+    result = ShapeMoverUtils.moving_segment_overlap_intervals(
         seg_start, seg_end, t_start, t_end, shift
     )
 
@@ -115,7 +114,7 @@ try:
         (2, 2): (1.0, 2.0),
     }
 
-    result = RectangleMoverUtils.moving_rectangle_overlap_intervals(
+    result = ShapeMoverUtils.moving_rectangle_overlap_intervals(
         x_start=x_start,
         x_end=x_end,
         y_start=y_start,
@@ -134,7 +133,7 @@ except:
     success = False
 
 try:
-    # test with a shape as a rectangle
+    # test with a triangle moving from (0,0) to (2,2)
     # Use a triangle at (0,0), (1,0), (0,1)
     shape = [[0, 0], [1, 0], [0, 1]]
     x_coord = 0
@@ -153,7 +152,7 @@ try:
         (2, 2): (1.0, 2.0),
     }
 
-    result = RectangleMoverUtils.moving_shape_overlap_intervals(
+    result = ShapeMoverUtils.moving_shape_overlap_intervals(
         shape=shape,
         x_coord=x_coord,
         y_coord=y_coord,
@@ -163,10 +162,64 @@ try:
         t_end=t_end,
     )
     if expected_result != result:
-        print("Shape test failed")
+        print("Shape test positive slope failed")
         success = False
 except:
-    print("Shape test exception")
+    print("Shape test positive slope exception")
+    success = False
+
+try:
+    # test with a triangle moving from 0,0 down to 1,-1
+    # Use a triangle at (0,0), (1,0), (0,1)
+    shape = [[0, 0], [1, 0], [0, 1]]
+    x_coord = 0
+    y_coord = 0
+    x_shift = 1
+    y_shift = -1
+    t_start = 0
+    t_end = 2
+    expected_result = {(0, -1): (0, 2.0), (0, 0): (0, 2.0), (1, -1): (0.0, 2)}
+    result = ShapeMoverUtils.moving_shape_overlap_intervals(
+        shape=shape,
+        x_coord=x_coord,
+        y_coord=y_coord,
+        x_shift=x_shift,
+        y_shift=y_shift,
+        t_start=t_start,
+        t_end=t_end,
+    )
+    if expected_result != result:
+        print("Shape test negative slope with removals failed")
+        success = False
+except:
+    print("Shape test negative slope with removals exception")
+    success = False
+
+try:
+    # test with a triangle moving from 0,0 up to 1,1
+    # Use a triangle at (0,0), (1,0), (1,1)
+    shape = [[0, 0], [1, 0], [1, 1]]
+    x_coord = 0
+    y_coord = 0
+    x_shift = 1
+    y_shift = 1
+    t_start = 0
+    t_end = 2
+    expected_result = {(0, 0): (0, 2.0), (1, 0): (0.0, 2), (1, 1): (0.0, 2)}
+    result = ShapeMoverUtils.moving_shape_overlap_intervals(
+        shape=shape,
+        x_coord=x_coord,
+        y_coord=y_coord,
+        x_shift=x_shift,
+        y_shift=y_shift,
+        t_start=t_start,
+        t_end=t_end,
+    )
+    if expected_result != result:
+        print("Shape test positive slope with removals failed")
+        success = False
+except:
+    print("Shape test positive slope with removals exception")
     success = False
 
 if success:
