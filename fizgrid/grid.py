@@ -73,6 +73,7 @@ class Grid:
                 object=entity,
                 method="__place_on_grid__",
                 kwargs={},
+                priority=5,
             )
         return entity
 
@@ -95,6 +96,7 @@ class Grid:
                 object=self,
                 method="remove_entity",
                 kwargs={"entity": entity},
+                priority=1,
             )
             return entity
         if entity.id in self.__entities__:
@@ -102,7 +104,12 @@ class Grid:
             self.__entities__.pop(entity.id, None)
 
     def add_event(
-        self, time: int | float, object, method: str, kwargs: dict = dict()
+        self,
+        time: int | float,
+        object,
+        method: str,
+        kwargs: dict = dict(),
+        priority: int = 0,
     ) -> int:
         """
         Adds an event to the queue.
@@ -115,6 +122,20 @@ class Grid:
         - object: The object on which the event will occur.
         - method (str): The name of the method to be called on the object.
         - kwargs (dict): The keyword arguments to be passed to the method.
+        - priority (int): The priority of the event.
+            - Default: 0
+            - Higher values indicate higher priority.
+            - This is used to determine the order of events with the same time.
+            - If two events have the same time, the one with the higher priority will be processed first.
+            - If the priority is the same, the event with the lower ID will be processed first.
+            - In general:
+                - Adding an entity to the grid: 5
+                - Canceling a route: 4
+                - Handling collisions: 3
+                - Resolving an end of route: 2
+                - Removing an entity from the grid: 1
+                - Adding a Route: 0
+                - Adding an event: 0
 
         Returns:
 
@@ -123,6 +144,7 @@ class Grid:
         return self.__queue__.add_event(
             time=time,
             event={"object": object, "method": method, "kwargs": kwargs},
+            priority=priority,
         )
 
     def get_time(self) -> int | float:
