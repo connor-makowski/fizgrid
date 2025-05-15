@@ -4,7 +4,7 @@ from fizgrid.utils import Shape
 import random, math
 
 
-class Sniffer(Entity):
+class Pig(Entity):
     def __init__(self, *args, **kwargs):
         # Override the init method of the Entity class to extend the functionality and add custom attributes.
         super().__init__(*args, **kwargs)
@@ -20,7 +20,7 @@ class Sniffer(Entity):
             + (self.goal_y - self.y_coord) ** 2
         ) ** 0.5
 
-    def set_goal(self, x_coord, y_coord, tolerance=1):
+    def detect_truffle(self, x_coord, y_coord, tolerance=1):
         # Set the goal for the entity to reach and start the routing process.
         self.goal_x = x_coord
         self.goal_y = y_coord
@@ -77,37 +77,40 @@ class Sniffer(Entity):
 
 forest = Grid(
     name="forest",
-    x_size=1000,
-    y_size=1000,
+    x_size=100,
+    y_size=100,
+    cell_density=10,
     add_exterior_walls=True,
 )
 
 # Add some pigs to the forest
 truffle_pig_1 = forest.add_entity(
-    Sniffer(
+    Pig(
         name="Truffle_Pig_1",
         shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
-        x_coord=450,
-        y_coord=500,
+        x_coord=45,
+        y_coord=50,
+        auto_rotate=True,
     )
 )
 truffle_pig_2 = forest.add_entity(
-    Sniffer(
+    Pig(
         name="Truffle_Pig_2",
         shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
-        x_coord=500,
-        y_coord=450,
+        x_coord=50,
+        y_coord=45,
+        auto_rotate=True,
     )
 )
 
-truffle_pig_1.set_goal(
-    x_coord=550,
-    y_coord=500,
+truffle_pig_1.detect_truffle(
+    x_coord=55,
+    y_coord=50,
 )
 
-truffle_pig_2.set_goal(
-    x_coord=500,
-    y_coord=550,
+truffle_pig_2.detect_truffle(
+    x_coord=50,
+    y_coord=55,
 )
 
 # Run the sim
@@ -125,17 +128,17 @@ forest.simulate()
 # })
 
 # Example Output
-# {'Name': 'Truffle_Pig_1', 'x_coord': 550.6344767270211, 'y_coord': 499.90150976359365}
-# {'Name': 'Truffle_Pig_2', 'x_coord': 499.2754299204255, 'y_coord': 550.6818320798665}
+# {'Name': 'Truffle_Pig_1', 'x_coord': 54.6408, 'y_coord': 50.3864}
+# {'Name': 'Truffle_Pig_2', 'x_coord': 50.1886, 'y_coord': 55.9795}
 
 
 # Checks for success
 success = True
-truffle_pig_1.goal_x = 550
-truffle_pig_1.goal_y = 500
+truffle_pig_1.goal_x = 55
+truffle_pig_1.goal_y = 50
 
-truffle_pig_2.goal_x = 500
-truffle_pig_2.goal_y = 550
+truffle_pig_2.goal_x = 50
+truffle_pig_2.goal_y = 55
 
 if truffle_pig_1.get_dist_from_goal() > 1:
     success = False

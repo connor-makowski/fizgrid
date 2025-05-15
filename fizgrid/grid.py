@@ -13,6 +13,7 @@ class Grid:
         y_size: int,
         max_time: int = 1000,
         add_exterior_walls: bool = True,
+        cell_density: int = 1,
     ):
         """
         Initializes a grid with the specified parameters.
@@ -25,18 +26,25 @@ class Grid:
         - max_time (int): The maximum time for the grid simulation.
         - add_exterior_walls (bool): Whether to add exterior walls to the grid.
             - Default: True
+        - cell_density (int): The number of cells per unit of length.
+            - Default: 1
         """
+        assert cell_density > 0, "cell_density must be greater than 0"
         # Passed Attributes
         self.name: str = name
         """The name of the grid."""
         self.__x_size__ = x_size
         self.__y_size__ = y_size
         self.__max_time__ = max_time
+        self.__cell_density__ = cell_density
 
         # Calculated Attributes
         self.__entities__ = {}
         self.__queue__ = TimeQueue()
-        self.__cells__ = [[{} for _ in range(x_size)] for _ in range(y_size)]
+        self.__cells__ = [
+            [{} for _ in range(x_size * cell_density)]
+            for _ in range(y_size * cell_density)
+        ]
 
         if add_exterior_walls:
             self.add_exterior_walls()
@@ -197,8 +205,8 @@ class Grid:
                 shape=[
                     [0, 0],
                     [0, self.__y_size__],
-                    [1, self.__y_size__],
-                    [1, 0],
+                    [1 / self.__cell_density__, self.__y_size__],
+                    [1 / self.__cell_density__, 0],
                 ],
                 x_coord=0,
                 y_coord=0,
@@ -211,8 +219,8 @@ class Grid:
                 shape=[
                     [0, 0],
                     [0, self.__y_size__],
-                    [-1, self.__y_size__],
-                    [-1, 0],
+                    [-1 / self.__cell_density__, self.__y_size__],
+                    [-1 / self.__cell_density__, 0],
                 ],
                 x_coord=self.__x_size__,
                 y_coord=0,
@@ -225,8 +233,8 @@ class Grid:
                 shape=[
                     [0, 0],
                     [self.__x_size__ - 2, 0],
-                    [self.__x_size__ - 2, -1],
-                    [0, -1],
+                    [self.__x_size__ - 2, -1 / self.__cell_density__],
+                    [0, -1 / self.__cell_density__],
                 ],
                 x_coord=1,
                 y_coord=self.__y_size__,
@@ -239,8 +247,8 @@ class Grid:
                 shape=[
                     [0, 0],
                     [self.__x_size__ - 2, 0],
-                    [self.__x_size__ - 2, 1],
-                    [0, 1],
+                    [self.__x_size__ - 2, 1 / self.__cell_density__],
+                    [0, 1 / self.__cell_density__],
                 ],
                 x_coord=1,
                 y_coord=0,

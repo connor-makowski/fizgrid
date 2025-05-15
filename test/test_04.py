@@ -9,6 +9,7 @@ grid = Grid(
     x_size=10,
     y_size=10,
     add_exterior_walls=True,
+    cell_density=2,
 )
 
 # Add some AMRs to the grid
@@ -47,10 +48,9 @@ amr2.add_route(
 next_state_events = True
 while next_state_events:
     next_state_events = grid.resolve_next_state()
-
 # Check if the entities resulted in a collision
 try:
-    success = amr1.history[-1]["y"] == 3.5 and amr1.history[-1]["c"] == True
+    success = amr1.history[-1]["y"] == 4 and amr1.history[-1]["c"] == True
 except:
     success = False
 if success:

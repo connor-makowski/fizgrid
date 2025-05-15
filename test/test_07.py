@@ -8,6 +8,7 @@ grid = Grid(
     x_size=10,
     y_size=10,
     add_exterior_walls=True,
+    cell_density=1,
 )
 
 # Add some static entities

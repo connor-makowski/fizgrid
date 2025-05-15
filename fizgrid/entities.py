@@ -314,6 +314,7 @@ class Entity:
                 t_start=t_tmp,
                 t_end=t_tmp + waypoint[2],
                 shape=self.__shape_current__,
+                cell_density=self.__grid__.__cell_density__,
             )
             x_tmp = waypoint[0]
             y_tmp = waypoint[1]

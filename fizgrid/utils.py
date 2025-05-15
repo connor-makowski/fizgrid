@@ -387,6 +387,7 @@ class ShapeMoverUtils:
         t_start: float | int,
         t_end: float | int,
         shape: list[list[float | int]],
+        cell_density: int = 1,
     ):
         """
         Calculates the time intervals during which a moving shape overlaps with each unit-length
@@ -403,6 +404,7 @@ class ShapeMoverUtils:
         - t_start (float|int): Start time of the motion.
         - t_end (float|int): End time of the motion.
         - shape (list[list[float|int]]): List of coordinates representing the shape's vertices relative to its center.
+        - cell_density (int): The number of cells per unit of length.
 
 
         Returns:
@@ -411,10 +413,18 @@ class ShapeMoverUtils:
                                 during which any part of the shape overlaps the range [i, i+1) x [j, j+1).
                                 Only includes ranges with non-zero overlap duration.
         """
-        # Get the overlap intervals for a rectangle that bounds the shape
+        # Get the overlap intervals for a rectangle that bounds the shape in cell space
         absolute_shape = [
-            [x_coord + coord[0], y_coord + coord[1]] for coord in shape
+            [
+                (x_coord + coord[0]) * cell_density,
+                (y_coord + coord[1]) * cell_density,
+            ]
+            for coord in shape
         ]
+        # Get the shifts in cell space
+        x_shift = x_shift * cell_density
+        y_shift = y_shift * cell_density
+        # Calculate the rectangle overlap intervals in cell space
         rectangle_overlap_intervals = (
             ShapeMoverUtils.moving_rectangle_overlap_intervals(
                 x_start=min([coord[0] for coord in absolute_shape]),
