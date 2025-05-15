@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fizgrid"
-version = "1.3.0"
+version = "1.4.0"
 description = "Simulate grid based environments."
 authors = [
     {name="Connor Makowski", email="conmak@mit.edu"}
