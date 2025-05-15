@@ -1,5 +1,5 @@
 import type_enforced
-from fizgrid.utils import unique_id, ShapeMoverUtils
+from fizgrid.utils import unique_id, ShapeMoverUtils, Shape
 
 
 @type_enforced.Enforcer(enabled=True)
@@ -10,6 +10,8 @@ class Entity:
         shape: list[list[int | float]],
         x_coord: int | float,
         y_coord: int | float,
+        auto_rotate: bool = False,
+        location_precision: int = 4,
     ):
         """
         Initializes an entity with a given shape and location in the grid.
@@ -23,7 +25,9 @@ class Entity:
             - The shape is a list of points, where each point is a list of two coordinates [x, y] relative to the shape origin.
         - x_coord (int|float): The starting x-coordinate of the entity in the grid.
         - y_coord (int|float): The starting y-coordinate of the entity in the grid.
-        - grid (Grid): The grid the entity is in.
+        - auto_rotate (bool): Whether to automatically rotate the shape based on the direction of movement.
+            - Note: The default assumption is that the shape is facing right (0 radians).
+        - location_precision (int): The precision of the location coordinates. This is used to round the coordinates to a specific number of decimal places.
         """
         self.id = unique_id()
         """The ID of the entity."""
@@ -67,6 +71,9 @@ class Entity:
         self.__blocked_grid_cells__ = []
         self.__planned_waypoints__ = []
         self.__future_event_ids__ = {}
+        self.__shape_current__ = shape
+        self.__auto_rotate__ = auto_rotate
+        self.__location_precision__ = location_precision
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.name})"
@@ -192,7 +199,7 @@ class Entity:
 
     def __plan_route__(
         self,
-        waypoints: list[tuple[int | float, int | float, int | float]],
+        waypoints: list[tuple[int | float, int | float, int | float, int | float]],
         raise_on_future_collision: bool = False,
     ) -> dict:
         """
@@ -206,7 +213,7 @@ class Entity:
 
         - waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.
             - A list of tuples where each tuple is (x_coord, y_coord, time_shift).
-            - EG;
+            - EG:
                 ```
                 waypoints = [
                     (5, 3, 10),
@@ -215,6 +222,12 @@ class Entity:
                 ```
                 - Move to (5, 3) over 10 seconds
                 - Move to (3, 5) over 10 seconds
+            - Note: x_coord and y_coord are the coordinates of the waypoint. They must both be positive.
+            - Note: time_shift is the time it takes to move to the waypoint. It must be positive.
+            - Optionally, you can use a 4th element to specify the orientation of the shape.
+                - This orientation is always relative to the original shape
+                - This is in radians where 0 is facing right (equivalent to the initial shape orientation) and pi is facing left.
+                - Note: The last used orientation is used until it is changed again (or auto_rotate is set to True).
             - Note: x_coord and y_coord are the coordinates of the waypoint. They must both be positive.
             - Note: time_shift is the time it takes to move to the waypoint. It must be positive.
         - raise_on_future_collision (bool): Whether to raise an exception if the entity has any future plans that result in a collision.
@@ -279,14 +292,29 @@ class Entity:
 
         # For each route waypoint, calculate the blocks and collisions and add them to the grid
         for waypoint in waypoints:
+            x_shift = waypoint[0] - x_tmp
+            y_shift = waypoint[1] - y_tmp   
+            if len(waypoint) == 4:
+                orientation = waypoint[3]
+                self.__shape_current__ = Shape.rotate(
+                    radians=orientation, 
+                    shape=self.shape
+                )   
+            elif self.__auto_rotate__:
+                if x_shift != 0 or y_shift != 0:
+                    self.__shape_current__ = Shape.get_rotated_shape(
+                        shape=self.shape, 
+                        x_shift=x_shift, 
+                        y_shift=y_shift
+                    )
             blocks = ShapeMoverUtils.moving_shape_overlap_intervals(
                 x_coord=x_tmp,
                 y_coord=y_tmp,
-                x_shift=waypoint[0] - x_tmp,
-                y_shift=waypoint[1] - y_tmp,
+                x_shift=x_shift,
+                y_shift=y_shift,
                 t_start=t_tmp,
                 t_end=t_tmp + waypoint[2],
-                shape=self.shape,
+                shape=self.__shape_current__
             )
             x_tmp = waypoint[0]
             y_tmp = waypoint[1]
@@ -419,6 +447,9 @@ class Entity:
                 y_tmp = waypoint[1]
                 t_tmp = t_tmp + waypoint[2]
 
+            # This rounding is needed to ensure that rounding errors in python do not create a permanent collisions between entities
+            x_tmp = round(x_tmp, self.__location_precision__)
+            y_tmp = round(y_tmp, self.__location_precision__)
             self.history.append(
                 {
                     "x": x_tmp,
@@ -488,6 +519,10 @@ class Entity:
                 - Move to (3, 5) over 10 seconds
             - Note: x_coord and y_coord are the coordinates of the waypoint. They must both be positive.
             - Note: time_shift is the time it takes to move to the waypoint. It must be positive.
+            - Optionally, you can use a 4th element to specify the orientation of the shape.
+                - This orientation is always relative to the original shape
+                - This is in radians where 0 is facing right (equivalent to the initial shape orientation) and pi is facing left.
+                - Note: The last used orientation is used until it is changed again (or auto_rotate is set to True).
         - time (int|float|None): The time at which to start the route. If None, the current time is used.
         """
         if self.__grid__ is None:
@@ -614,7 +649,7 @@ class GhostEntity(Entity):
 
         - waypoints (list[tuple[int|float,int|float,int|float]]): A list of waypoints to be added to the grid queue.
             - A list of tuples where each tuple is (x_coord, y_coord, time_shift).
-            - EG;
+            - EG:
                 ```
                 waypoints = [
                     (5, 3, 10),
@@ -625,6 +660,10 @@ class GhostEntity(Entity):
                 - Move to (3, 5) over 10 seconds
             - Note: x_coord and y_coord are the coordinates of the waypoint. They must both be positive.
             - Note: time_shift is the time it takes to move to the waypoint. It must be positive.
+            - Optionally, you can use a 4th element to specify the orientation of the shape.
+                - This orientation is always relative to the original shape
+                - This is in radians where 0 is facing right (equivalent to the initial shape orientation) and pi is facing left.
+                - Note: The last used orientation is used until it is changed again (or auto_rotate is set to True).
         - raise_on_future_collision (bool): Whether to raise an exception if the entity has any future plans that result in a collision.
             - Note: This is not used for ghost entities, but is included for consistency with the parent class.
 

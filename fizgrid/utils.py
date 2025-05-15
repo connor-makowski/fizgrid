@@ -8,53 +8,57 @@ def unique_id():
     return str(uuid.uuid4())
 
 
-class Thunk(type_enforced.utils.Partial):
-    def __call__(self, *args, **kwargs):
-        new_args = self.__args__ + args
-        new_kwargs = {**self.__kwargs__, **kwargs}
-        self.__arity__ = self.__getArity__(new_args, new_kwargs)
-        if self.__arity__ < 0:
-            self.__exception__("Too many arguments were supplied")
-        if self.__arity__ == 0 and len(args) == 0 and len(kwargs) == 0:
-            results = self.__fn__(*new_args, **new_kwargs)
-            return results
-        return Thunk(
-            self.__fn__,
-            *new_args,
-            **new_kwargs,
-        )
-
-    def __get__(self, instance, owner):
-        def bind(*args, **kwargs):
-            if instance is not None and self.__arity__ == self.__fnArity__:
-                return self.__call__(instance, *args, **kwargs)
-            else:
-                return self.__call__(*args, **kwargs)
-
-        return bind
-
-
 @type_enforced.Enforcer(enabled=True)
 class Shape:
     @staticmethod
-    def circle(radius: int, points: int = 6, round_to: int = 2) -> list:
+    def circle(radius: int, num_points: int = 6, round_to: int = 2) -> list[list]:
         """
         Returns a list of addative coordinates that form a circle around a given point.
+
+        Args:
+
+        - radius (int): Radius of the circle.
+        - num_points (int): Number of points to generate around the circle.
+            - Default: 6
+            - This is used to determine the number of points to generate around the circle.
+        - round_to (int): Number of decimal places to round to.
+            - Default: 2
+            - This is used to round the coordinates to a specific number of decimal places.
+
+        Returns:
+
+        - list[list]: A list of coordinates representing the circle.
+            - Each coordinate is a list of two values [x, y].
+            - The coordinates are relative to the center of the circle.
         """
         return [
             [
-                round(radius * math.cos(2 * math.pi / points * i), round_to),
-                round(radius * math.sin(2 * math.pi / points * i), round_to),
+                round(radius * math.cos(2 * math.pi / num_points * i), round_to),
+                round(radius * math.sin(2 * math.pi / num_points * i), round_to),
             ]
-            for i in range(points)
+            for i in range(num_points)
         ]
 
     @staticmethod
     def rectangle(
         x_len: float | int, y_len: float | int, round_to: int = 2
-    ) -> list:
+    ) -> list[list]:
         """
         Returns a list of addative coordinates that form a rectangle around a given point.
+
+        Args:
+
+        - x_len (float|int): Length of the rectangle along the x-axis.
+        - y_len (float|int): Length of the rectangle along the y-axis.
+        - round_to (int): Number of decimal places to round to.
+            - Default: 2
+            - This is used to round the coordinates to a specific number of decimal places.
+
+        Returns:
+
+        - list[list]: A list of coordinates representing the rectangle.
+            - Each coordinate is a list of two values [x, y].
+            - The coordinates are relative to the center of the rectangle.
         """
         return [
             [round(x_len / 2, round_to), round(y_len / 2, round_to)],
@@ -62,6 +66,64 @@ class Shape:
             [round(-x_len / 2, round_to), round(-y_len / 2, round_to)],
             [round(x_len / 2, round_to), round(-y_len / 2, round_to)],
         ]
+    
+    @staticmethod
+    def rotate(
+        radians: float | int, 
+        shape: list[list[float | int]],
+        round_to: int = 2
+    ) -> list[list[float | int]]:
+        """
+        Rotates a shape by a given angle in radians around its origin (0, 0).
+        Args:
+        - radians (float|int): The angle in radians to rotate the shape.
+        - shape (list[list[float|int]]): The shape to rotate.
+            - This is a list of coordinates representing the shape.
+            - Each coordinate is a list of two values [x, y].
+        Returns:
+        - list[list[float|int]]: The rotated shape.
+            - This is a list of coordinates representing the rotated shape.
+            - Each coordinate is a list of two values [x, y].
+        """
+        return [
+            [
+                round(
+                    coord[0] * math.cos(radians) - coord[1] * math.sin(radians),
+                    round_to,
+                ),
+                round(
+                    coord[0] * math.sin(radians) + coord[1] * math.cos(radians),
+                    round_to,
+                ),
+            ]
+            for coord in shape
+        ]
+    
+    @staticmethod
+    def get_rotated_shape(
+        shape: list[list[float | int]],
+        x_shift: float | int,
+        y_shift: float | int,
+    ):
+        """
+        Rotates the shape to align with the direction of motion.
+
+        Args:
+
+        - shape (list[list[float|int]]): List of coordinates representing the shape's vertices relative to its center.
+        - x_shift (float|int): Total distance the shape moves along the x-axis during [t_start, t_end].
+        - y_shift (float|int): Total distance the shape moves along the y-axis during [t_start, t_end].
+
+        Returns:
+
+        - list[list[float|int]]: The rotated shape.
+            - This is a list of coordinates representing the rotated shape.
+            - Each coordinate is a list of two values [x, y].
+        """
+        if x_shift == 0 and y_shift == 0:
+            return shape
+        radians = math.atan2(y_shift, x_shift)
+        return Shape.rotate(radians=radians, shape=shape)
 
 
 class ShapeMoverUtils:
@@ -79,17 +141,17 @@ class ShapeMoverUtils:
 
         Args:
 
-            - seg_start (int|float): Initial position of the left end of the line segment.
-            - seg_end (int|float): Initial position of the right end of the line segment.
-            - t_start (int|float): Start time of the motion.
-            - t_end (int|float): End time of the motion.
-            - shift (int|float): Total distance the line segment moves along the x-axis during [t_start, t_end].
+        - seg_start (int|float): Initial position of the left end of the line segment.
+        - seg_end (int|float): Initial position of the right end of the line segment.
+        - t_start (int|float): Start time of the motion.
+        - t_end (int|float): End time of the motion.
+        - shift (int|float): Total distance the line segment moves along the x-axis during [t_start, t_end].
 
         Returns:
 
-            - dict[int, tuplie(int|float,int|float)]: A dictionary mapping each integer `i` to the time interval [t_in, t_out]
-                                    during which any part of the line overlaps the range [i, i+1).
-                                    Only includes ranges with non-zero overlap duration.
+        - dict[int, tuplie(int|float,int|float)]: A dictionary mapping each integer `i` to the time interval [t_in, t_out]
+                                during which any part of the line overlaps the range [i, i+1).
+                                Only includes ranges with non-zero overlap duration.
         """
         duration = t_end - t_start
         velocity = shift / duration if duration != 0 else 0
@@ -134,20 +196,20 @@ class ShapeMoverUtils:
 
         Args:
 
-            - x_start (float|int): Initial position of the left end of the rectangle along the x-axis.
-            - x_end (float|int): Initial position of the right end of the rectangle along the x-axis.
-            - y_start (float|int): Initial position of the bottom end of the rectangle along the y-axis.
-            - y_end (float|int): Initial position of the top end of the rectangle along the y-axis.
-            - x_shift (float|int): Total distance the rectangle moves along the x-axis during [t_start, t_end].
-            - y_shift (float|int): Total distance the rectangle moves along the y-axis during [t_start, t_end].
-            - t_start (float|int): Start time of the motion.
-            - t_end (float|int): End time of the motion.
+        - x_start (float|int): Initial position of the left end of the rectangle along the x-axis.
+        - x_end (float|int): Initial position of the right end of the rectangle along the x-axis.
+        - y_start (float|int): Initial position of the bottom end of the rectangle along the y-axis.
+        - y_end (float|int): Initial position of the top end of the rectangle along the y-axis.
+        - x_shift (float|int): Total distance the rectangle moves along the x-axis during [t_start, t_end].
+        - y_shift (float|int): Total distance the rectangle moves along the y-axis during [t_start, t_end].
+        - t_start (float|int): Start time of the motion.
+        - t_end (float|int): End time of the motion.
 
         Returns:
 
-            - dict[tuple(int,int),tuple(int|float,int|float)]: A dictionary mapping each integer (i,j) to the time interval [t_in, t_out]
-                during which any part of the rectangle overlaps the range [i, i+1) x [j, j+1).
-                Only includes ranges with non-zero overlap duration.
+        - dict[tuple(int,int),tuple(int|float,int|float)]: A dictionary mapping each integer (i,j) to the time interval [t_in, t_out]
+            during which any part of the rectangle overlaps the range [i, i+1) x [j, j+1).
+            Only includes ranges with non-zero overlap duration.
 
         """
         x_intervals = ShapeMoverUtils.moving_segment_overlap_intervals(
@@ -274,14 +336,14 @@ class ShapeMoverUtils:
 
         Args:
 
-            - intervals (dict[tuple(int,int),tuple(int|float,int|float)]): A dictionary mapping each integer (i,j) to the time interval [t_in, t_out]
-                during which any part of the shape overlaps the range [i, i+1) x [j, j+1).
-            - slope (float|int): The slope of the line.
-            - absolute_shape (list(tuple[int|float, int|float])): A list of coordinates representing the shape's vertices relative to its center.
+        - intervals (dict[tuple(int,int),tuple(int|float,int|float)]): A dictionary mapping each integer (i,j) to the time interval [t_in, t_out]
+            during which any part of the shape overlaps the range [i, i+1) x [j, j+1).
+        - slope (float|int): The slope of the line.
+        - absolute_shape (list(tuple[int|float, int|float])): A list of coordinates representing the shape's vertices relative to its center.
 
         Returns:
 
-            - dict[tuple(int,int),tuple(int|float,int|float)]: A dictionary with unnecessary intervals removed.
+        - dict[tuple(int,int),tuple(int|float,int|float)]: A dictionary with unnecessary intervals removed.
         """
         min_vertex, max_vertex = (
             ShapeMoverUtils.find_extreme_orthogonal_vertices_simplified(
@@ -330,19 +392,20 @@ class ShapeMoverUtils:
 
         Args:
 
-            - x_coord (float|int): Initial x-coordinate of the shape's center.
-            - y_coord (float|int): Initial y-coordinate of the shape's center.
-            - x_shift (float|int): Total distance the shape moves along the x-axis during [t_start, t_end].
-            - y_shift (float|int): Total distance the shape moves along the y-axis during [t_start, t_end].
-            - t_start (float|int): Start time of the motion.
-            - t_end (float|int): End time of the motion.
-            - shape (list[list[float|int]]): List of coordinates representing the shape's vertices relative to its center.
+        - x_coord (float|int): Initial x-coordinate of the shape's center.
+        - y_coord (float|int): Initial y-coordinate of the shape's center.
+        - x_shift (float|int): Total distance the shape moves along the x-axis during [t_start, t_end].
+        - y_shift (float|int): Total distance the shape moves along the y-axis during [t_start, t_end].
+        - t_start (float|int): Start time of the motion.
+        - t_end (float|int): End time of the motion.
+        - shape (list[list[float|int]]): List of coordinates representing the shape's vertices relative to its center.
+
 
         Returns:
 
-            - dict[tuple(int,int),tuple(int|float,int|float)]: A dictionary mapping each integer (i,j) to the time interval [t_in, t_out]
-                                    during which any part of the shape overlaps the range [i, i+1) x [j, j+1).
-                                    Only includes ranges with non-zero overlap duration.
+        - dict[tuple(int,int),tuple(int|float,int|float)]: A dictionary mapping each integer (i,j) to the time interval [t_in, t_out]
+                                during which any part of the shape overlaps the range [i, i+1) x [j, j+1).
+                                Only includes ranges with non-zero overlap duration.
         """
         # Get the overlap intervals for a rectangle that bounds the shape
         absolute_shape = [
