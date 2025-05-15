@@ -15,7 +15,7 @@ grid = Grid(
 amr1 = grid.add_entity(
     Entity(
         name="AMR1",
-        shape=[[-1.5, -.5],[-1.5, .5],[1.5, .5],[1.5, -.5]],
+        shape=[[-1.5, -0.5], [-1.5, 0.5], [1.5, 0.5], [1.5, -0.5]],
         x_coord=5,
         y_coord=5,
         auto_rotate=True,
@@ -25,7 +25,7 @@ amr1 = grid.add_entity(
 amr2 = grid.add_entity(
     Entity(
         name="AMR2",
-        shape=[[-1.5, -.5],[-1.5, .5],[1.5, .5],[1.5, -.5]],
+        shape=[[-1.5, -0.5], [-1.5, 0.5], [1.5, 0.5], [1.5, -0.5]],
         x_coord=15,
         y_coord=5,
     )
@@ -34,7 +34,7 @@ amr2 = grid.add_entity(
 wall1 = grid.add_entity(
     StaticEntity(
         name="Wall1",
-        shape=[[8,0], [0,0], [0,1], [8,1]],
+        shape=[[8, 0], [0, 0], [0, 1], [8, 1]],
         x_coord=11,
         y_coord=10,
     )
@@ -43,7 +43,7 @@ wall1 = grid.add_entity(
 wall2 = grid.add_entity(
     StaticEntity(
         name="Wall2",
-        shape=[[-8,0], [0,0], [0,1], [-8,1]],
+        shape=[[-8, 0], [0, 0], [0, 1], [-8, 1]],
         x_coord=9,
         y_coord=10,
     )
@@ -52,7 +52,7 @@ wall2 = grid.add_entity(
 amr1.add_route(
     waypoints=[
         (10, 5, 1),
-        (10,15, 1),
+        (10, 15, 1),
         (5, 15, 1),
     ],
 )
@@ -72,9 +72,9 @@ grid.simulate()
 # Check if the auto rotated AMR clears the gap
 success = True
 try:
-    if amr1.history[-1]['y']!= 15:
+    if amr1.history[-1]["y"] != 15:
         success = False
-    if amr2.history[-1]['y']!= 9.5:
+    if amr2.history[-1]["y"] != 9.5:
         success = False
 except:
     success = False

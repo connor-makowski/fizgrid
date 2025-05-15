@@ -15,7 +15,7 @@ grid = Grid(
 amr = grid.add_entity(
     Entity(
         name="AMR2",
-        shape=[[-1.5, -.5],[-1.5, .5],[1.5, .5],[1.5, -.5]],
+        shape=[[-1.5, -0.5], [-1.5, 0.5], [1.5, 0.5], [1.5, -0.5]],
         x_coord=5,
         y_coord=5,
     )
@@ -24,7 +24,7 @@ amr = grid.add_entity(
 wall = grid.add_entity(
     StaticEntity(
         name="Wall1",
-        shape=[[8,0], [0,0], [0,1], [8,1]],
+        shape=[[8, 0], [0, 0], [0, 1], [8, 1]],
         x_coord=1,
         y_coord=10,
     )
@@ -34,7 +34,7 @@ amr.add_route(
     waypoints=[
         (5, 15, 1),
     ],
-    time = 5,
+    time=5,
 )
 
 # Run the sim
@@ -43,7 +43,7 @@ grid.simulate()
 # Check if a collision is loggged
 success = True
 try:
-    if not amr.history[-1]['c']:
+    if not amr.history[-1]["c"]:
         success = False
 except:
     success = False

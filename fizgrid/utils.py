@@ -11,7 +11,9 @@ def unique_id():
 @type_enforced.Enforcer(enabled=True)
 class Shape:
     @staticmethod
-    def circle(radius: int, num_points: int = 6, round_to: int = 2) -> list[list]:
+    def circle(
+        radius: int, num_points: int = 6, round_to: int = 2
+    ) -> list[list]:
         """
         Returns a list of addative coordinates that form a circle around a given point.
 
@@ -33,8 +35,12 @@ class Shape:
         """
         return [
             [
-                round(radius * math.cos(2 * math.pi / num_points * i), round_to),
-                round(radius * math.sin(2 * math.pi / num_points * i), round_to),
+                round(
+                    radius * math.cos(2 * math.pi / num_points * i), round_to
+                ),
+                round(
+                    radius * math.sin(2 * math.pi / num_points * i), round_to
+                ),
             ]
             for i in range(num_points)
         ]
@@ -66,12 +72,10 @@ class Shape:
             [round(-x_len / 2, round_to), round(-y_len / 2, round_to)],
             [round(x_len / 2, round_to), round(-y_len / 2, round_to)],
         ]
-    
+
     @staticmethod
     def rotate(
-        radians: float | int, 
-        shape: list[list[float | int]],
-        round_to: int = 2
+        radians: float | int, shape: list[list[float | int]], round_to: int = 2
     ) -> list[list[float | int]]:
         """
         Rotates a shape by a given angle in radians around its origin (0, 0).
@@ -98,7 +102,7 @@ class Shape:
             ]
             for coord in shape
         ]
-    
+
     @staticmethod
     def get_rotated_shape(
         shape: list[list[float | int]],

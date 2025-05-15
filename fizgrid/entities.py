@@ -199,7 +199,9 @@ class Entity:
 
     def __plan_route__(
         self,
-        waypoints: list[tuple[int | float, int | float, int | float, int | float]],
+        waypoints: list[
+            tuple[int | float, int | float, int | float, int | float]
+        ],
         raise_on_future_collision: bool = False,
     ) -> dict:
         """
@@ -293,19 +295,16 @@ class Entity:
         # For each route waypoint, calculate the blocks and collisions and add them to the grid
         for waypoint in waypoints:
             x_shift = waypoint[0] - x_tmp
-            y_shift = waypoint[1] - y_tmp   
+            y_shift = waypoint[1] - y_tmp
             if len(waypoint) == 4:
                 orientation = waypoint[3]
                 self.__shape_current__ = Shape.rotate(
-                    radians=orientation, 
-                    shape=self.shape
-                )   
+                    radians=orientation, shape=self.shape
+                )
             elif self.__auto_rotate__:
                 if x_shift != 0 or y_shift != 0:
                     self.__shape_current__ = Shape.get_rotated_shape(
-                        shape=self.shape, 
-                        x_shift=x_shift, 
-                        y_shift=y_shift
+                        shape=self.shape, x_shift=x_shift, y_shift=y_shift
                     )
             blocks = ShapeMoverUtils.moving_shape_overlap_intervals(
                 x_coord=x_tmp,
@@ -314,7 +313,7 @@ class Entity:
                 y_shift=y_shift,
                 t_start=t_tmp,
                 t_end=t_tmp + waypoint[2],
-                shape=self.__shape_current__
+                shape=self.__shape_current__,
             )
             x_tmp = waypoint[0]
             y_tmp = waypoint[1]
