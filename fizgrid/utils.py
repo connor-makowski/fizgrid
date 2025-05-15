@@ -12,14 +12,14 @@ def unique_id():
 class Shape:
     @staticmethod
     def circle(
-        radius: int, num_points: int = 6, round_to: int = 2
+        radius: int | float, num_points: int = 6, round_to: int = 2
     ) -> list[list]:
         """
         Returns a list of addative coordinates that form a circle around a given point.
 
         Args:
 
-        - radius (int): Radius of the circle.
+        - radius (int|float): Radius of the circle.
         - num_points (int): Number of points to generate around the circle.
             - Default: 6
             - This is used to determine the number of points to generate around the circle.

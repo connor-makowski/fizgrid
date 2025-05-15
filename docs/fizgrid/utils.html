@@ -87,7 +87,7 @@
 <footer>
 <select id="version-selector">
     <option value="latest">latest</option>
-        <option value="1.4.0">1.4.0</option>
+        <option value="1.4.1">1.4.1</option>
         <option value="1.3.0">1.3.0</option>
         <option value="1.2.0">1.2.0</option>
         <option value="1.1.1">1.1.1</option>
@@ -153,14 +153,14 @@
 </span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Shape</span><span class="p">:</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">circle</span><span class="p">(</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>        <span class="n">radius</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="n">round_to</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>        <span class="n">radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="n">num_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="n">round_to</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">]:</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="sd">        Returns a list of addative coordinates that form a circle around a given point.</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">        Args:</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">        - radius (int): Radius of the circle.</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">        - radius (int|float): Radius of the circle.</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">        - num_points (int): Number of points to generate around the circle.</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">            - Default: 6</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">            - This is used to determine the number of points to generate around the circle.</span>
@@ -631,14 +631,14 @@
 </span><span id="Shape-13"><a href="#Shape-13"><span class="linenos"> 13</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Shape</span><span class="p">:</span>
 </span><span id="Shape-14"><a href="#Shape-14"><span class="linenos"> 14</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Shape-15"><a href="#Shape-15"><span class="linenos"> 15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">circle</span><span class="p">(</span>
-</span><span id="Shape-16"><a href="#Shape-16"><span class="linenos"> 16</span></a>        <span class="n">radius</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="n">round_to</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+</span><span id="Shape-16"><a href="#Shape-16"><span class="linenos"> 16</span></a>        <span class="n">radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="n">num_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="n">round_to</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
 </span><span id="Shape-17"><a href="#Shape-17"><span class="linenos"> 17</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">]:</span>
 </span><span id="Shape-18"><a href="#Shape-18"><span class="linenos"> 18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="Shape-19"><a href="#Shape-19"><span class="linenos"> 19</span></a><span class="sd">        Returns a list of addative coordinates that form a circle around a given point.</span>
 </span><span id="Shape-20"><a href="#Shape-20"><span class="linenos"> 20</span></a>
 </span><span id="Shape-21"><a href="#Shape-21"><span class="linenos"> 21</span></a><span class="sd">        Args:</span>
 </span><span id="Shape-22"><a href="#Shape-22"><span class="linenos"> 22</span></a>
-</span><span id="Shape-23"><a href="#Shape-23"><span class="linenos"> 23</span></a><span class="sd">        - radius (int): Radius of the circle.</span>
+</span><span id="Shape-23"><a href="#Shape-23"><span class="linenos"> 23</span></a><span class="sd">        - radius (int|float): Radius of the circle.</span>
 </span><span id="Shape-24"><a href="#Shape-24"><span class="linenos"> 24</span></a><span class="sd">        - num_points (int): Number of points to generate around the circle.</span>
 </span><span id="Shape-25"><a href="#Shape-25"><span class="linenos"> 25</span></a><span class="sd">            - Default: 6</span>
 </span><span id="Shape-26"><a href="#Shape-26"><span class="linenos"> 26</span></a><span class="sd">            - This is used to determine the number of points to generate around the circle.</span>
@@ -758,7 +758,7 @@
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">circle</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">radius</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">num_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span>, </span><span class="param"><span class="n">round_to</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span></span><span class="return-annotation">) -> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span>:</span></span>
+        <span class="name">circle</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span>,</span><span class="param">	<span class="n">num_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span>,</span><span class="param">	<span class="n">round_to</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span></span><span class="return-annotation">) -> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="Shape.circle-view-source"><span>View Source</span></label>
 
@@ -766,14 +766,14 @@
     <a class="headerlink" href="#Shape.circle"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Shape.circle-14"><a href="#Shape.circle-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Shape.circle-15"><a href="#Shape.circle-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">circle</span><span class="p">(</span>
-</span><span id="Shape.circle-16"><a href="#Shape.circle-16"><span class="linenos">16</span></a>        <span class="n">radius</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="n">round_to</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+</span><span id="Shape.circle-16"><a href="#Shape.circle-16"><span class="linenos">16</span></a>        <span class="n">radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="n">num_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="n">round_to</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
 </span><span id="Shape.circle-17"><a href="#Shape.circle-17"><span class="linenos">17</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">]:</span>
 </span><span id="Shape.circle-18"><a href="#Shape.circle-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="Shape.circle-19"><a href="#Shape.circle-19"><span class="linenos">19</span></a><span class="sd">        Returns a list of addative coordinates that form a circle around a given point.</span>
 </span><span id="Shape.circle-20"><a href="#Shape.circle-20"><span class="linenos">20</span></a>
 </span><span id="Shape.circle-21"><a href="#Shape.circle-21"><span class="linenos">21</span></a><span class="sd">        Args:</span>
 </span><span id="Shape.circle-22"><a href="#Shape.circle-22"><span class="linenos">22</span></a>
-</span><span id="Shape.circle-23"><a href="#Shape.circle-23"><span class="linenos">23</span></a><span class="sd">        - radius (int): Radius of the circle.</span>
+</span><span id="Shape.circle-23"><a href="#Shape.circle-23"><span class="linenos">23</span></a><span class="sd">        - radius (int|float): Radius of the circle.</span>
 </span><span id="Shape.circle-24"><a href="#Shape.circle-24"><span class="linenos">24</span></a><span class="sd">        - num_points (int): Number of points to generate around the circle.</span>
 </span><span id="Shape.circle-25"><a href="#Shape.circle-25"><span class="linenos">25</span></a><span class="sd">            - Default: 6</span>
 </span><span id="Shape.circle-26"><a href="#Shape.circle-26"><span class="linenos">26</span></a><span class="sd">            - This is used to determine the number of points to generate around the circle.</span>
@@ -806,7 +806,7 @@
 <p>Args:</p>
 
 <ul>
-<li>radius (int): Radius of the circle.</li>
+<li>radius (int|float): Radius of the circle.</li>
 <li>num_points (int): Number of points to generate around the circle.
 <ul>
 <li>Default: 6</li>
