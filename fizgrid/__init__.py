@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/fizgrid.svg)](https://badge.fury.io/py/fizgrid)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Simulate entities that take up space over time in grid based environments. 
+Simulate entities that take up space over time in grid based environments.
 
 
 # Overview
@@ -125,7 +125,7 @@ print(ghost.history)
 # More Comprehensive Examples
 
 ## Create a basic sniffer entity
-Create a Truffle Pig that sniffs out truffles on a grid. 
+Create a Truffle Pig that sniffs out truffles on a grid.
 ```py
 from fizgrid.grid import Grid
 from fizgrid.entities import Entity

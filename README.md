@@ -5,18 +5,18 @@
 Simulate entities that take up space over time in grid based environments. 
 
 
-# Overview
+## Overview
 This package introduces a new approach to simulating physical movement within a grid. Rather than following the traditional method of discretizing time and iterating over spatial configurations, this simulation inverts the model: space is discretized, and time is continuous.
 
 Events are scheduled into a priority queue, ordered by their occurrence time. The simulation processes events in chronological order, updating only the relevant entities and grid cells affected by each event. This design allows for highly efficient simulation of large numbers of entities over long periods of simulated time.
 
-## Entity Movement and Scheduling
+### Entity Movement and Scheduling
 
 Entity movements are planned in advance but only realized when an associated event is triggered. When a route is assigned to an entity, each grid cell along its path is reserved for the time the entity is expected to occupy it. During this reservation process, the system checks for potential conflicts. For example, whether another entity is scheduled to occupy the same cell at the same time.
 
 If a conflict is detected, a collision event is added to the queue for both entities. Only the first potential collision between any pair of entities is added to avoid redundancy. Additionally, an end-of-route event is queued for the entity to signal the completion of its movement.
 
-## Event Handling
+### Event Handling
 
 When an end-of-route event is processed:
 
@@ -34,11 +34,11 @@ When a collision event is processed:
 - A blank route is assigned to the entity to mark its occupancy of the current cell until reassigned.
     - This may trigger new collisions will be resolved in their own time.
 
-# Setup
+## Setup
 
 Make sure you have Python 3.10.x (or higher) installed on your system. You can download it [here](https://www.python.org/downloads/).
 
-## Installation
+### Installation
 
 ```
 pip install fizgrid
@@ -121,9 +121,9 @@ print(ghost.history)
 # This means that the ghost started at (5,2) at time=0 and moved to (5,8) at time=12 without any collisions
 ```
 
-# More Comprehensive Examples
+## Advanced Usage
 
-## Create a basic sniffer entity
+### Create a custom sniffer entity
 Create a Truffle Pig that sniffs out truffles on a grid. 
 ```py
 from fizgrid.grid import Grid
@@ -259,6 +259,14 @@ print({
 # {'Name': 'Truffle_Pig_1', 'x_coord': 54.6408, 'y_coord': 50.3864}
 # {'Name': 'Truffle_Pig_2', 'x_coord': 50.1886, 'y_coord': 55.9795}
 ```
+
+## Helpers and Utils
+
+Fizgrid provides a number of utils and helper functions to streamline your workflows.
+
+You should take special note of the following:
+- `fizgrid.utils.Shape`: A class to help define the shape of an entity. (See: [Shape](https://connor-makowski.github.io/fizgrid/fizgrid/utils.html#Shape))
+- `fizgrid.helpers.waypoint_timing`: A function to help calculate the timing of waypoints. (See: [waypoint_timing](https://connor-makowski.github.io/fizgrid/fizgrid/helpers/waypoint_timing.html))
 
 
 # Development
