@@ -67,13 +67,14 @@ class Entity:
         self.__grid__ = None
         self.__on_grid__ = False
         self.__route_start_time__ = None
-        self.__route_end_time__ = 0
         self.__blocked_grid_cells__ = []
         self.__planned_waypoints__ = []
         self.__future_event_ids__ = {}
         self.__shape_current__ = shape
         self.__auto_rotate__ = auto_rotate
         self.__location_precision__ = location_precision
+        self.__is_available__ = True
+        self.__running_on_realize__ = False
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.name})"
@@ -203,6 +204,7 @@ class Entity:
             tuple[int | float, int | float, int | float, int | float]
         ],
         raise_on_future_collision: bool = False,
+        bypass_availability_check: bool = False,
     ) -> dict:
         """
         Sets the route for this entity given a set of waypoints starting at the current time.
@@ -235,6 +237,8 @@ class Entity:
         - raise_on_future_collision (bool): Whether to raise an exception if the entity has any future plans that result in a collision.
             - Note: This will raise an exception even if the future collision would not happen due to another event occurring first.
             - Note: This is mostly used when initially placing entities on the grid to ensure they are not placed in a collision.
+        - bypass_availability_check (bool): Whether to bypass the availability check for this entity.
+            - Note: This is used when adding a route to the queue without checking if the entity is available.
 
         Returns:
 
@@ -246,10 +250,11 @@ class Entity:
                 "Entity is not on this grid yet, but is attempting to plan a route. Either it has not been assigned to this grid, or the time it will be placed on the grid is in the future."
             )
         # Raise an exception if the entity is already in a route
-        if not self.is_available():
-            raise Exception(
-                f"entity {self.name} is not available for a new route. Cannot set a new route until the current route is finished."
-            )
+        if not self.__is_available__:
+            if not bypass_availability_check:
+                raise Exception(
+                    f"Entity {self.name} is not available for a new route. Cannot set a new route until the current route is finished."
+                )
 
         # Check for valid waypoints
         self.__waypoint_check__(waypoints)
@@ -264,6 +269,9 @@ class Entity:
 
         collisions = {}
         total_route_time_shift = sum([waypoint[2] for waypoint in waypoints])
+
+        if total_route_time_shift > 0:
+            self.__is_available__ = False
 
         # Add a final waypoint occuring until the end of the simulation.
         # This allows us to lock in the position of the entity at the end of the route and block the grid cells accordingly.
@@ -287,7 +295,7 @@ class Entity:
         # Store the route waypoints and start time for later use to determine the entity's position at a given time
         self.__planned_waypoints__ = waypoints
         self.__route_start_time__ = self.get_time()
-        self.__route_end_time__ = min(
+        route_end_time = min(
             self.__grid__.__max_time__,
             self.__route_start_time__ + total_route_time_shift,
         )
@@ -386,10 +394,10 @@ class Entity:
             self.__future_event_ids__[event_id] = other_event_id
             other_entity.__future_event_ids__[other_event_id] = event_id
 
-        if self.__route_end_time__ > self.get_time():
+        if route_end_time > self.get_time():
             # Add a route_end event for this entity at the timing of the end of the route
             event_id = self.__grid__.add_event(
-                time=self.__route_end_time__,
+                time=route_end_time,
                 object=self,
                 method="__realize_route__",
                 kwargs={
@@ -423,6 +431,8 @@ class Entity:
         - dict: A dictionary containing the following keys:
             - has_collision (bool): Whether the route has a collision with another entity.
         """
+        # Set this entity as available for a new route
+        self.__is_available__ = True
         # Determeine Realized Route and update the entity's position / history
         x_tmp = self.x_coord
         y_tmp = self.y_coord
@@ -431,9 +441,6 @@ class Entity:
         for waypoint in self.__planned_waypoints__:
             # End the route realization if the time is greater than the current time
             if t_tmp >= current_time:
-                if t_tmp > current_time:
-                    # TODO: Remove this
-                    print("This should never happen.")
                 break
             # Get partial location if interrupted by the current time
             elif t_tmp + waypoint[2] > current_time:
@@ -462,8 +469,6 @@ class Entity:
         # Set the entity's position to where they are at this point in time
         self.x_coord = x_tmp
         self.y_coord = y_tmp
-        # Set the entity's route end time to the current time
-        self.__route_end_time__ = current_time
 
         if is_result_of_dissoc_grid:
             return {"is_result_of_collision": False}
@@ -472,7 +477,9 @@ class Entity:
             waypoints=[],
             raise_on_future_collision=raise_on_future_collision,
         )
+        self.__running_on_realize__ = True
         self.on_realize(is_result_of_collision=is_result_of_collision)
+        self.__running_on_realize__ = False
         return planned_route
 
     def get_time(self) -> int | float:
@@ -485,16 +492,6 @@ class Entity:
         - int|float: The current time of the grid queue.
         """
         return self.__grid__.__queue__.__time__
-
-    def is_available(self) -> bool:
-        """
-        Returns whether this entity is available for a new route.
-
-        Returns:
-
-        - bool: True if the entity is available for a new route, False otherwise.
-        """
-        return self.__route_end_time__ <= self.get_time()
 
     def add_route(
         self,
@@ -536,7 +533,10 @@ class Entity:
             time=time,
             object=self,
             method="__plan_route__",
-            kwargs={"waypoints": waypoints},
+            kwargs={
+                "waypoints": waypoints,
+                "bypass_availability_check": self.__running_on_realize__,
+            },
             priority=0,
         )
 
@@ -609,6 +609,7 @@ class StaticEntity(Entity):
         - dict: A dictionary containing the following keys:
             - has_collision (bool): Whether the route has a collision with another entity.
         """
+        self.__is_available__ = True
         # Since this is a static entity, we don't need to do anything here.
         if is_result_of_collision:
             return
@@ -618,11 +619,17 @@ class StaticEntity(Entity):
                 raise_on_future_collision=False,
                 is_result_of_dissoc_grid=True,
             )
-        # Since this is a static entity, the route end time is the current time when the entity is created (should normally be 0)
-        self.__route_end_time__ = self.get_time()
         # Since this object does not move, we don't need to plan a route and will never interrupt it.
         return self.__plan_route__(
             waypoints=[], raise_on_future_collision=raise_on_future_collision
+        )
+
+    def add_route(self, *arts, **kwargs) -> None:
+        """
+        Static entities cannot have routes. They are static and do not move. This method raises an exception if called.
+        """
+        raise Exception(
+            "Static entities cannot have routes. They are static and do not move."
         )
 
 
@@ -639,6 +646,7 @@ class GhostEntity(Entity):
         self,
         waypoints: list[tuple[int | float, int | float, int | float]],
         raise_on_future_collision: bool = False,
+        bypass_availability_check: bool = False,
     ) -> dict:
         """
         Overrides the __plan_route__ method to allow for a ghost entity to be placed on the grid that never collides with other entities because it does not check for collisions.
@@ -674,10 +682,11 @@ class GhostEntity(Entity):
                 - Note: This will always be False for ghost entities.
         """
         # Raise an exception if the entity is already in a route
-        if not self.is_available():
-            raise Exception(
-                f"entity {self.name} is not available for a new route. Cannot set a new route until the current route is finished."
-            )
+        if not self.__is_available__:
+            if not bypass_availability_check:
+                raise Exception(
+                    f"entity {self.name} is not available for a new route. Cannot set a new route until the current route is finished."
+                )
 
         # Check for valid waypoints
         self.__waypoint_check__(waypoints)
@@ -714,15 +723,15 @@ class GhostEntity(Entity):
 
         # Store the route waypoints and start time for later use to determine the entity's position at a given time
         self.__planned_waypoints__ = waypoints
-        self.__route_end_time__ = min(
+        route_end_time = min(
             self.__grid__.__max_time__,
             self.__route_start_time__ + total_route_time_shift,
         )
 
         # Add a route_end event for this entity at the timing of the end of the route
-        if self.__route_start_time__ < self.__route_end_time__:
+        if self.__route_start_time__ < route_end_time:
             event_id = self.__grid__.add_event(
-                time=self.__route_end_time__,
+                time=route_end_time,
                 object=self,
                 method="__realize_route__",
                 kwargs={
