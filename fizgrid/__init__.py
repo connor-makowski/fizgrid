@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/fizgrid.svg)](https://badge.fury.io/py/fizgrid)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Simulate entities that take up space over time in grid based environments.
+Simulate entities that take up space over time in grid based environments. 
 
 
 ## Overview
@@ -125,7 +125,7 @@ print(ghost.history)
 ## Advanced Usage
 
 ### Create a custom sniffer entity
-Create a Truffle Pig that sniffs out truffles on a grid.
+Create a Truffle Pig that sniffs out truffles on a grid. 
 ```py
 from fizgrid.grid import Grid
 from fizgrid.entities import Entity
@@ -284,5 +284,4 @@ Make sure Docker is installed and running on a Unix system (Linux, MacOS, WSL2).
 - Update the docs (see ./utils/docs.sh)
     - `./run.sh docs`
 
-- Note: You can and should modify the `Dockerfile` to test different python versions.
-"""
+- Note: You can and should modify the `Dockerfile` to test different python versions."""
