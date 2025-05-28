@@ -69,12 +69,11 @@ class Entity:
         self.__route_start_time__ = None
         self.__blocked_grid_cells__ = []
         self.__planned_waypoints__ = []
-        self.__future_event_ids__ = {}
+        self.__future_event_ids__ = {"system": {}, "user": {}}
         self.__shape_current__ = shape
         self.__auto_rotate__ = auto_rotate
         self.__location_precision__ = location_precision
         self.__is_available__ = True
-        self.__running_on_realize__ = False
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.name})"
@@ -122,6 +121,7 @@ class Entity:
             is_result_of_collision=False,
             raise_on_future_collision=True,
             is_result_of_dissoc_grid=False,
+            clear_event_types=["system"],
         )
 
     def __dissoc_grid__(self) -> None:
@@ -141,7 +141,7 @@ class Entity:
             )
         # Clear the blocked grid cells and future events
         self.__clear_blocked_grid_cells__()
-        self.__clear_future_events__()
+        self.__clear_future_events__(clear_event_types=["system", "user"])
         self.__route_start_time__ = None
         self.__grid__ = None
         self.__on_grid__ = False
@@ -155,22 +155,23 @@ class Entity:
             cell.pop(block_id, None)
         self.__blocked_grid_cells__ = []
 
-    def __clear_future_events__(self) -> None:
+    def __clear_future_events__(self, clear_event_types=["system"]) -> None:
         """
         Clears the future events for this entity.
         """
-        for (
-            this_event_id,
-            related_event_id,
-        ) in self.__future_event_ids__.items():
-            # Remove the event from the queue
-            event_obj = self.__grid__.__queue__.remove_event(this_event_id)
-            # If this event is a standard route_end event, it will not have an related event, so we can be done here
-            # If the event_obj is None, it has already been processed or removed so we can skip any further processing
-            # If this event is a collision event, it will have an associated event and should be removed too
-            if related_event_id != None and event_obj != None:
-                self.__grid__.__queue__.remove_event(related_event_id)
-        self.__future_event_ids__ = {}
+        for event_type in clear_event_types:
+            for (
+                this_event_id,
+                related_event_id,
+            ) in self.__future_event_ids__[event_type].items():
+                # Remove the event from the queue
+                event_obj = self.__grid__.__queue__.remove_event(this_event_id)
+                # If this event is a standard route_end event, it will not have an related event, so we can be done here
+                # If the event_obj is None, it has already been processed or removed so we can skip any further processing
+                # If this event is a collision event, it will have an associated event and should be removed too
+                if related_event_id != None and event_obj != None:
+                    self.__grid__.__queue__.remove_event(related_event_id)
+            self.__future_event_ids__[event_type] = {}
 
     def __waypoint_check__(self, waypoints) -> None:
         """
@@ -258,10 +259,13 @@ class Entity:
 
         # Check for valid waypoints
         self.__waypoint_check__(waypoints)
+        waypoints = list(
+            waypoints
+        )  # Make a copy of the waypoints to avoid modifying the original list
 
         # Setup util attributes
         self.__clear_blocked_grid_cells__()
-        self.__clear_future_events__()
+        self.__clear_future_events__(clear_event_types=["system"])
 
         x_tmp = self.x_coord
         y_tmp = self.y_coord
@@ -280,7 +284,12 @@ class Entity:
                 (
                     waypoints[-1][0],
                     waypoints[-1][1],
-                    self.__grid__.__max_time__ - t_tmp - total_route_time_shift,
+                    max(
+                        self.__grid__.__max_time__
+                        - t_tmp
+                        - total_route_time_shift,
+                        0,
+                    ),
                 )
             )
         else:
@@ -288,7 +297,12 @@ class Entity:
                 (
                     self.x_coord,
                     self.y_coord,
-                    self.__grid__.__max_time__ - t_tmp - total_route_time_shift,
+                    max(
+                        self.__grid__.__max_time__
+                        - t_tmp
+                        - total_route_time_shift,
+                        0,
+                    ),
                 )
             )
 
@@ -378,6 +392,7 @@ class Entity:
                 method="__realize_route__",
                 kwargs={
                     "is_result_of_collision": True,
+                    "clear_event_types": ["system", "user"],
                 },
                 priority=3,
             )
@@ -387,12 +402,15 @@ class Entity:
                 method="__realize_route__",
                 kwargs={
                     "is_result_of_collision": True,
+                    "clear_event_types": ["system", "user"],
                 },
                 priority=3,
             )
             # Store the event_id for each entity involved in the collision
-            self.__future_event_ids__[event_id] = other_event_id
-            other_entity.__future_event_ids__[other_event_id] = event_id
+            self.__future_event_ids__["system"][event_id] = other_event_id
+            other_entity.__future_event_ids__["system"][
+                other_event_id
+            ] = event_id
 
         if route_end_time > self.get_time():
             # Add a route_end event for this entity at the timing of the end of the route
@@ -402,10 +420,11 @@ class Entity:
                 method="__realize_route__",
                 kwargs={
                     "is_result_of_collision": False,
+                    "clear_event_types": ["system"],
                 },
                 priority=2,
             )
-            self.__future_event_ids__[event_id] = None
+            self.__future_event_ids__["system"][event_id] = None
         return {
             "has_collision": len(collisions) > 0,
         }
@@ -415,6 +434,7 @@ class Entity:
         is_result_of_collision: bool = False,
         raise_on_future_collision: bool = False,
         is_result_of_dissoc_grid: bool = False,
+        clear_event_types: list[str] = ["system"],
     ) -> dict:
         """
         Realize the route for this entity at the current time.
@@ -425,6 +445,8 @@ class Entity:
         - raise_on_future_collision (bool): Whether to raise an exception if the entity is in a future collision.
             - Raises an exception if this event causes a future collision with another entity.
         - is_result_of_dissoc_grid (bool): Whether the entity will be removed from the grid after this event.
+        -clear_event_types (list[str]): A list of event types to clear when realizing the route.
+            - Note: This is used to clear the future events for this entity when realizing a new route.
 
         Returns:
 
@@ -473,13 +495,11 @@ class Entity:
         if is_result_of_dissoc_grid:
             return {"is_result_of_collision": False}
         # Stop the entity at their current location and update the grid for their expected future
+        self.__clear_future_events__(clear_event_types=clear_event_types)
         planned_route = self.__plan_route__(
-            waypoints=[],
-            raise_on_future_collision=raise_on_future_collision,
+            waypoints=[], raise_on_future_collision=raise_on_future_collision
         )
-        self.__running_on_realize__ = True
         self.on_realize(is_result_of_collision=is_result_of_collision)
-        self.__running_on_realize__ = False
         return planned_route
 
     def get_time(self) -> int | float:
@@ -499,7 +519,8 @@ class Entity:
         time: int | float | None = None,
     ) -> None:
         """
-        Adds a route to the grid for this entity.
+        Adds a route to the grid for this entity. Mutliple routes can be added for future planning.
+        - Note, collisions and route cancel events will cause future routes to be cleared.
 
         Args:
 
@@ -529,23 +550,25 @@ class Entity:
         if time is None:
             time = self.get_time()
         # Add the event to the queue
-        self.__grid__.add_event(
+        event_id = self.__grid__.add_event(
             time=time,
             object=self,
             method="__plan_route__",
             kwargs={
                 "waypoints": waypoints,
-                "bypass_availability_check": self.__running_on_realize__,
             },
             priority=0,
         )
+        self.__future_event_ids__["user"][event_id] = None
 
     def cancel_route(
         self,
         time: int | float | None = None,
     ) -> None:
         """
-        Cancels the route for this entity.
+        Cancels the route and all future plans for this entity.
+
+        The entity is stopped at its current location and is available for a new route.
 
         Args:
 
@@ -558,13 +581,16 @@ class Entity:
         if time is None:
             time = self.get_time()
         # Add the event to the queue
-        self.__grid__.add_event(
+        event_id = self.__grid__.add_event(
             time=time,
             object=self,
             method="__realize_route__",
-            kwargs={},
+            kwargs={
+                "clear_event_types": ["system", "user"],
+            },
             priority=4,
         )
+        self.__future_event_ids__["user"][event_id] = None
 
     def on_realize(self, **kwargs):
         """
@@ -591,6 +617,7 @@ class StaticEntity(Entity):
         is_result_of_collision: bool = False,
         raise_on_future_collision: bool = False,
         is_result_of_dissoc_grid: bool = False,
+        clear_event_types: list[str] = ["system"],
     ) -> dict:
         """
         Realize the route for this entity at the current time.
@@ -618,6 +645,7 @@ class StaticEntity(Entity):
                 is_result_of_collision=False,
                 raise_on_future_collision=False,
                 is_result_of_dissoc_grid=True,
+                clear_event_types=["system", "user"],
             )
         # Since this object does not move, we don't need to plan a route and will never interrupt it.
         return self.__plan_route__(
@@ -625,6 +653,14 @@ class StaticEntity(Entity):
         )
 
     def add_route(self, *arts, **kwargs) -> None:
+        """
+        Static entities cannot have routes. They are static and do not move. This method raises an exception if called.
+        """
+        raise Exception(
+            "Static entities cannot have routes. They are static and do not move."
+        )
+
+    def cancel_route(self, *args, **kwargs) -> None:
         """
         Static entities cannot have routes. They are static and do not move. This method raises an exception if called.
         """
@@ -674,6 +710,9 @@ class GhostEntity(Entity):
                 - Note: The last used orientation is used until it is changed again (or auto_rotate is set to True).
         - raise_on_future_collision (bool): Whether to raise an exception if the entity has any future plans that result in a collision.
             - Note: This is not used for ghost entities, but is included for consistency with the parent class.
+        - bypass_availability_check (bool): Whether to bypass the availability check for this entity.
+            - Note: This is used when adding a route to the queue without checking if the entity is available.
+
 
         Returns:
 
@@ -692,7 +731,7 @@ class GhostEntity(Entity):
         self.__waypoint_check__(waypoints)
 
         # Setup util attributes
-        self.__clear_future_events__()
+        self.__clear_future_events__(clear_event_types=["system"])
 
         total_route_time_shift = sum([waypoint[2] for waypoint in waypoints])
 
@@ -728,8 +767,8 @@ class GhostEntity(Entity):
             self.__route_start_time__ + total_route_time_shift,
         )
 
-        # Add a route_end event for this entity at the timing of the end of the route
-        if self.__route_start_time__ < route_end_time:
+        if route_end_time > self.get_time():
+            # Add a route_end event for this entity at the timing of the end of the route
             event_id = self.__grid__.add_event(
                 time=route_end_time,
                 object=self,
@@ -739,5 +778,5 @@ class GhostEntity(Entity):
                 },
                 priority=2,
             )
-            self.__future_event_ids__[event_id] = None
+            self.__future_event_ids__["system"][event_id] = None
         return {"has_collision": False}

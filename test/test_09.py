@@ -28,7 +28,7 @@ amr2 = grid.add_entity(
         x_coord=3,
         y_coord=5,
     ),
-    time=5,
+    time=4,
 )
 
 amr3 = grid.add_entity(

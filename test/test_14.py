@@ -22,14 +22,6 @@ amr1 = grid.add_entity(
         y_coord=3,
     )
 )
-amr2 = grid.add_entity(
-    Entity(
-        name="AMR2",
-        shape=Shape.rectangle(x_len=1, y_len=1, round_to=2),
-        x_coord=3,
-        y_coord=5,
-    )
-)
 
 # Add routes to the entities such that they will collide
 
