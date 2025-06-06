@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fizgrid"
-version = "1.5.3"
+version = "1.5.4"
 description = "Simulate grid based environments."
 authors = [
     {name="Connor Makowski", email="conmak@mit.edu"}
@@ -24,7 +24,7 @@ classifiers = [
     'License :: OSI Approved :: MIT License',
     "Operating System :: OS Independent",
 ]
-dependencies = ["type_enforced>=1.10.2",]
+dependencies = ["type_enforced>=1.10.2,<2.0.0",]
 
 [project.urls]
 "Homepage" = "https://github.com/connor-makowski/fizgrid"
