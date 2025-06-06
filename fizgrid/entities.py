@@ -201,9 +201,7 @@ class Entity:
 
     def __plan_route__(
         self,
-        waypoints: list[
-            tuple[int | float, int | float, int | float, int | float]
-        ],
+        waypoints: list[tuple[int | float, ...]],
         raise_on_future_collision: bool = False,
         bypass_availability_check: bool = False,
     ) -> dict:
