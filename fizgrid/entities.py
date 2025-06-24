@@ -454,41 +454,14 @@ class Entity:
         # Set this entity as available for a new route
         self.__is_available__ = True
         # Determeine Realized Route and update the entity's position / history
-        x_tmp = self.x_coord
-        y_tmp = self.y_coord
-        t_tmp = self.__route_start_time__
-        current_time = self.get_time()
-        for waypoint in self.__planned_waypoints__:
-            # End the route realization if the time is greater than the current time
-            if t_tmp >= current_time:
-                break
-            # Get partial location if interrupted by the current time
-            elif t_tmp + waypoint[2] > current_time:
-                pct_complete = (current_time - t_tmp) / waypoint[2]
-                x_tmp = (waypoint[0] - x_tmp) * pct_complete + x_tmp
-                y_tmp = (waypoint[1] - y_tmp) * pct_complete + y_tmp
-                t_tmp = current_time
-            # Otherwise, update the tmp location
-            else:
-                x_tmp = waypoint[0]
-                y_tmp = waypoint[1]
-                t_tmp = t_tmp + waypoint[2]
-
-            # This rounding is needed to ensure that rounding errors in python do not create a permanent collisions between entities
-            x_tmp = round(x_tmp, self.__location_precision__)
-            y_tmp = round(y_tmp, self.__location_precision__)
-            self.history.append(
-                {
-                    "x": x_tmp,
-                    "y": y_tmp,
-                    "t": t_tmp,
-                    "c": is_result_of_collision,
-                }
-            )
+        x_coord, y_coord = self.get_current_location(update_history=True)
+        # If the entity is in a collision, update the last history entry to reflect that
+        if is_result_of_collision:
+            self.history[-1]["c"] = True
 
         # Set the entity's position to where they are at this point in time
-        self.x_coord = x_tmp
-        self.y_coord = y_tmp
+        self.x_coord = x_coord
+        self.y_coord = y_coord
 
         if is_result_of_dissoc_grid:
             return {"is_result_of_collision": False}
@@ -558,6 +531,61 @@ class Entity:
             priority=0,
         )
         self.__future_event_ids__["user"][event_id] = None
+
+    def get_current_location(
+        self, update_history: bool = False
+    ) -> tuple[int | float, int | float]:
+        """
+        Returns the current location of the entity as a tuple of (x_coord, y_coord).
+
+        This method retrieves the current coordinates of the entity from its attributes.
+
+        Args:
+
+        - update_history (bool): Whether to update the history with the current location.
+            - Note: This is used for internal purposes to update the history when the entity is moved or when the route is realized.
+
+        Returns:
+
+        - tuple[int | float, int | float]: The current coordinates of the entity.
+        """
+        x_loc = self.x_coord
+        y_loc = self.y_coord
+        t_loc = self.__route_start_time__
+        current_time = self.get_time()
+        for waypoint in self.__planned_waypoints__:
+            # End the route realization if the time is greater than the current time
+            if t_loc >= current_time:
+                break
+            # Get partial location if interrupted by the current time
+            elif t_loc + waypoint[2] > current_time:
+                pct_complete = (current_time - t_loc) / waypoint[2]
+                x_loc = (waypoint[0] - x_loc) * pct_complete + x_loc
+                y_loc = (waypoint[1] - y_loc) * pct_complete + y_loc
+                t_loc = current_time
+            # Otherwise, update the tmp location
+            else:
+                x_loc = waypoint[0]
+                y_loc = waypoint[1]
+                t_loc = t_loc + waypoint[2]
+
+            # This rounding is needed to ensure that rounding errors in python do not create a permanent collisions between entities
+            x_loc = round(x_loc, self.__location_precision__)
+            y_loc = round(y_loc, self.__location_precision__)
+            if update_history:
+                # Update the history with the current location
+                # Note: This is only done if update_history is True, which is used to update the history when the entity is moved
+                #       or when the route is realized.
+                self.history.append(
+                    {
+                        "x": x_loc,
+                        "y": y_loc,
+                        "t": t_loc,
+                        "c": False,  # This is updated to True in the realize_route method if the entity is in a collision
+                    }
+                )
+
+        return (x_loc, y_loc)
 
     def cancel_route(
         self,
