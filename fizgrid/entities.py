@@ -553,6 +553,16 @@ class Entity:
         y_loc = self.y_coord
         t_loc = self.__route_start_time__
         current_time = self.get_time()
+        # Add the initial location to the history to signify when the route started
+        if update_history and len(self.__planned_waypoints__) > 0:
+            self.history.append(
+                {
+                    "x": x_loc,
+                    "y": y_loc,
+                    "t": t_loc,
+                    "c": False,
+                }
+            )
         for waypoint in self.__planned_waypoints__:
             # End the route realization if the time is greater than the current time
             if t_loc >= current_time:
