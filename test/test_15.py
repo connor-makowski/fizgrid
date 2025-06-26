@@ -23,7 +23,12 @@ amr1 = grid.add_entity(
     )
 )
 
-# Add routes to the entities such that they will collide
+# Run check route function to make sure it does not affect the history.
+route_check = amr1.check_route(
+    waypoints=[
+        (5, 0.5, 1),
+    ],
+)
 
 amr1.add_route(
     waypoints=[
@@ -32,7 +37,8 @@ amr1.add_route(
     time=1,
 )
 
-# Run the sim and check if an exception is raised since we are trying to add a route to an entity that is already on a route
+# Check if the history is updated correctly and that the route check did not affect it.
+success = True
 try:
     grid.simulate()
     if amr1.history != [
@@ -41,8 +47,12 @@ try:
         {"x": 5, "y": 7, "t": 2, "c": False},
     ]:
         success = False
-    else:
-        success = True
+    if set(route_check.keys()) != {"has_collision", "collisions"}:
+        success = False
+    if not route_check["has_collision"]:
+        success = False
+    if list(route_check["collisions"].values())[0] != 0.8:
+        success = False
 except:
     success = False
 if success:

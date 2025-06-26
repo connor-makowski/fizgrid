@@ -204,6 +204,7 @@ class Entity:
         waypoints: list[tuple[int | float, ...]],
         raise_on_future_collision: bool = False,
         bypass_availability_check: bool = False,
+        return_collisions: bool = False,
     ) -> dict:
         """
         Sets the route for this entity given a set of waypoints starting at the current time.
@@ -238,6 +239,7 @@ class Entity:
             - Note: This is mostly used when initially placing entities on the grid to ensure they are not placed in a collision.
         - bypass_availability_check (bool): Whether to bypass the availability check for this entity.
             - Note: This is used when adding a route to the queue without checking if the entity is available.
+        - return_collisions (bool): Whether to return the collisions dictionary when finished planning the route.
 
         Returns:
 
@@ -423,9 +425,12 @@ class Entity:
                 priority=2,
             )
             self.__future_event_ids__["system"][event_id] = None
-        return {
+        output = {
             "has_collision": len(collisions) > 0,
         }
+        if return_collisions:
+            output["collisions"] = collisions
+        return output
 
     def __realize_route__(
         self,
@@ -483,6 +488,39 @@ class Entity:
         - int|float: The current time of the grid queue.
         """
         return self.__grid__.__queue__.__time__
+
+    def check_route(
+        self,
+        waypoints: list[tuple[int | float, int | float, int | float]],
+    ):
+        """
+        Checks the route for this entity at the current simulation time without actually planning the route.
+        This method is used to check if the route is valid and does not cause any collisions with other entities.
+        - Note: The entity must be available for this check to work and this does not change the entity's availability.
+        - Note: This does not update the entity's position or history.
+
+        Args:
+
+        - waypoints (list[tuple[int | float, int | float, int | float]]): A list of waypoints to check.
+
+        Returns:
+        - dict: A dictionary containing the following keys:
+            - has_collision (bool): Whether the route has a collision with another entity.
+            - collisions (dict): A dictionary of colliding entity ids (keys) and their collision times (values).
+
+        """
+        if not self.__is_available__:
+            raise Exception("Only available entities can check routes.")
+        output = self.__plan_route__(
+            waypoints=waypoints,
+            return_collisions=True,
+        )
+        self.__clear_future_events__(clear_event_types=["system", "user"])
+        self.__is_available__ = True
+        self.__plan_route__(
+            waypoints=[],
+        )
+        return output
 
     def add_route(
         self,
@@ -554,7 +592,11 @@ class Entity:
         t_loc = self.__route_start_time__
         current_time = self.get_time()
         # Add the initial location to the history to signify when the route started
-        if update_history and len(self.__planned_waypoints__) > 0:
+        if (
+            update_history
+            and len(self.__planned_waypoints__) > 0
+            and current_time > t_loc
+        ):
             self.history.append(
                 {
                     "x": x_loc,
