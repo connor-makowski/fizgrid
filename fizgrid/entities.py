@@ -245,6 +245,8 @@ class Entity:
 
         - dict: A dictionary containing the following keys:
             - has_collision (bool): Whether the route has a collision with another entity.
+            - collisions (dict): A dictionary of colliding entity ids (keys) and their collision times (values).
+                - Only returned if return_collisions is True.
         """
         if not self.__on_grid__:
             raise Exception(
@@ -346,11 +348,13 @@ class Entity:
                 if (
                     x_cell < 0
                     or y_cell < 0
-                    or x_cell >= self.__grid__.__x_size__
-                    or y_cell >= self.__grid__.__y_size__
+                    or x_cell
+                    >= self.__grid__.__x_size__ * self.__grid__.__cell_density__
+                    or y_cell
+                    >= self.__grid__.__y_size__ * self.__grid__.__cell_density__
                 ):
                     # Note: Shape coords outside of the grid raise an exception, but this this would indicate that the shape may have an overlap over the edge.
-                    # Note: If there are exterior walls, no exception here is necessary
+                    # Note: If there are exterior walls, no exception here should be necessary
                     # TODO: Determine if this should be an exception or just a warning
                     # print(f"Warning: Entity {self.name} is outside of the grid bounds is outside of the grid bounds based on its shape.")
                     continue

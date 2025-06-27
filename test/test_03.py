@@ -222,6 +222,35 @@ except:
     print("Shape test positive slope with removals exception")
     success = False
 
+try:
+    # Cell density test
+    expected_result = {
+        (2, 2): (0, 0.5),
+        (2, 3): (0, 0.5),
+        (3, 2): (0, 1.0),
+        (3, 3): (0, 1.0),
+        (4, 2): (0.0, 1),
+        (4, 3): (0.0, 1),
+        (5, 2): (0.5, 1),
+        (5, 3): (0.5, 1),
+    }
+    result = ShapeMoverUtils.moving_shape_overlap_intervals(
+        x_coord=1,
+        y_coord=1,
+        x_shift=1,
+        y_shift=0,
+        t_start=0,
+        t_end=1,
+        shape=[[0, 0], [1, 0], [1, 1], [0, 1]],
+        cell_density=2,
+    )
+    if result != expected_result:
+        print("Cell density test failed")
+        success = False
+except:
+    print("Cell density test exception")
+    success = False
+
 if success:
     print("test_03.py: passed")
 else:

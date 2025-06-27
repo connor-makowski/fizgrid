@@ -421,9 +421,6 @@ class ShapeMoverUtils:
             ]
             for coord in shape
         ]
-        # Get the shifts in cell space
-        x_shift = x_shift * cell_density
-        y_shift = y_shift * cell_density
         # Calculate the rectangle overlap intervals in cell space
         rectangle_overlap_intervals = (
             ShapeMoverUtils.moving_rectangle_overlap_intervals(
@@ -431,8 +428,8 @@ class ShapeMoverUtils:
                 x_end=max([coord[0] for coord in absolute_shape]),
                 y_start=min([coord[1] for coord in absolute_shape]),
                 y_end=max([coord[1] for coord in absolute_shape]),
-                x_shift=x_shift,
-                y_shift=y_shift,
+                x_shift=x_shift * cell_density,
+                y_shift=y_shift * cell_density,
                 t_start=t_start,
                 t_end=t_end,
             )
