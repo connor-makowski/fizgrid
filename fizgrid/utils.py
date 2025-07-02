@@ -1,11 +1,22 @@
-import math, type_enforced, uuid
+import math, type_enforced
 
 
-def unique_id():
+class IDGenerator:
     """
-    Generates a unique identifier.
+    A class to generate unique identifiers.
     """
-    return str(uuid.uuid4())
+    def __init__(self):
+        self._id = 0
+
+    def __call__(self):
+        """
+        Generates the next unique identifier.
+        """
+        self._id += 1
+        return str(self._id)
+    
+unique_id = IDGenerator()
+
 
 
 @type_enforced.Enforcer(enabled=True)
