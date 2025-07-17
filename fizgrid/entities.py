@@ -599,7 +599,7 @@ class Entity:
         if (
             update_history
             and len(self.__planned_waypoints__) > 0
-            and current_time > t_loc
+            and current_time >= t_loc
         ):
             self.history.append(
                 {
