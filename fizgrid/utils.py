@@ -6,14 +6,14 @@ class IDGenerator:
     A class to generate unique identifiers.
     """
     def __init__(self):
-        self._id = 0
+        self.__id__ = 0
 
     def __call__(self):
         """
         Generates the next unique identifier.
         """
-        self._id += 1
-        return str(self._id)
+        self.__id__ += 1
+        return str(self.__id__)
     
 unique_id = IDGenerator()
 
