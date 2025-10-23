@@ -93,7 +93,14 @@ class Entity:
             )
         self.__grid__ = grid
 
-    def __place_on_grid__(self, safe_create: bool=False, safe_create_increment: int=5, safe_create_attempts: int=10, safe_create_on_error: str="raise_exception", safe_create_attempt: int=0) -> None:
+    def __place_on_grid__(
+        self,
+        safe_create: bool = False,
+        safe_create_increment: int = 5,
+        safe_create_attempts: int = 10,
+        safe_create_on_error: str = "raise_exception",
+        safe_create_attempt: int = 0,
+    ) -> None:
         """
         Place this entity on the grid and claim the grid cells it will block.
 
@@ -123,7 +130,7 @@ class Entity:
             raise Exception(
                 f"Entity {self.name} is already on the grid. Cannot place on grid again."
             )
-        
+
         if safe_create:
             current_time = self.get_time()
             blocks = ShapeMoverUtils.moving_shape_overlap_intervals(
@@ -132,7 +139,7 @@ class Entity:
                 x_shift=0,
                 y_shift=0,
                 t_start=current_time,
-                t_end=current_time+1,
+                t_end=current_time + 1,
                 shape=self.__shape_current__,
                 cell_density=self.__grid__.__cell_density__,
             )
@@ -147,7 +154,10 @@ class Entity:
                 ) in cell.values():
                     # Note: This does not use t_start and t_end as we only check for the current point in time,
                     # but ShapeMoverUtils requires a non zero time interval to calculate the blocks
-                    if current_time < other_t_end and current_time >= other_t_start:
+                    if (
+                        current_time < other_t_end
+                        and current_time >= other_t_start
+                    ):
                         has_collision = True
                         break
                 if has_collision:
@@ -179,7 +189,6 @@ class Entity:
                         priority=5,
                     )
                     return
-
 
         self.__on_grid__ = True
         self.__route_start_time__ = self.get_time()

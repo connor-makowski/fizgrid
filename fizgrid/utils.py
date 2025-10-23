@@ -5,6 +5,7 @@ class IDGenerator:
     """
     A class to generate unique identifiers.
     """
+
     def __init__(self):
         self.__id__ = 0
 
@@ -14,9 +15,9 @@ class IDGenerator:
         """
         self.__id__ += 1
         return str(self.__id__)
-    
-unique_id = IDGenerator()
 
+
+unique_id = IDGenerator()
 
 
 @type_enforced.Enforcer(enabled=True)

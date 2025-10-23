@@ -105,9 +105,7 @@ class Grid:
             )
         return entity
 
-    def remove_entity(
-        self, entity: Entity, time: int | float | None = None
-    ):
+    def remove_entity(self, entity: Entity, time: int | float | None = None):
         """
         Removes an entity from the grid.
 
