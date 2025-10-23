@@ -93,7 +93,7 @@ class Entity:
             )
         self.__grid__ = grid
 
-    def __place_on_grid__(self) -> None:
+    def __place_on_grid__(self, safe_create: bool=False, safe_create_increment: int=5, safe_create_attempts: int=10, safe_create_on_error: str="raise_exception", safe_create_attempt: int=0) -> None:
         """
         Place this entity on the grid and claim the grid cells it will block.
 
@@ -101,12 +101,86 @@ class Entity:
 
         Args:
 
-        - grid (Grid): The grid to assign to this entity.
+        - safe_create: A boolean indicating whether to attempt safe creation of the obstruction.
+            - If True, the method will attempt to create the obstruction without overlapping existing obstructions.
+            - If False, it may raise an error if there is an overlap between obstructions / other entities.
+            - Default is False.
+        - safe_create_increment: The incremental time to wait to use when attempting safe creation if an overlap is detected.
+            - Default is 5 time units.
+        - safe_create_attempts: The maximum number of attempts to try creating the obstruction safely before logging an error.
+            - Default is 10 attempts.
+        - safe_create_on_error: The action to take if safe creation fails after the maximum attempts.
+            - Options are "print_error" to log an error message, or "raise_exception" to raise an exception.
+            - Default is "print_error".
+        - safe_create_attempt: The current attempt number for safe creation.
+            - Default is 0.
         """
         if self.__grid__ is None:
             raise Exception(
                 f"Entity {self.name} is not associated with a grid. Cannot place on grid."
             )
+        if self.__on_grid__:
+            raise Exception(
+                f"Entity {self.name} is already on the grid. Cannot place on grid again."
+            )
+        
+        if safe_create:
+            current_time = self.get_time()
+            blocks = ShapeMoverUtils.moving_shape_overlap_intervals(
+                x_coord=self.x_coord,
+                y_coord=self.y_coord,
+                x_shift=0,
+                y_shift=0,
+                t_start=current_time,
+                t_end=current_time+1,
+                shape=self.__shape_current__,
+                cell_density=self.__grid__.__cell_density__,
+            )
+            has_collision = False
+            for (x_cell, y_cell), (t_start, t_end) in blocks.items():
+                cell = self.__grid__.__cells__[y_cell][x_cell]
+                # Check for collisions with other entities in the cell
+                for (
+                    other_t_start,
+                    other_t_end,
+                    other_entity_id,
+                ) in cell.values():
+                    # Note: This does not use t_start and t_end as we only check for the current point in time,
+                    # but ShapeMoverUtils requires a non zero time interval to calculate the blocks
+                    if current_time < other_t_end and current_time >= other_t_start:
+                        has_collision = True
+                        break
+                if has_collision:
+                    break
+            if has_collision:
+                if safe_create_attempt >= safe_create_attempts:
+                    if safe_create_on_error == "raise_exception":
+                        raise Exception(
+                            f"Entity {self.name} could not be placed on the grid without overlapping other entities after {safe_create_attempts} attempts."
+                        )
+                    elif safe_create_on_error == "print_error":
+                        print(
+                            f"Warning: Entity {self.name} could not be placed on the grid without overlapping other entities after {safe_create_attempts} attempts."
+                        )
+                        return
+                else:
+                    # Try again after incrementing the time
+                    self.__grid__.add_event(
+                        time=current_time + safe_create_increment,
+                        object=self,
+                        method="__place_on_grid__",
+                        kwargs={
+                            "safe_create": True,
+                            "safe_create_increment": safe_create_increment,
+                            "safe_create_attempts": safe_create_attempts,
+                            "safe_create_on_error": safe_create_on_error,
+                            "safe_create_attempt": safe_create_attempt + 1,
+                        },
+                        priority=5,
+                    )
+                    return
+
+
         self.__on_grid__ = True
         self.__route_start_time__ = self.get_time()
         self.history.append(

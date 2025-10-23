@@ -1,5 +1,4 @@
 import type_enforced
-from type_enforced.utils import WithSubclasses
 from fizgrid.entities import Entity, StaticEntity
 from fizgrid.queue import TimeQueue
 
@@ -54,8 +53,12 @@ class Grid:
 
     def add_entity(
         self,
-        entity: WithSubclasses(Entity),
+        entity: Entity,
         time: int | float | None = None,
+        safe_create: bool = False,
+        safe_create_increment: int = 5,
+        safe_create_attempts: int = 10,
+        safe_create_on_error: str = "raise_exception",
     ):
         """
         Adds an entity to the grid.
@@ -66,6 +69,17 @@ class Grid:
             - Must be an Entity or a subclass of Entity.
         - time (int|float|None): The time at which the entity should be added to the grid.
             - If None, the entity is added immediately.
+        - safe_create: A boolean indicating whether to attempt safe creation of the obstruction.
+            - If True, the method will attempt to create the obstruction without overlapping existing obstructions.
+            - If False, it may raise an error if there is an overlap between obstructions / other entities.
+            - Default is False.
+        - safe_create_increment: The incremental time to wait to use when attempting safe creation if an overlap is detected.
+            - Default is 5 time units.
+        - safe_create_attempts: The maximum number of attempts to try creating the obstruction safely before logging an error.
+            - Default is 10 attempts.
+        - safe_create_on_error: The action to take if safe creation fails after the maximum attempts.
+            - Options are "print_error" to log an error message, or "raise_exception" to raise an exception.
+            - Default is "raise_exception".
 
         Returns:
 
@@ -73,20 +87,26 @@ class Grid:
         """
         entity.__assoc_grid__(self)
         self.__entities__[entity.id] = entity
+        kwargs = {
+            "safe_create": safe_create,
+            "safe_create_increment": safe_create_increment,
+            "safe_create_attempts": safe_create_attempts,
+            "safe_create_on_error": safe_create_on_error,
+        }
         if time is None:
-            entity.__place_on_grid__()
+            entity.__place_on_grid__(**kwargs)
         else:
             self.add_event(
                 time=time,
                 object=entity,
                 method="__place_on_grid__",
-                kwargs={},
+                kwargs=kwargs,
                 priority=5,
             )
         return entity
 
     def remove_entity(
-        self, entity: WithSubclasses(Entity), time: int | float | None = None
+        self, entity: Entity, time: int | float | None = None
     ):
         """
         Removes an entity from the grid.
