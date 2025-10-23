@@ -99,7 +99,8 @@
 <footer>
 <select id="version-selector">
     <option value="latest">latest</option>
-        <option value="1.8.1">1.8.1</option>
+        <option value="1.9.0">1.9.0</option>
+        <option value="1.8.3">1.8.3</option>
         <option value="1.7.1">1.7.1</option>
         <option value="1.6.0">1.6.0</option>
         <option value="1.5.4">1.5.4</option>
@@ -756,7 +757,7 @@
 </span><span id="L-599"><a href="#L-599"><span class="linenos">599</span></a>        <span class="k">if</span> <span class="p">(</span>
 </span><span id="L-600"><a href="#L-600"><span class="linenos">600</span></a>            <span class="n">update_history</span>
 </span><span id="L-601"><a href="#L-601"><span class="linenos">601</span></a>            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__planned_waypoints__</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-</span><span id="L-602"><a href="#L-602"><span class="linenos">602</span></a>            <span class="ow">and</span> <span class="n">current_time</span> <span class="o">&gt;</span> <span class="n">t_loc</span>
+</span><span id="L-602"><a href="#L-602"><span class="linenos">602</span></a>            <span class="ow">and</span> <span class="n">current_time</span> <span class="o">&gt;=</span> <span class="n">t_loc</span>
 </span><span id="L-603"><a href="#L-603"><span class="linenos">603</span></a>        <span class="p">):</span>
 </span><span id="L-604"><a href="#L-604"><span class="linenos">604</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
 </span><span id="L-605"><a href="#L-605"><span class="linenos">605</span></a>                <span class="p">{</span>
@@ -1632,7 +1633,7 @@
 </span><span id="Entity-600"><a href="#Entity-600"><span class="linenos">600</span></a>        <span class="k">if</span> <span class="p">(</span>
 </span><span id="Entity-601"><a href="#Entity-601"><span class="linenos">601</span></a>            <span class="n">update_history</span>
 </span><span id="Entity-602"><a href="#Entity-602"><span class="linenos">602</span></a>            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__planned_waypoints__</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-</span><span id="Entity-603"><a href="#Entity-603"><span class="linenos">603</span></a>            <span class="ow">and</span> <span class="n">current_time</span> <span class="o">&gt;</span> <span class="n">t_loc</span>
+</span><span id="Entity-603"><a href="#Entity-603"><span class="linenos">603</span></a>            <span class="ow">and</span> <span class="n">current_time</span> <span class="o">&gt;=</span> <span class="n">t_loc</span>
 </span><span id="Entity-604"><a href="#Entity-604"><span class="linenos">604</span></a>        <span class="p">):</span>
 </span><span id="Entity-605"><a href="#Entity-605"><span class="linenos">605</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
 </span><span id="Entity-606"><a href="#Entity-606"><span class="linenos">606</span></a>                <span class="p">{</span>
@@ -2172,7 +2173,7 @@ This method is used to check if the route is valid and does not cause any collis
 </span><span id="Entity.get_current_location-600"><a href="#Entity.get_current_location-600"><span class="linenos">600</span></a>        <span class="k">if</span> <span class="p">(</span>
 </span><span id="Entity.get_current_location-601"><a href="#Entity.get_current_location-601"><span class="linenos">601</span></a>            <span class="n">update_history</span>
 </span><span id="Entity.get_current_location-602"><a href="#Entity.get_current_location-602"><span class="linenos">602</span></a>            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__planned_waypoints__</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-</span><span id="Entity.get_current_location-603"><a href="#Entity.get_current_location-603"><span class="linenos">603</span></a>            <span class="ow">and</span> <span class="n">current_time</span> <span class="o">&gt;</span> <span class="n">t_loc</span>
+</span><span id="Entity.get_current_location-603"><a href="#Entity.get_current_location-603"><span class="linenos">603</span></a>            <span class="ow">and</span> <span class="n">current_time</span> <span class="o">&gt;=</span> <span class="n">t_loc</span>
 </span><span id="Entity.get_current_location-604"><a href="#Entity.get_current_location-604"><span class="linenos">604</span></a>        <span class="p">):</span>
 </span><span id="Entity.get_current_location-605"><a href="#Entity.get_current_location-605"><span class="linenos">605</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
 </span><span id="Entity.get_current_location-606"><a href="#Entity.get_current_location-606"><span class="linenos">606</span></a>                <span class="p">{</span>
