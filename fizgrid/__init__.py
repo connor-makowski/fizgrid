@@ -284,4 +284,5 @@ Make sure Docker is installed and running on a Unix system (Linux, MacOS, WSL2).
 - Update the docs (see ./utils/docs.sh)
     - `./run.sh docs`
 
-- Note: You can and should modify the `Dockerfile` to test different python versions."""
+- Note: You can and should modify the `Dockerfile` to test different python versions.
+"""

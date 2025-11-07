@@ -207,8 +207,6 @@ class Grid:
             object = event.get("object")
             method = event.get("method")
             kwargs = event.get("kwargs")
-            if object is None:
-                continue
             getattr(object, method)(**kwargs)
         return event_items
 

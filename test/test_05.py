@@ -3,6 +3,8 @@ from fizgrid.entities import Entity
 from fizgrid.utils import Shape
 import random, math
 
+random.seed(42)
+
 
 class Pig(Entity):
     def __init__(self, *args, **kwargs):

@@ -11,7 +11,7 @@ class Entity:
         x_coord: int | float,
         y_coord: int | float,
         auto_rotate: bool = False,
-        location_precision: int = 4,
+        location_precision: int | None = 4,
     ):
         """
         Initializes an entity with a given shape and location in the grid.
@@ -27,7 +27,8 @@ class Entity:
         - y_coord (int|float): The starting y-coordinate of the entity in the grid.
         - auto_rotate (bool): Whether to automatically rotate the shape based on the direction of movement.
             - Note: The default assumption is that the shape is facing right (0 radians).
-        - location_precision (int): The precision of the location coordinates. This is used to round the coordinates to a specific number of decimal places.
+        - location_precision (int|None): The precision of the location coordinates. This is used to round the coordinates to a specific number of decimal places.
+            - If None, no rounding is performed.
         """
         self.id = unique_id()
         """The ID of the entity."""
@@ -645,6 +646,10 @@ class Entity:
             )
         if time is None:
             time = self.get_time()
+        if time == self.get_time():
+            # Clear any system planned events if we are adding a route at the current time.
+            # This prevents two entities from getting get stuck in a collision resolution loop.
+            self.__clear_future_events__(clear_event_types=["system"])
         # Add the event to the queue
         event_id = self.__grid__.add_event(
             time=time,
@@ -709,8 +714,9 @@ class Entity:
                 t_loc = t_loc + waypoint[2]
 
             # This rounding is needed to ensure that rounding errors in python do not create a permanent collisions between entities
-            x_loc = round(x_loc, self.__location_precision__)
-            y_loc = round(y_loc, self.__location_precision__)
+            if self.__location_precision__ is not None:
+                x_loc = round(x_loc, self.__location_precision__)
+                y_loc = round(y_loc, self.__location_precision__)
             if update_history:
                 # Update the history with the current location
                 # Note: This is only done if update_history is True, which is used to update the history when the entity is moved
