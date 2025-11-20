@@ -101,6 +101,7 @@ class Entity:
         safe_create_attempts: int = 10,
         safe_create_on_error: str = "raise_exception",
         safe_create_attempt: int = 0,
+        raise_on_future_collision: bool = False,
     ) -> None:
         """
         Place this entity on the grid and claim the grid cells it will block.
@@ -122,6 +123,8 @@ class Entity:
             - Default is "print_error".
         - safe_create_attempt: The current attempt number for safe creation.
             - Default is 0.
+        - raise_on_future_collision: Whether to raise an exception if placing the entity on the grid would cause a future collision.
+            - Default is False.
         """
         if self.__grid__ is None:
             raise Exception(
@@ -186,6 +189,7 @@ class Entity:
                             "safe_create_attempts": safe_create_attempts,
                             "safe_create_on_error": safe_create_on_error,
                             "safe_create_attempt": safe_create_attempt + 1,
+                            "raise_on_future_collision": raise_on_future_collision,
                         },
                         priority=5,
                     )
@@ -203,7 +207,7 @@ class Entity:
         )
         self.__realize_route__(
             is_result_of_collision=False,
-            raise_on_future_collision=True,
+            raise_on_future_collision=raise_on_future_collision,
             is_result_of_dissoc_grid=False,
             clear_event_types=["system"],
         )

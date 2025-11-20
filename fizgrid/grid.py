@@ -59,6 +59,7 @@ class Grid:
         safe_create_increment: int = 5,
         safe_create_attempts: int = 10,
         safe_create_on_error: str = "raise_exception",
+        raise_on_future_collision: bool = False,
     ):
         """
         Adds an entity to the grid.
@@ -80,6 +81,8 @@ class Grid:
         - safe_create_on_error: The action to take if safe creation fails after the maximum attempts.
             - Options are "print_error" to log an error message, or "raise_exception" to raise an exception.
             - Default is "raise_exception".
+        - raise_on_future_collision: Whether to raise an exception if placing the entity on the grid would cause a future collision.
+            - Default is False.
 
         Returns:
 
@@ -92,6 +95,7 @@ class Grid:
             "safe_create_increment": safe_create_increment,
             "safe_create_attempts": safe_create_attempts,
             "safe_create_on_error": safe_create_on_error,
+            "raise_on_future_collision": raise_on_future_collision,
         }
         if time is None:
             entity.__place_on_grid__(**kwargs)
