@@ -60,6 +60,7 @@ class Grid:
         safe_create_attempts: int = 10,
         safe_create_on_error: str = "raise_exception",
         raise_on_future_collision: bool = False,
+        raise_on_immediate_collision: bool | None = None,
     ):
         """
         Adds an entity to the grid.
@@ -83,6 +84,9 @@ class Grid:
             - Default is "raise_exception".
         - raise_on_future_collision: Whether to raise an exception if placing the entity on the grid would cause a future collision.
             - Default is False.
+        - raise_on_immediate_collision: Whether to raise an exception if placing the entity on the grid would cause an immediate collision.
+            - Default is None.
+                - If None, defaults are set by the entity type's __place_on_grid__ method.
 
         Returns:
 
@@ -97,6 +101,10 @@ class Grid:
             "safe_create_on_error": safe_create_on_error,
             "raise_on_future_collision": raise_on_future_collision,
         }
+        if raise_on_immediate_collision is not None:
+            kwargs["raise_on_immediate_collision"] = (
+                raise_on_immediate_collision
+            )
         if time is None:
             entity.__place_on_grid__(**kwargs)
         else:

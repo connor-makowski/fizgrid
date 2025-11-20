@@ -102,6 +102,7 @@ class Entity:
         safe_create_on_error: str = "raise_exception",
         safe_create_attempt: int = 0,
         raise_on_future_collision: bool = False,
+        raise_on_immediate_collision: bool = True,
     ) -> None:
         """
         Place this entity on the grid and claim the grid cells it will block.
@@ -125,6 +126,9 @@ class Entity:
             - Default is 0.
         - raise_on_future_collision: Whether to raise an exception if placing the entity on the grid would cause a future collision.
             - Default is False.
+        - raise_on_immediate_collision: Whether to raise an exception if placing the entity on the grid would cause an immediate collision.
+            - Default is True.
+            - This is ignored if safe_create is True.
         """
         if self.__grid__ is None:
             raise Exception(
@@ -135,7 +139,7 @@ class Entity:
                 f"Entity {self.name} is already on the grid. Cannot place on grid again."
             )
 
-        if safe_create:
+        if safe_create or raise_on_immediate_collision:
             current_time = self.get_time()
             blocks = ShapeMoverUtils.moving_shape_overlap_intervals(
                 x_coord=self.x_coord,
@@ -147,7 +151,7 @@ class Entity:
                 shape=self.__shape_current__,
                 cell_density=self.__grid__.__cell_density__,
             )
-            has_collision = False
+            has_immediate_collision = False
             for (x_cell, y_cell), (t_start, t_end) in blocks.items():
                 cell = self.__grid__.__cells__[y_cell][x_cell]
                 # Check for collisions with other entities in the cell
@@ -162,11 +166,16 @@ class Entity:
                         current_time < other_t_end
                         and current_time >= other_t_start
                     ):
-                        has_collision = True
+                        has_immediate_collision = True
                         break
-                if has_collision:
+                if has_immediate_collision:
                     break
-            if has_collision:
+            if not safe_create and has_immediate_collision:
+                raise Exception(
+                    f"Entity {self.name} cannot be placed on the grid at time {current_time} due to an immediate collision with another entity."
+                )
+        if safe_create:
+            if has_immediate_collision:
                 if safe_create_attempt >= safe_create_attempts:
                     if safe_create_on_error == "raise_exception":
                         raise Exception(
@@ -955,3 +964,30 @@ class GhostEntity(Entity):
             )
             self.__future_event_ids__["system"][event_id] = None
         return {"has_collision": False}
+
+    def __place_on_grid__(
+        self,
+        safe_create: bool = False,
+        safe_create_increment: int = 5,
+        safe_create_attempts: int = 10,
+        safe_create_on_error: str = "raise_exception",
+        safe_create_attempt: int = 0,
+        raise_on_future_collision: bool = False,
+        raise_on_immediate_collision: bool = False,
+    ) -> None:
+        """
+        Overrides the __place_on_grid__ method to allow for a ghost entity to be placed on the grid that never collides with other entities because it does not check for collisions.
+
+        Changes the default raise_on_immediate_collision to False.
+
+        This allows Grid.add_entity to let the Entity type set the default behavior for immediate collisions when placing on the grid.
+        """
+        super().__place_on_grid__(
+            safe_create=safe_create,
+            safe_create_increment=safe_create_increment,
+            safe_create_attempts=safe_create_attempts,
+            safe_create_on_error=safe_create_on_error,
+            safe_create_attempt=safe_create_attempt,
+            raise_on_future_collision=raise_on_future_collision,
+            raise_on_immediate_collision=raise_on_immediate_collision,
+        )
